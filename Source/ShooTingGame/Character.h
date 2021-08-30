@@ -10,16 +10,14 @@
  */
 class CharaterWeapon;
 
-//플레이어 캐릭터다.
-class PlayerCharacter : public IObject
+//플레이어의 캐릭터다.
+class ActorCharacter : public IObject
 {
 public:
-	explicit PlayerCharacter(const char*, const int8, const float, AActor*);
-	//explicit PlayerCharacter(const char*, const int8, const float, const UStaticMesh* Mesh, const FColor& Color, const CharaterWeapon*);
-	virtual ~PlayerCharacter() override;
-
-private:
-	PlayerCharacter();
+	ActorCharacter() = delete;
+	explicit ActorCharacter(const char*, const int8, const float, AActor*);
+	//explicit ActorCharacter(const char*, const int8, const float, const UStaticMesh* Mesh, const FColor& Color, const CharaterWeapon*);
+	virtual ~ActorCharacter() override;
 
 public:
 	const int8 GetMaxHP() const;
@@ -32,7 +30,7 @@ public:
 
 	virtual void Update() override;
 
-	virtual void AddAction(std::shared_ptr<Actions>) override;
+	virtual void AddAction(std::shared_ptr<IAction>) override;
 private:
 
 	const int8 m_max_HP;
@@ -41,6 +39,6 @@ private:
 
 	const CharaterWeapon* m_weapon;
 
-	std::queue<std::shared_ptr<Actions>> m_actions;
+	std::queue<std::shared_ptr<IAction>> m_actions;
 
 };

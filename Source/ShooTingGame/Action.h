@@ -13,16 +13,15 @@ const FVector& CalculationRatioSpeed(const FVector& Ratio);
 
 class IObject;
 
+//모든 행동들의 기본이 되는 IAction 움직이는 물체의 행동들은 모두 IAction에서 파생된다.
 class IAction
 {
 public:
 	IAction(){}
 	virtual ~IAction() = 0 {}
 
-private:
-
 public:
 
-	virtual void execute(std::shared_ptr<IObject>) = 0;
+	virtual void execute(IObject*) = 0;
 
 };

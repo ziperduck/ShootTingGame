@@ -6,21 +6,21 @@
 #include "CoreMinimal.h"
 
 /**
- * 
+ * 동서남북으로 움직이는 값을 전달하는 (XXX)Move 물체의 움직임을 제어한다.
  */
 
 class IObject;
 
-class EastMove : IAction
+class EastMove : public IAction
 {
 public:
 	EastMove();
 	virtual ~EastMove() override;
 public:
 
-	virtual void execute(std::shared_ptr<IObject>) override;
+	virtual void execute(IObject*) override;
 };
-class WestMove : IAction
+class WestMove : public IAction
 {
 public:
 	WestMove();
@@ -28,27 +28,27 @@ public:
 
 public:
 
-	virtual void execute(std::shared_ptr<IObject>) override;
+	virtual void execute(IObject*) override;
 
 };
-class SouthMove : IAction
+class SouthMove : public IAction
 {
 public:
 	SouthMove();
 	virtual ~SouthMove() override;
 public:
 
-	virtual void execute(std::shared_ptr<IObject>) override;
+	virtual void execute(IObject*) override;
 
 };
-class NorthMove : IAction
+class NorthMove : public IAction
 {
 public:
 	NorthMove();
 	virtual ~NorthMove() override;
 public:
 
-	virtual void execute(std::shared_ptr<IObject>) override;
+	virtual void execute(IObject*) override;
 
 };
 

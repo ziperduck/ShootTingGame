@@ -7,16 +7,15 @@
 /**
  * 
  */
-class Actions;
-//가장 기본이 되는 오브젝트 모든 오브젝트가 이것에 의해 파생된다.
+class IAction;
+
+//움직이는 물체들의 가장 기본이 되는 IObject 모든 움직이는 물체는 IObject에 의해 파생된다.
 class IObject
 {
 public:
+	IObject() = delete;
 	explicit IObject(const char* , const float , AActor*);
 	virtual ~IObject() = 0{}
-
-private:
-	IObject();
 
 public:
 
@@ -32,7 +31,7 @@ public:
 
 	virtual void Update() = 0;
 
-	virtual void AddAction(std::shared_ptr<Actions>) = 0;
+	virtual void AddAction(std::shared_ptr<IAction>) = 0;
 
 protected :
 
