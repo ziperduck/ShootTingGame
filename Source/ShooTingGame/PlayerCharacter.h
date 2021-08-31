@@ -35,6 +35,6 @@ public:
 
 private:
 
-	std::shared_ptr<IObject> m_actorcharacter;
+	std::shared_ptr<IObject> m_character_componenet;
 
 };

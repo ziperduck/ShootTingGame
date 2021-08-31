@@ -23,10 +23,10 @@ APlayerCharacter::APlayerCharacter()
 	
 	OurVisibleComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OurVisibleComponent"));
 	OurVisibleComponent->SetupAttachment(RootComponent);
-
+	
 	UE_LOG(LogTemp, Log, TEXT("BeginPlay"));
-	m_actorcharacter = std::make_shared<ActorCharacter>("Player", 10, 10.0f, this);
-	ObjectManager::GetInstance()->AddObject(m_actorcharacter);
+	m_character_componenet = std::make_shared<ActorCharacter>("Player", 10, 1.0f, OurVisibleComponent);
+	ObjectManager::GetInstance()->AddObject(m_character_componenet);
 }
 
 // Called when the game starts or when spawned
@@ -52,10 +52,10 @@ void APlayerCharacter::MoveX(float Ancho) {
 
 	switch (Defense) {
 	case 1:
-		m_actorcharacter->AddAction(ActionInstance::GetEastMove());
+		m_character_componenet->AddAction(ActionInstance::GetEastMove());
 		break;
 	case 2:
-		m_actorcharacter->AddAction(ActionInstance::GetWestMove());
+		m_character_componenet->AddAction(ActionInstance::GetWestMove());
 		break;
 
 	}
@@ -68,30 +68,11 @@ void APlayerCharacter::MoveY(float Ancho) {
 
 	switch (Defense) {
 	case 1:
-		m_actorcharacter->AddAction(ActionInstance::GetSouthMove());
+		m_character_componenet->AddAction(ActionInstance::GetSouthMove());
 		break;
 	case 2:
-		m_actorcharacter->AddAction(ActionInstance::GetNorthMove());
+		m_character_componenet->AddAction(ActionInstance::GetNorthMove());
 		break;
 
 	}
 }
-
-#if false
-void APlayerCharacter::EastMove()
-{
-	m_actorcharacter->AddAction(ActionInstance::GetEastMove());
-}
-void APlayerCharacter::WestMove()
-{
-	m_actorcharacter->AddAction(ActionInstance::GetWestMove());
-}
-void APlayerCharacter::SouthMove()
-{
-	m_actorcharacter->AddAction(ActionInstance::GetSouthMove());
-}
-void APlayerCharacter::NorthMove()
-{
-	m_actorcharacter->AddAction(ActionInstance::GetNorthMove());
-}
-#endif

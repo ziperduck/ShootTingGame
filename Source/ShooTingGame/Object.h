@@ -14,12 +14,12 @@ class IObject
 {
 public:
 	IObject() = delete;
-	explicit IObject(const char* , const float , AActor*);
+	explicit IObject(const char* , const float , USceneComponent*);
 	virtual ~IObject() = 0{}
 
 public:
 
-	void SetLocation(const FVector&);
+	virtual void SetLocation(const FVector&) = 0;
 
 	const FVector GetLocation();
 
@@ -39,5 +39,5 @@ protected :
 
 	const float m_speed;
 
-	AActor* m_actor;
+	USceneComponent* m_componenet;
 };

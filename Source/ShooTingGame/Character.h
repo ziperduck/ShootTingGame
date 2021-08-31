@@ -15,7 +15,7 @@ class ActorCharacter : public IObject
 {
 public:
 	ActorCharacter() = delete;
-	explicit ActorCharacter(const char*, const int8, const float, AActor*);
+	explicit ActorCharacter(const char*, const int8, const float, USceneComponent*);
 	//explicit ActorCharacter(const char*, const int8, const float, const UStaticMesh* Mesh, const FColor& Color, const CharaterWeapon*);
 	virtual ~ActorCharacter() override;
 
@@ -23,6 +23,8 @@ public:
 	const int8 GetMaxHP() const;
 
 	const int8 GetCurrentHP() const;
+
+	virtual void SetLocation(const FVector& MoveLocation) override;
 
 	const CharaterWeapon* GetWeapon() const;
 
