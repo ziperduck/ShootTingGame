@@ -7,6 +7,13 @@
 /**
  * 
  */
+
+enum class ObjectKind
+{
+	PlayerObject
+	,EnemyObject
+};
+
 class IAction;
 
 //움직이는 물체들의 가장 기본이 되는 IObject 모든 움직이는 물체는 IObject에 의해 파생된다.
@@ -27,13 +34,17 @@ public:
 
 	float GetSpeed() const;
 
+	const int32 GetIdentityNumber() const;
+
 	virtual bool Is_Collision() = 0;
 
 	virtual void Update() = 0;
 
-	virtual void AddAction(std::shared_ptr<IAction>) = 0;
+	virtual void AddAction(std::shared_ptr < IAction>) = 0;
 
 protected :
+
+	const int32 m_identity_num;
 
 	const char* m_name;
 

@@ -4,12 +4,17 @@
 #include "Object.h"
 
 IObject::IObject(const char* Name, const float Speed, USceneComponent* Componenet)
-	: m_name(Name), m_speed(Speed), m_componenet(Componenet) {
-
+	: m_name(Name), m_speed(Speed), m_componenet(Componenet), m_identity_num(FMath::RandRange(0, 1000)){
 }
 
 
-const FVector IObject::GetLocation() {
+const int32 IObject::GetIdentityNumber() const 
+{
+	return m_identity_num;
+}
+
+const FVector IObject::GetLocation()
+{
 	return m_componenet->GetComponentLocation();
 }
 

@@ -4,22 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "ShooTingGameGameModeBase.generated.h"
+#include "ShooTingGameModeBase.generated.h"
 
-/**
- * 
- */
+
+/*
+* mode base에서 모든 오브젝트의 생성과 액션을 제어한다.
+*
+*/
 
 class IObject;
 class ObjectManager;
 
 UCLASS()
-class SHOOTINGGAME_API AShooTingGameGameModeBase : public AGameModeBase
+class SHOOTINGGAME_API AShooTingGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
 public:
-	AShooTingGameGameModeBase();
+	AShooTingGameModeBase();
+
 
 	virtual void StartPlay() override;
 

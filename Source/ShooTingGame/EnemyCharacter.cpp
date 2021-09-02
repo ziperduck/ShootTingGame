@@ -1,29 +1,29 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include"Character.h"
-#include "ActionInstance.h"
-#include <Engine/Classes/Camera/CameraComponent.h>
-#include "PlayerCharacter.h"
+#include "Character.h"
+#include "EnemyCharacter.h"
 
 // Sets default values
-APlayerCharacter::APlayerCharacter()
+AEnemyCharacter::AEnemyCharacter()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CharacterMeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
-
+	
 	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CharacterMesh"));
 	CharacterMesh->SetupAttachment(RootComponent);
 	CharacterMesh->SetStaticMesh(CharacterMeshAsset.Object);
 	RootComponent = CharacterMesh;
 
 	this->SetActorScale3D(FVector{ 0.2f,0.2f,0.2f });
-
 }
 
 // Called when the game starts or when spawned
-void APlayerCharacter::BeginPlay()
+void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
 }
+
+

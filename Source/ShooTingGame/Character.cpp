@@ -58,7 +58,7 @@ void ActorCharacter::Update() {
 		m_actions.pop();
 	}
 }
-void ActorCharacter::AddAction(std::shared_ptr<IAction> Action) {
+void ActorCharacter::AddAction(std::shared_ptr < IAction> Action) {
 
 	m_actions.push(Action);
 
