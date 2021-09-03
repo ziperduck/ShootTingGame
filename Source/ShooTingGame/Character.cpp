@@ -39,6 +39,11 @@ void ActorCharacter::SetLocation(const FVector& MoveLocation) {
 	*/
 	
 	FHitResult Hit(1.f);
+	if (m_componenet == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("componenet is nullptr"));
+		return;
+	}
 	m_componenet->MoveComponent(MoveLocation, m_componenet->GetComponentRotation(), true, &Hit);
 	if (Hit.IsValidBlockingHit())
 	{

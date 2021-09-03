@@ -9,7 +9,7 @@
  * 
  */
 
-#define MANAGER_SIZE 10
+#define LIVED_OBJECT_SIZE 10
 
 class IObject;
 class ObjectManager;
@@ -20,25 +20,26 @@ enum class ObjectKind;
 //이 Id값이 있어야지만 Actino값을 추가할수있다.
 class ObjectId {
 public:
-	ObjectId(const int Element, const int Identity)
+	ObjectId(const uint16 Element, const uint16 Identity)
 		:m_arr_element(Element), m_identity_num(Identity) {};
 
-	const int GetElement() const;
+	const uint16 GetElement() const;
 
 private:
 	ObjectId(const ObjectId&) = delete;
 	ObjectId& operator=(const ObjectId&) = delete;
 
 
-	friend bool operator==(const ObjectId&, const ObjectId&);
+	friend bool operator!=(const ObjectId&, const ObjectId&);
 
 private:
-	const int m_arr_element;
-	const int m_identity_num;
+	const uint16 m_arr_element;
+	const uint16 m_identity_num;
 
 };
 
  bool operator==(const ObjectId&, const ObjectId&);
+ bool operator!=(const ObjectId&, const ObjectId&);
 
 /*
 * 게임내에 있는 모든 Object를 가지고있는 클래스다
@@ -61,18 +62,23 @@ public:
 
 	//맵에에있는 모든 오브젝트 업데이트
 	void ObjectsUpdate();
+
+	//Id에 해당하는 Object를 제거한다.
+	void DeleteObject(std::unique_ptr<ObjectId>);
 private:
 
-	ObjectManager() : m_tail_num(0){
-		UE_LOG(LogTemp, Log, TEXT("ObjectManager Constructor"));
-	};
+	ObjectManager();
+
+	//현재 비어있는 원소위치를 반환한다. 한칸이 더 비어있다.
+	int16 GetBinArraySpace();
+
 private:
 
-	std::shared_ptr<IObject> m_lived_objects[MANAGER_SIZE];
+	std::unique_ptr<IObject> m_lived_objects[LIVED_OBJECT_SIZE];
 
 	//배열의 마지막을 원소위치
-	int32 m_tail_num;
+	uint16  m_tail_num;
 
 };
 
-const int32 CirculatorElerment(const int32 num);
+const uint16 CirculatorElerment(const uint16 num);

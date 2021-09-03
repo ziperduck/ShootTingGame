@@ -31,10 +31,13 @@ private:
 	void MoveX(float);
 	void MoveY(float);
 
+	void EventA();
+
 private:
 
 	ObjectManager* m_object_manager;
 
 	std::unique_ptr<ObjectId> m_player_id;
 
+	float ApratVector;
 };

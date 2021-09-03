@@ -22,7 +22,10 @@ class IObject
 public:
 	IObject() = delete;
 	explicit IObject(const char* , const float , USceneComponent*);
-	virtual ~IObject() = 0{}
+	virtual ~IObject() = 0
+	{
+		m_componenet->GetOwner()->Destroy();
+	}
 
 public:
 
@@ -34,7 +37,7 @@ public:
 
 	float GetSpeed() const;
 
-	const int32 GetIdentityNumber() const;
+	const uint16  GetIdentityNumber() const;
 
 	virtual bool Is_Collision() = 0;
 
@@ -44,7 +47,7 @@ public:
 
 protected :
 
-	const int32 m_identity_num;
+	const uint16  m_identity_num;
 
 	const char* m_name;
 

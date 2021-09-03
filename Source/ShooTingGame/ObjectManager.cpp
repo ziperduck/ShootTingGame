@@ -8,14 +8,22 @@
 #include <Engine.h>
 #include "ObjectManager.h"
 
-const int ObjectId::GetElement() const {
+const uint16 ObjectId::GetElement() const {
 	return m_arr_element;
 }
 
+bool operator!=(const ObjectId& Left, const ObjectId& Right)
+{
+	return (Left.m_arr_element != Right.m_arr_element) || (Left.m_identity_num != Right.m_identity_num);
+}
 bool operator==(const ObjectId& Left, const ObjectId& Right) 
 {
-	return (Left.m_arr_element == Right.m_arr_element) && (Left.m_identity_num == Right.m_identity_num);
+	return !operator!=(Left,Right);
 }
+
+ObjectManager::ObjectManager() : m_lived_objects{ nullptr, }, m_tail_num(0){
+	UE_LOG(LogTemp, Log, TEXT("ObjectManager Constructor"));
+};
 
 ObjectManager::~ObjectManager()
 {
@@ -60,38 +68,81 @@ std::unique_ptr<ObjectId>  ObjectManager::CreateObject(ObjectKind Kind, UWorld* 
 		}
 		checkf(ObjectActor != nullptr, TEXT("CreateObject memeber function in ObjectActor Data is nullptr"));
 		m_lived_objects[m_tail_num]
-			= std::make_shared<ActorCharacter>(ObjectName, 10, 2.0f, ObjectActor->GetRootComponent());
+			= std::make_unique<ActorCharacter>(ObjectName, 10, 2.0f, ObjectActor->GetRootComponent());
 		ReturnId = std::make_unique<ObjectId>(m_tail_num, m_lived_objects[m_tail_num]->GetIdentityNumber());
 
-		++m_tail_num;
+		//lived_object의 메모리공간이 부족하다고 에러가 난다.
+		m_tail_num = GetBinArraySpace();
 	}
 	
 	return std::move(ReturnId);
 }
 
+void ObjectManager::DeleteObject(std::unique_ptr<ObjectId> Id)
+{
+	m_lived_objects[Id->GetElement()].reset();
+}
+
 std::unique_ptr<ObjectId> ObjectManager::AddAction(std::unique_ptr<ObjectId> Id, std::shared_ptr<IAction> Action)
 {
-	checkf(m_lived_objects[Id->GetElement()] != nullptr, TEXT("AddAction memeber function no element in m_lived_objects"));
+	checkf(Id->GetElement() < LIVED_OBJECT_SIZE, TEXT("ObjectManager::AddAction element is over"));
+	
+	//해당 Element위치가 비어있는지와 해당 Id의 identity번호가 맞는지 검사한다.
+	if (m_lived_objects[Id->GetElement()] == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("ObjectManager::AddAction m_libed_objects is Null"));
+		return nullptr;
+	}
+	else if (*Id != ObjectId(Id->GetElement(), m_lived_objects[Id->GetElement()]->GetIdentityNumber()))
+	{
+		UE_LOG(LogTemp, Log, TEXT("ObjectManager::AddAction ObjectId are m_libed_objects do not match"));
+		return nullptr;
+	}
+	else
+	{
+		m_lived_objects[Id->GetElement()]->AddAction(Action);
+	}
 
-	m_lived_objects[Id->GetElement()]->AddAction(Action);
 
 	return std::move(Id);
 }
 
+int16 ObjectManager::GetBinArraySpace()
+{
+	int16 Seat = 0;
+	for (int16 i = m_tail_num + 1; i != m_tail_num; i++)
+	{
+
+		if (i >= LIVED_OBJECT_SIZE)
+		{
+			i = 0;
+		}
+		if (m_lived_objects[i] == nullptr)
+		{
+			Seat = i;
+			break;
+		}
+
+
+	}
+	checkf(m_lived_objects[Seat] == nullptr, TEXT("Array haven't Space"));
+
+	return Seat;
+}
+
 void ObjectManager::ObjectsUpdate()
 {
-	for (auto i : m_lived_objects)
+	for (auto& i : m_lived_objects)
 	{
-		if (i.use_count() > 1) {
+		if (i != nullptr) {
 			i->Update();
 			
 		}
 	}
 }
-
-const int32 CirculatorElerment(const int32 num)
+const uint16  CirculatorElerment(const uint16  num)
 {
-	if (num >= MANAGER_SIZE)
+	if (num >= LIVED_OBJECT_SIZE)
 	{
 		return 0;
 	}

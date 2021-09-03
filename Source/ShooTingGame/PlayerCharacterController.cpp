@@ -1,13 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "ActionInstance.h"
 #include "Object.h"
 #include "PlayerCharacterController.h"
 
 // Sets default values
 APlayerCharacterController::APlayerCharacterController()
-{
+ :ApratVector(0.0f){
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	UE_LOG(LogTemp, Log, TEXT("AplayerContorller Constructor"));
@@ -30,6 +29,7 @@ void APlayerCharacterController::SetupPlayerInputComponent(UInputComponent* Play
 	
 	InputComponent->BindAxis("MoveX", this, &APlayerCharacterController::MoveX);
 	InputComponent->BindAxis("MoveY", this, &APlayerCharacterController::MoveY);
+	InputComponent->BindAction("EventA", IE_Pressed, this, &APlayerCharacterController::EventA);
 }
 
 void APlayerCharacterController::MoveX(float Direction)
@@ -71,4 +71,9 @@ void APlayerCharacterController::MoveY(float Direction)
 	default:
 		break;
 	}
+}
+void APlayerCharacterController::EventA() 
+{
+	m_object_manager->CreateObject(ObjectKind::PlayerObject, GetWorld(), FVector{ -100.0f,ApratVector,50.0f });
+	ApratVector += 100.0f;
 }

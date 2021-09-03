@@ -3,12 +3,18 @@
 
 #include "Object.h"
 
+const uint16  GetIdentity()
+{
+	static uint16  Identity = 1000;
+	return ++Identity;
+}
+
 IObject::IObject(const char* Name, const float Speed, USceneComponent* Componenet)
-	: m_name(Name), m_speed(Speed), m_componenet(Componenet), m_identity_num(FMath::RandRange(0, 1000)){
+	: m_name(Name), m_speed(Speed), m_componenet(Componenet), m_identity_num(GetIdentity()) {
 }
 
 
-const int32 IObject::GetIdentityNumber() const 
+const uint16  IObject::GetIdentityNumber() const 
 {
 	return m_identity_num;
 }

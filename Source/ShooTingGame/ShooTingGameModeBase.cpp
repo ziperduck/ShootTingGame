@@ -8,7 +8,7 @@ AShooTingGameModeBase::AShooTingGameModeBase() {
 	PrimaryActorTick.bCanEverTick = true;
 	m_object_manager = ObjectManager::GetInstance();
 	UE_LOG(LogTemp, Log, TEXT("AShooTingGameModeBase"));
-	m_object_manager->CreateObject(ObjectKind::EnemyObject,GetWorld(), FVector{ 200.0f,0.0f,50.0f});
+	m_object_manager->CreateObject(ObjectKind::EnemyObject,GetWorld(), FVector{ 200.0f,100.0f,50.0f});
 
 }
 
