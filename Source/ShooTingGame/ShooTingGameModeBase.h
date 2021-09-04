@@ -12,7 +12,6 @@
 *
 */
 
-class IObject;
 class ObjectManager;
 
 UCLASS()

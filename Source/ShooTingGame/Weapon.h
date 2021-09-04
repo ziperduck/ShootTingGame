@@ -2,14 +2,19 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-
 /**
  * 
  */
 class IWeapon
 {
 public:
-	IWeapon();
-	~IWeapon();
+	IWeapon() {};
+
+	virtual ~IWeapon() = 0 {};
+
+	virtual void Update() = 0;
+
+	virtual void AddAction() = 0;
+
+	virtual void SetLocation() = 0;
 };

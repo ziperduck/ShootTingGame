@@ -2,7 +2,3 @@
 
 
 #include "Action.h"
-
-const FVector& CalculationRatioSpeed(const FVector& Ratio) {
-	return Ratio;
-}

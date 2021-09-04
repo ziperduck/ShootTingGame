@@ -17,8 +17,8 @@ void APlayerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
 	UE_LOG(LogTemp, Log, TEXT("AplayerContorller BeginPlay"));
-	m_object_manager = ObjectManager::GetInstance();
-	m_player_id = std::move(m_object_manager->CreateObject(ObjectKind::PlayerObject, GetWorld(), FVector{ 10.0f,0.0f,50.0f }));
+	m_object = std::move(
+		ObjectManager::GetInstance()->CreateObject(ObjectKind::PlayerObject, GetWorld(), FVector{ 10.0f,0.0f,50.0f }));
 }
 
 
@@ -42,10 +42,10 @@ void APlayerCharacterController::MoveX(float Direction)
 	switch (EastWest)
 	{
 	case East:
-		m_player_id = std::move(m_object_manager->AddAction(std::move(m_player_id), ActionInstance::GetEastMove()));
+		m_object->AddAction(ActionInstance::GetEastMove());
 		break;
 	case West:
-		m_player_id = std::move(m_object_manager->AddAction(std::move(m_player_id), ActionInstance::GetWestMove()));
+		m_object->AddAction( ActionInstance::GetWestMove());
 		break;
 	default:
 		break;
@@ -63,10 +63,10 @@ void APlayerCharacterController::MoveY(float Direction)
 	switch (SouthNorth)
 	{
 	case South:
-		m_player_id = std::move(m_object_manager->AddAction(std::move(m_player_id), ActionInstance::GetSouthMove()));
+		m_object->AddAction(ActionInstance::GetSouthMove());
 		break;
 	case North:
-		m_player_id = std::move(m_object_manager->AddAction(std::move(m_player_id), ActionInstance::GetNorthMove()));
+		m_object->AddAction(ActionInstance::GetNorthMove());
 		break;
 	default:
 		break;
@@ -74,6 +74,7 @@ void APlayerCharacterController::MoveY(float Direction)
 }
 void APlayerCharacterController::EventA() 
 {
-	m_object_manager->CreateObject(ObjectKind::PlayerObject, GetWorld(), FVector{ -100.0f,ApratVector,50.0f });
+	ObjectManager::GetInstance()->CreateObject(
+		ObjectKind::PlayerObject, GetWorld(), FVector{ -100.0f,ApratVector,50.0f });
 	ApratVector += 100.0f;
 }

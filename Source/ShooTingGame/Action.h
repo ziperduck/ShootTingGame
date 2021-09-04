@@ -3,13 +3,10 @@
 #pragma once
 
 #include <memory>
-#include "CoreMinimal.h"
 
 /**
  *
  */
-
-const FVector& CalculationRatioSpeed(const FVector& Ratio);
 
 class IObject;
 

@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ObjectManager.h"
 #include "GameFramework/Pawn.h"
+#include "ObjectManager.h"
 #include "PlayerCharacterController.generated.h"
 
 UCLASS()
@@ -35,9 +35,7 @@ private:
 
 private:
 
-	ObjectManager* m_object_manager;
-
-	std::unique_ptr<ObjectId> m_player_id;
+	std::unique_ptr<WrapingObject> m_object;
 
 	float ApratVector;
 };

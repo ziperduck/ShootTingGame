@@ -3,6 +3,10 @@
 #include "Object.h"
 #include "Movement.h"
 
+const FVector& CalculationRatioSpeed(const FVector& Ratio) {
+	return Ratio;
+}
+
 EastMove::EastMove() {
 
 }

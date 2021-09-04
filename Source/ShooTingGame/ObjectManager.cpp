@@ -8,18 +8,32 @@
 #include <Engine.h>
 #include "ObjectManager.h"
 
-const uint16 ObjectId::GetElement() const {
-	return m_arr_element;
+WrapingObject::WrapingObject(std::weak_ptr<IObject> Object, const uint16& Address)
+	: m_wrap_object(Object), m_address(Address)
+{
+
 }
 
-bool operator!=(const ObjectId& Left, const ObjectId& Right)
+WrapingObject::~WrapingObject()
 {
-	return (Left.m_arr_element != Right.m_arr_element) || (Left.m_identity_num != Right.m_identity_num);
+	m_wrap_object.reset();
 }
-bool operator==(const ObjectId& Left, const ObjectId& Right) 
+
+void WrapingObject::AddAction(std::shared_ptr<IAction> Action)
 {
-	return !operator!=(Left,Right);
+	if (m_wrap_object.use_count() > 0)
+	{
+		m_wrap_object.lock()->AddAction(Action);
+		return;
+	}
+	UE_LOG(LogTemp, Log, TEXT("Object(%s) is NULL"));
 }
+
+const uint16 WrapingObject::GetAddress() const
+{
+	return m_address;
+}
+
 
 ObjectManager::ObjectManager() : m_lived_objects{ nullptr, }, m_tail_num(0){
 	UE_LOG(LogTemp, Log, TEXT("ObjectManager Constructor"));
@@ -35,10 +49,10 @@ ObjectManager* ObjectManager::GetInstance()
 	return Manager;
 }
 
-std::unique_ptr<ObjectId>  ObjectManager::CreateObject(ObjectKind Kind, UWorld* SpawnWorld,FVector SpawnPoint)
+std::unique_ptr<WrapingObject>  ObjectManager::CreateObject(ObjectKind Kind, UWorld* SpawnWorld,FVector SpawnPoint)
 {
 
-	std::unique_ptr<ObjectId> ReturnId = nullptr;
+	std::unique_ptr<WrapingObject> ReturnId = nullptr;
 	UE_LOG(LogTemp, Log, TEXT("m_tail_num %d"), m_tail_num);
 	//spawn world가 비어있는지 확인
 	if (SpawnWorld == nullptr)
@@ -49,27 +63,26 @@ std::unique_ptr<ObjectId>  ObjectManager::CreateObject(ObjectKind Kind, UWorld* 
 	{
 		//spawn world가 채워져 있을경우 ObjectKind값을 통해 world에 Actor들을 배치한다
 
-		AActor* ObjectActor = nullptr;
-		char* ObjectName;
-		m_lived_objects[m_tail_num] = nullptr;
+		AActor* SpawnObject = nullptr;
+		char* ObjectName = "";
 		switch (Kind)
 		{
 		case ObjectKind::PlayerObject:
-			ObjectActor = SpawnWorld->SpawnActor<APlayerCharacter>(SpawnPoint, FRotator{ 0.0f,0.0f,0.0f });
+			SpawnObject = SpawnWorld->SpawnActor<APlayerCharacter>(SpawnPoint, FRotator{ 0.0f,0.0f,0.0f });
 			ObjectName = "Player";
 			break;
 		case ObjectKind::EnemyObject:
-			ObjectActor = SpawnWorld->SpawnActor<AEnemyCharacter>(SpawnPoint, FRotator{ 0.0f,0.0f,0.0f });
+			SpawnObject = SpawnWorld->SpawnActor<AEnemyCharacter>(SpawnPoint, FRotator{ 0.0f,0.0f,0.0f });
 			ObjectName = "Enemy";
 			break;
 		default:
 			checkNoEntry();
 			break;
 		}
-		checkf(ObjectActor != nullptr, TEXT("CreateObject memeber function in ObjectActor Data is nullptr"));
+		checkf(SpawnObject != nullptr, TEXT("CreateObject memeber function in SpawnObject Data is nullptr"));
 		m_lived_objects[m_tail_num]
-			= std::make_unique<ActorCharacter>(ObjectName, 10, 2.0f, ObjectActor->GetRootComponent());
-		ReturnId = std::make_unique<ObjectId>(m_tail_num, m_lived_objects[m_tail_num]->GetIdentityNumber());
+			= std::make_unique<ActorCharacter>(ObjectName, 10, 2.0f, SpawnObject->GetRootComponent());
+		ReturnId = std::make_unique<WrapingObject>(m_lived_objects[m_tail_num], m_tail_num);
 
 		//lived_object의 메모리공간이 부족하다고 에러가 난다.
 		m_tail_num = GetBinArraySpace();
@@ -78,33 +91,11 @@ std::unique_ptr<ObjectId>  ObjectManager::CreateObject(ObjectKind Kind, UWorld* 
 	return std::move(ReturnId);
 }
 
-void ObjectManager::DeleteObject(std::unique_ptr<ObjectId> Id)
+void ObjectManager::DeleteObject(std::unique_ptr<WrapingObject> wraping)
 {
-	m_lived_objects[Id->GetElement()].reset();
-}
-
-std::unique_ptr<ObjectId> ObjectManager::AddAction(std::unique_ptr<ObjectId> Id, std::shared_ptr<IAction> Action)
-{
-	checkf(Id->GetElement() < LIVED_OBJECT_SIZE, TEXT("ObjectManager::AddAction element is over"));
-	
-	//해당 Element위치가 비어있는지와 해당 Id의 identity번호가 맞는지 검사한다.
-	if (m_lived_objects[Id->GetElement()] == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("ObjectManager::AddAction m_libed_objects is Null"));
-		return nullptr;
-	}
-	else if (*Id != ObjectId(Id->GetElement(), m_lived_objects[Id->GetElement()]->GetIdentityNumber()))
-	{
-		UE_LOG(LogTemp, Log, TEXT("ObjectManager::AddAction ObjectId are m_libed_objects do not match"));
-		return nullptr;
-	}
-	else
-	{
-		m_lived_objects[Id->GetElement()]->AddAction(Action);
-	}
-
-
-	return std::move(Id);
+	const int16 Address = wraping->GetAddress();
+	m_lived_objects[Address].reset();
+	m_lived_objects[Address] = nullptr;
 }
 
 int16 ObjectManager::GetBinArraySpace()
@@ -139,12 +130,4 @@ void ObjectManager::ObjectsUpdate()
 			
 		}
 	}
-}
-const uint16  CirculatorElerment(const uint16  num)
-{
-	if (num >= LIVED_OBJECT_SIZE)
-	{
-		return 0;
-	}
-	return num + 1;
 }

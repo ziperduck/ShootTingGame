@@ -3,10 +3,3 @@
 
 #include "Weapon.h"
 
-IWeapon::IWeapon()
-{
-}
-
-IWeapon::~IWeapon()
-{
-}
