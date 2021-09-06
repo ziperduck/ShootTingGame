@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Action.h"
-#include "CoreMinimal.h"
 
 /**
  * 동서남북으로 움직이는 값을 전달하는 (XXX)Move 물체의 움직임을 제어한다.
@@ -14,8 +13,8 @@ class IObject;
 class EastMove : public IAction
 {
 public:
-	EastMove();
-	virtual ~EastMove() override;
+	EastMove(){}
+	virtual ~EastMove() override{}
 public:
 
 	virtual void execute(IObject*) override;
@@ -23,8 +22,8 @@ public:
 class WestMove : public IAction
 {
 public:
-	WestMove();
-	virtual~WestMove()override;
+	WestMove(){}
+	virtual~WestMove()override{}
 
 public:
 
@@ -34,8 +33,8 @@ public:
 class SouthMove : public IAction
 {
 public:
-	SouthMove();
-	virtual ~SouthMove() override;
+	SouthMove(){}
+	virtual ~SouthMove() override{}
 public:
 
 	virtual void execute(IObject*) override;
@@ -44,11 +43,22 @@ public:
 class NorthMove : public IAction
 {
 public:
-	NorthMove();
-	virtual ~NorthMove() override;
+	NorthMove(){}
+	virtual ~NorthMove() override{}
 public:
 
 	virtual void execute(IObject*) override;
 
 };
 
+
+class Shooting : public IAction
+{
+public:
+	Shooting(){}
+	virtual ~Shooting() override{}
+public:
+
+	virtual void execute(IObject*) override;
+
+};

@@ -31,4 +31,8 @@ public:
 		static std::shared_ptr<IAction> South = std::make_shared<SouthMove>();
 		return South;
 	}
+	static std::shared_ptr<IAction> GetShoot() {
+		static std::shared_ptr<IAction> Shoot = std::make_shared<Shooting>();
+		return Shoot;
+	}
 };

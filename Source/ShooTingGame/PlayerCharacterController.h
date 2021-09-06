@@ -35,7 +35,7 @@ private:
 
 private:
 
-	std::unique_ptr<WrapingObject> m_object;
+	std::unique_ptr<WrappingObject> m_object;
 
 	float ApratVector;
 };

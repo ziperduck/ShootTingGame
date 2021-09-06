@@ -74,7 +74,5 @@ void APlayerCharacterController::MoveY(float Direction)
 }
 void APlayerCharacterController::EventA() 
 {
-	ObjectManager::GetInstance()->CreateObject(
-		ObjectKind::PlayerObject, GetWorld(), FVector{ -100.0f,ApratVector,50.0f });
-	ApratVector += 100.0f;
+	m_object->AddAction(ActionInstance::GetShoot());
 }

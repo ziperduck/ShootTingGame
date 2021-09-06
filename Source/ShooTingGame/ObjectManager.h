@@ -16,21 +16,23 @@ class IAction;
 enum class ObjectKind;
 
 //IObject를 랩핑하여 AddAction만 실행할수있게 만든 클래스
- class WrapingObject
+ class WrappingObject
  {
  public:
-	 WrapingObject(std::weak_ptr<IObject>,const uint16&);
-	 ~WrapingObject();
+	 WrappingObject(std::weak_ptr<IObject>,const uint16&);
+	 ~WrappingObject();
 
 	 void AddAction(std::shared_ptr<IAction>);
+
+	 void AddAnimation(std::queue<std::queue<std::shared_ptr<IAction>>>);
 
 	 const uint16 GetAddress() const;
 
  private:
 
-	 WrapingObject() =delete;
-	 WrapingObject(const WrapingObject&) = delete;
-	 WrapingObject& operator=(const WrapingObject&) = delete;
+	 WrappingObject() =delete;
+	 WrappingObject(const WrappingObject&) = delete;
+	 WrappingObject& operator=(const WrappingObject&) = delete;
 
  private:
 
@@ -53,13 +55,13 @@ public:
 
 	//오브젝트 생성을 요청한다. 오브젝트의 종류와 월드 정보 그리고 위치를 데이터로 받는다. 
 	//그리고 유일하게 Object아이디를 생성하여 리턴한다.
-	std::unique_ptr<WrapingObject> CreateObject(ObjectKind, UWorld*,FVector);
+	std::unique_ptr<WrappingObject> CreateObject(const ObjectKind, UWorld*,const FVector);
 
 	//맵에에있는 모든 오브젝트 업데이트
 	void ObjectsUpdate();
 
 	//Id에 해당하는 Object를 제거한다.
-	void DeleteObject(std::unique_ptr<WrapingObject>);
+	void DeleteObject(std::unique_ptr<WrappingObject>);
 private:
 
 	ObjectManager();

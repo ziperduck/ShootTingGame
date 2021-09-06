@@ -4,24 +4,26 @@
 #include "Character.h"
 #include "EnemyCharacter.h"
 #include "PlayerCharacter.h"
+#include "Rifle.h"
+#include "Weapon.h"
 #include <Engine/World.h>
 #include <Engine.h>
 #include "ObjectManager.h"
 
-WrapingObject::WrapingObject(std::weak_ptr<IObject> Object, const uint16& Address)
+WrappingObject::WrappingObject(std::weak_ptr<IObject> Object, const uint16& Address)
 	: m_wrap_object(Object), m_address(Address)
 {
 
 }
 
-WrapingObject::~WrapingObject()
+WrappingObject::~WrappingObject()
 {
 	m_wrap_object.reset();
 }
 
-void WrapingObject::AddAction(std::shared_ptr<IAction> Action)
+void WrappingObject::AddAction(std::shared_ptr<IAction> Action)
 {
-	if (m_wrap_object.use_count() > 0)
+	if (m_wrap_object.use_count() > 0 && Action.use_count() > 0)
 	{
 		m_wrap_object.lock()->AddAction(Action);
 		return;
@@ -29,7 +31,12 @@ void WrapingObject::AddAction(std::shared_ptr<IAction> Action)
 	UE_LOG(LogTemp, Log, TEXT("Object(%s) is NULL"));
 }
 
-const uint16 WrapingObject::GetAddress() const
+void WrappingObject::AddAnimation(std::queue<std::queue<std::shared_ptr<IAction>>> Animation)
+{
+	m_wrap_object.lock()->AddAnimation(Animation);
+}
+
+const uint16 WrappingObject::GetAddress() const
 {
 	return m_address;
 }
@@ -49,10 +56,10 @@ ObjectManager* ObjectManager::GetInstance()
 	return Manager;
 }
 
-std::unique_ptr<WrapingObject>  ObjectManager::CreateObject(ObjectKind Kind, UWorld* SpawnWorld,FVector SpawnPoint)
+std::unique_ptr<WrappingObject> ObjectManager::CreateObject(const ObjectKind Kind, UWorld* SpawnWorld, const FVector SpawnPoint)
 {
 
-	std::unique_ptr<WrapingObject> ReturnId = nullptr;
+	std::unique_ptr<WrappingObject> ReturnId = nullptr;
 	UE_LOG(LogTemp, Log, TEXT("m_tail_num %d"), m_tail_num);
 	//spawn world가 비어있는지 확인
 	if (SpawnWorld == nullptr)
@@ -64,25 +71,38 @@ std::unique_ptr<WrapingObject>  ObjectManager::CreateObject(ObjectKind Kind, UWo
 		//spawn world가 채워져 있을경우 ObjectKind값을 통해 world에 Actor들을 배치한다
 
 		AActor* SpawnObject = nullptr;
-		char* ObjectName = "";
 		switch (Kind)
 		{
 		case ObjectKind::PlayerObject:
+		{
+
 			SpawnObject = SpawnWorld->SpawnActor<APlayerCharacter>(SpawnPoint, FRotator{ 0.0f,0.0f,0.0f });
-			ObjectName = "Player";
+			IObject* RifleObject = new RifleGun(ObjectKind::RifleObject, 1, 4.0f, 2, nullptr);
+			m_lived_objects[m_tail_num]
+				= std::make_unique<ActorCharacter>(Kind, 10, 2.0f, SpawnObject->GetRootComponent(), RifleObject);
 			break;
+		}
 		case ObjectKind::EnemyObject:
+		{
 			SpawnObject = SpawnWorld->SpawnActor<AEnemyCharacter>(SpawnPoint, FRotator{ 0.0f,0.0f,0.0f });
-			ObjectName = "Enemy";
+			IObject* RifleObject = new RifleGun(ObjectKind::RifleObject, 1, 4.0f, 2, nullptr);
+			m_lived_objects[m_tail_num]
+				= std::make_unique<ActorCharacter>(Kind, 10, 2.0f, SpawnObject->GetRootComponent(), RifleObject);
 			break;
+		}
+		case ObjectKind::RifleObject:
+		{
+			SpawnObject = SpawnWorld->SpawnActor<ARifle>(SpawnPoint, FRotator{ 0.0f,0.0f,0.0f });
+		m_lived_objects[m_tail_num]
+			= std::make_unique<RifleGun>(Kind, 10, 2.0f, 2, SpawnObject->GetRootComponent());
+		break;
+		}
 		default:
 			checkNoEntry();
 			break;
 		}
 		checkf(SpawnObject != nullptr, TEXT("CreateObject memeber function in SpawnObject Data is nullptr"));
-		m_lived_objects[m_tail_num]
-			= std::make_unique<ActorCharacter>(ObjectName, 10, 2.0f, SpawnObject->GetRootComponent());
-		ReturnId = std::make_unique<WrapingObject>(m_lived_objects[m_tail_num], m_tail_num);
+		ReturnId = std::make_unique<WrappingObject>(m_lived_objects[m_tail_num], m_tail_num);
 
 		//lived_object의 메모리공간이 부족하다고 에러가 난다.
 		m_tail_num = GetBinArraySpace();
@@ -91,7 +111,7 @@ std::unique_ptr<WrapingObject>  ObjectManager::CreateObject(ObjectKind Kind, UWo
 	return std::move(ReturnId);
 }
 
-void ObjectManager::DeleteObject(std::unique_ptr<WrapingObject> wraping)
+void ObjectManager::DeleteObject(std::unique_ptr<WrappingObject> wraping)
 {
 	const int16 Address = wraping->GetAddress();
 	m_lived_objects[Address].reset();

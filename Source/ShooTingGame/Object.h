@@ -12,6 +12,7 @@ enum class ObjectKind
 {
 	PlayerObject
 	,EnemyObject
+	,RifleObject
 };
 
 class IAction;
@@ -20,38 +21,36 @@ class IAction;
 class IObject
 {
 public:
-	IObject() = delete;
-	explicit IObject(const char* , const float , USceneComponent*);
-	virtual ~IObject() = 0
-	{
-		m_componenet->GetOwner()->Destroy();
-	}
+	IObject() {}
+	virtual ~IObject() = 0 {}
 
 public:
 
+	//Getter
+	virtual const uint16  GetIdentityNumber()  const = 0;
+
+	virtual const ObjectKind GetKind() const = 0;
+
+	virtual const float GetSpeed() const = 0;
+
+	virtual const FVector GetLocation() const = 0;
+
+	virtual UWorld* GetWorld() const = 0;
+
+	//망할 언리얼은 RTTI를 지원안하네? 꼴받네
+	virtual std::shared_ptr<IObject> GetWeapon() = 0;
+
+
+	//Setter
 	virtual void SetLocation(const FVector&) = 0;
 
-	const FVector GetLocation();
 
-	const char* GetName() const ;
+	//Event
+	virtual void AddAction(std::shared_ptr<IAction>) = 0;
 
-	float GetSpeed() const;
-
-	const uint16  GetIdentityNumber() const;
-
-	virtual bool Is_Collision() = 0;
+	virtual void AddAnimation(std::queue<std::queue<std::shared_ptr<IAction>>>) = 0;
 
 	virtual void Update() = 0;
-
-	virtual void AddAction(std::shared_ptr < IAction>) = 0;
-
-protected :
-
-	const uint16  m_identity_num;
-
-	const char* m_name;
-
-	const float m_speed;
-
-	USceneComponent* m_componenet;
 };
+
+const uint16  GetIdentity();

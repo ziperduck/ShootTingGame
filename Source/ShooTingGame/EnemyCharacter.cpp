@@ -12,7 +12,6 @@ AEnemyCharacter::AEnemyCharacter()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CharacterMeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
 	
 	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CharacterMesh"));
-	CharacterMesh->SetupAttachment(RootComponent);
 	CharacterMesh->SetStaticMesh(CharacterMeshAsset.Object);
 	RootComponent = CharacterMesh;
 
