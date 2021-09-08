@@ -7,7 +7,7 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerCharacter.generated.h"
 
-class IObject;
+class IFuselage;
 
 UCLASS()
 class SHOOTINGGAME_API APlayerCharacter : public APawn

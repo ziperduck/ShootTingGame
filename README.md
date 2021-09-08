@@ -13,7 +13,7 @@ IAction들의 움직임을 만들어야한다.
 완료한 한일
 
 Object라는 이동가능한 물체들의 정보를 가지고있는 추상 클래스를 정의했다
-Object를 상속받은 ActorCharacter를 파생 클래스를 정의했다.
+Object를 상속받은 EnemyActor를 파생 클래스를 정의했다.
 
 IAction라는 Object의 행동들을 제어하는 추상 클래스를 정의했다.
 Object를 상속받은 Object의 움직인에 제어하는 Move_ 파생 클래스를 정의했다.

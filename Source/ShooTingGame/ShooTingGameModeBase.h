@@ -12,7 +12,7 @@
 *
 */
 
-class ObjectManager;
+class FuselageManager;
 
 UCLASS()
 class SHOOTINGGAME_API AShooTingGameModeBase : public AGameModeBase
@@ -29,6 +29,6 @@ public:
 
 private:
 
-	ObjectManager* m_object_manager;
+	FuselageManager* m_object_manager;
 
 };

@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ActionInstance.h"
-#include "Object.h"
+#include "Fuselage.h"
+#include "EnemyDragon.h"
 #include "PlayerCharacterController.h"
 
 // Sets default values
@@ -17,8 +18,7 @@ void APlayerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
 	UE_LOG(LogTemp, Log, TEXT("AplayerContorller BeginPlay"));
-	m_object = std::move(
-		ObjectManager::GetInstance()->CreateObject(ObjectKind::PlayerObject, GetWorld(), FVector{ 10.0f,0.0f,50.0f }));
+	m_object = std::move(FuselageManager::GetInstance()->AddFuselage(FuselageKind::PlayerFuselage,FVector(0.0f,0.0f,50.0f)));
 }
 
 

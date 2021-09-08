@@ -1,12 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Rifle.h"
-
+#include "EnemyDragon.h"
 // Sets default values
-ARifle::ARifle()
+AEnemyDragon::AEnemyDragon()
 {
-
 	PrimaryActorTick.bCanEverTick = false;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
@@ -15,57 +13,62 @@ ARifle::ARifle()
 	{
 
 		CharacterMesh->SetStaticMesh(MeshAsset.Object);
-		CharacterMesh->SetAllMassScale(0.2f);
+		CharacterMesh->SetAllMassScale(0.5f);
 		RootComponent = CharacterMesh;
 	}
+
 	m_kind = FuselageKind::RifleFuselage;
 	m_speed = 4.0f;
-	m_damage = 3;
 	m_max_HP = 1;
 	m_current_HP = m_max_HP;
 
 }
 
-const FuselageKind ARifle::GetKind() const
+const FuselageKind AEnemyDragon::GetKind() const
 {
 	return m_kind;
 }
 
-const float ARifle::GetSpeed() const
+const float AEnemyDragon::GetSpeed() const
 {
 	return m_speed;
 }
 
-const FVector ARifle::GetLocation() const
+const FVector AEnemyDragon::GetLocation() const
 {
 	return K2_GetActorLocation();
 }
 
-const FRotator ARifle::GetRotation() const
+const FRotator AEnemyDragon::GetRotation() const
 {
 	return K2_GetActorRotation();
-}
+};
 
-UWorld* ARifle::GetFuselageWorld() const
+UWorld* AEnemyDragon::GetFuselageWorld() const
 {
 	return GetFuselageWorld();
 }
 
- UClass* ARifle::GetComponentClass() const
+const TSharedPtr<IFuselage> AEnemyDragon::GetWeapon() const
+{
+	return m_weapon;
+}
+
+ UClass* AEnemyDragon::GetComponentClass() const
 {
 	return GetClass();
 }
 
-
-void ARifle::SetLocation(const FVector& MoveLocation) {
+void AEnemyDragon::SetLocation(const FVector& MoveLocation) {
 	/*
 	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
 	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
 	*/
 
 	FHitResult Hit(1.f);
-	checkf(this != nullptr, TEXT("ARifle is nullptr"));
 
+	checkf(this != nullptr, TEXT("ARifle is nullptr"));
+	
 	RootComponent->MoveComponent(MoveLocation, GetRotation(), true, &Hit);
 	if (Hit.IsValidBlockingHit())
 	{
@@ -74,17 +77,17 @@ void ARifle::SetLocation(const FVector& MoveLocation) {
 }
 
 
-void ARifle::AddAction(std::shared_ptr<IAction> Action)
+void AEnemyDragon::AddAction(std::shared_ptr<IAction> Action)
 {
 	m_actions.push(Action);
 }
 
-void ARifle::AddNextAction(std::queue<std::shared_ptr<IAction>> Animation)
+void AEnemyDragon::AddNextAction(std::queue<std::shared_ptr<IAction>> Animation)
 {
 	m_animation = Animation;
 }
 
-void ARifle::Update() {
+void AEnemyDragon::Update() {
 
 	UE_LOG(LogTemp, Log, TEXT("m_actions size %d"), m_actions.size());
 	while (!m_actions.empty())
@@ -92,8 +95,10 @@ void ARifle::Update() {
 		m_actions.front()->execute(this);
 		m_actions.pop();
 	}
-	if (!m_actions.empty())
+	if (!m_animation.empty())
 	{
 		m_actions = m_animation;
 	}
 }
+
+
