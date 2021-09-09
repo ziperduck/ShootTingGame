@@ -3,9 +3,10 @@
 
 #include "EnemyDragon.h"
 // Sets default values
-AEnemyDragon::AEnemyDragon()
+UEnemyDragon::UEnemyDragon()
 {
-	PrimaryActorTick.bCanEverTick = false;
+
+	PrimaryComponentTick.bCanEverTick = false;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
 	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
@@ -14,7 +15,7 @@ AEnemyDragon::AEnemyDragon()
 
 		CharacterMesh->SetStaticMesh(MeshAsset.Object);
 		CharacterMesh->SetAllMassScale(0.5f);
-		RootComponent = CharacterMesh;
+		CharacterMesh->SetupAttachment(this);
 	}
 
 	m_kind = FuselageKind::RifleFuselage;
@@ -24,42 +25,42 @@ AEnemyDragon::AEnemyDragon()
 
 }
 
-const FuselageKind AEnemyDragon::GetKind() const
+const FuselageKind UEnemyDragon::GetKind() const
 {
 	return m_kind;
 }
 
-const float AEnemyDragon::GetSpeed() const
+const float UEnemyDragon::GetSpeed() const
 {
 	return m_speed;
 }
 
-const FVector AEnemyDragon::GetLocation() const
+const FVector UEnemyDragon::GetLocation() const
 {
-	return K2_GetActorLocation();
+	return GetComponentLocation();
 }
 
-const FRotator AEnemyDragon::GetRotation() const
+const FRotator UEnemyDragon::GetRotation() const
 {
-	return K2_GetActorRotation();
+	return GetComponentRotation();
 };
 
-UWorld* AEnemyDragon::GetFuselageWorld() const
+UWorld* UEnemyDragon::GetFuselageWorld() const
 {
-	return GetFuselageWorld();
+	return GetWorld();
 }
 
-const TSharedPtr<IFuselage> AEnemyDragon::GetWeapon() const
+TSharedPtr<IFuselage> UEnemyDragon::GetWeapon() const
 {
 	return m_weapon;
 }
 
- UClass* AEnemyDragon::GetComponentClass() const
+ UClass* UEnemyDragon::GetComponentClass() const
 {
 	return GetClass();
 }
 
-void AEnemyDragon::SetLocation(const FVector& MoveLocation) {
+void UEnemyDragon::SetLocation(const FVector& MoveLocation) {
 	/*
 	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
 	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
@@ -69,7 +70,7 @@ void AEnemyDragon::SetLocation(const FVector& MoveLocation) {
 
 	checkf(this != nullptr, TEXT("ARifle is nullptr"));
 	
-	RootComponent->MoveComponent(MoveLocation, GetRotation(), true, &Hit);
+	MoveComponent(MoveLocation, GetRotation(), true, &Hit);
 	if (Hit.IsValidBlockingHit())
 	{
 		UE_LOG(LogTemp, Log, TEXT("is Hit Actor"));
@@ -77,22 +78,22 @@ void AEnemyDragon::SetLocation(const FVector& MoveLocation) {
 }
 
 
-void AEnemyDragon::AddAction(std::shared_ptr<IAction> Action)
+void UEnemyDragon::AddAction(std::shared_ptr<IAction> Action)
 {
 	m_actions.push(Action);
 }
 
-void AEnemyDragon::AddNextAction(std::queue<std::shared_ptr<IAction>> Animation)
+void UEnemyDragon::AddNextAction(std::queue<std::shared_ptr<IAction>> Animation)
 {
 	m_animation = Animation;
 }
 
-void AEnemyDragon::Update() {
+void UEnemyDragon::Update() {
 
 	UE_LOG(LogTemp, Log, TEXT("m_actions size %d"), m_actions.size());
 	while (!m_actions.empty())
 	{
-		m_actions.front()->execute(this);
+		m_actions.front()->execute(MakeShared<IFuselage>(Cast<IFuselage>(this)));
 		m_actions.pop();
 	}
 	if (!m_animation.empty())

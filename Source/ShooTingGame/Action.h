@@ -19,6 +19,6 @@ public:
 
 public:
 
-	virtual void execute(IFuselage*) = 0;
+	virtual void execute(TSharedPtr<IFuselage>) = 0;
 
 };

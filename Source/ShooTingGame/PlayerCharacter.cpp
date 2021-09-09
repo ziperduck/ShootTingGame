@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "PlayerCharacter.h"
 #include "ActionInstance.h"
 #include <Engine/Classes/Camera/CameraComponent.h>
-#include "PlayerCharacter.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()

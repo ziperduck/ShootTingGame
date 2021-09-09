@@ -1,9 +1,9 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+#include "ShooTingGameModeBase.h"
 #include "Fuselage.h"
 #include "FuselageManager.h"
 #include "EnemyDragon.h"
-#include "ShooTingGameModeBase.h"
 
 AShooTingGameModeBase::AShooTingGameModeBase() {
 	PrimaryActorTick.bCanEverTick = true;

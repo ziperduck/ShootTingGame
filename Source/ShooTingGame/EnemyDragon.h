@@ -5,18 +5,18 @@
 #include "CoreMinimal.h"
 #include "FuselageFoundation.h"
 #include "Fuselage.h"
-#include "GameFramework/Actor.h"
+#include "Components/SceneComponent.h"
 #include "EnemyDragon.generated.h"
 
 
 UCLASS()
-class SHOOTINGGAME_API AEnemyDragon : public AActor, public IFuselage
+class SHOOTINGGAME_API UEnemyDragon : public USceneComponent, public IFuselage
 {
 	GENERATED_BODY()
 
 
 public:
-	AEnemyDragon();
+	UEnemyDragon();
 
 	//Getter
 	virtual const FuselageKind GetKind() const override;
@@ -29,7 +29,7 @@ public:
 
 	virtual UWorld* GetFuselageWorld() const override;
 
-	const TSharedPtr<IFuselage> GetWeapon() const;
+	TSharedPtr<IFuselage> GetWeapon() const;
 
 	virtual UClass* GetComponentClass() const override;
 

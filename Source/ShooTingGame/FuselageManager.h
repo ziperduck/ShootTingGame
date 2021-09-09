@@ -19,7 +19,7 @@ enum class FuselageKind;
  class WrappingFuselage
  {
  public:
-	 WrappingFuselage(IFuselage*,const uint16&);
+	 WrappingFuselage(TSharedPtr<IFuselage>,const uint16&);
 	 ~WrappingFuselage();
 
 	 void AddAction(std::shared_ptr<IAction>);
@@ -34,7 +34,7 @@ enum class FuselageKind;
 
  private:
 
-	 IFuselage* m_wrap_fuselage;
+	 TSharedPtr<IFuselage> m_wrap_fuselage;
 
 	 const uint16 m_address;
  };
@@ -73,10 +73,11 @@ private:
 	//현재 비어있는 원소위치를 반환한다. 한칸이 더 비어있다.
 	int16 GetBinArraySpace();
 
+	void CreateFuselage(TSharedPtr<IFuselage>,const FVector);
 private:
 
-	IFuselage* m_lived_fuselage[LIVED_OBJECT_SIZE];
-
+	TSharedPtr<IFuselage> m_lived_fuselage[LIVED_OBJECT_SIZE];
+	
 	//배열의 마지막을 원소위치
 	uint16  m_tail_num;
 

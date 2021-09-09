@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "PlayerCharacterController.h"
 #include "ActionInstance.h"
 #include "Fuselage.h"
 #include "EnemyDragon.h"
-#include "PlayerCharacterController.h"
 
 // Sets default values
 APlayerCharacterController::APlayerCharacterController()

@@ -2,29 +2,28 @@
 
 
 
+#include "FuselageManager.h"
 #include "PlayerCharacter.h"
 #include "Rifle.h"
 #include "EnemyDragon.h"
 #include <Engine/World.h>
 #include <Engine.h>
-#include "FuselageManager.h"
 
-WrappingFuselage::WrappingFuselage(IFuselage* Object, const uint16& Address)
-	: m_wrap_fuselage(Object), m_address(Address)
+WrappingFuselage::WrappingFuselage(TSharedPtr<IFuselage> Fuselage, const uint16& Address)
+	: m_wrap_fuselage(Fuselage), m_address(Address)
 {
 
 }
 
 WrappingFuselage::~WrappingFuselage()
 {
-	m_wrap_fuselage.Reset();
 }
 
 void WrappingFuselage::AddAction(std::shared_ptr<IAction> Action)
 {
-	if (m_wrap_fuselage.IsValid())
+	if (m_wrap_fuselage != nullptr)
 	{
-		m_wrap_fuselage.Pin()->AddAction(Action);
+		m_wrap_fuselage->AddAction(Action);
 		return;
 	}
 	UE_LOG(LogTemp, Log, TEXT("Object(%s) is NULL"));
@@ -54,27 +53,30 @@ std::unique_ptr<WrappingFuselage> FuselageManager::AddFuselage(const FuselageKin
 {
 	UE_LOG(LogTemp, Log, TEXT("m_tail_num %d"), m_tail_num);
 	
+	/*
+	* new Object를 해서 makeshared를 해보자
+	*/
 	switch (Kind)
 	{
 	case FuselageKind::PlayerFuselage:
 
-		m_lived_fuselage[m_tail_num] = AEnemyDragon;
+		m_lived_fuselage[m_tail_num] = MakeShared<IFuselage>(Cast<IFuselage>(NewObject<UEnemyDragon>()));
 		break;
 	case FuselageKind::EnemyFuselage:
 
-		m_lived_fuselage[m_tail_num] = MakeShared<AEnemyDragon>();
+		m_lived_fuselage[m_tail_num] = MakeShared<IFuselage>(Cast<IFuselage>(NewObject<UEnemyDragon>()));
 
 		break;
 	case FuselageKind::RifleFuselage:
 
-		m_lived_fuselage[m_tail_num] = MakeShared<ARifle>();
+		m_lived_fuselage[m_tail_num] = MakeShared<IFuselage>(Cast<IFuselage>(NewObject<URifle>()));
 		break;
 	default:
 		checkNoEntry();
 		break;
 	}
 
-	checkf(m_lived_fuselage[m_tail_num] != nullptr, TEXT("AddFuselage is nullptr"));
+	checkf(m_lived_fuselage[m_tail_num].Get() != nullptr, TEXT("AddFuselage is nullptr"));
 
 	CreateFuselage(m_lived_fuselage[m_tail_num], SpawnPoint);
 
@@ -102,6 +104,15 @@ std::unique_ptr<WrappingFuselage> FuselageManager::AddFuselage(TSharedPtr<IFusel
 	m_tail_num = GetBinArraySpace();
 
 	return std::move(ReturnId);
+}
+
+void FuselageManager::CreateFuselage(TSharedPtr<IFuselage> Fuselage,const FVector SpawnPoint)
+{
+	checkf(Fuselage != nullptr, TEXT("Fuselage  is nullptr"));
+	AActor* CehckActor = Fuselage->GetFuselageWorld()
+		->SpawnActor<AActor>(Fuselage->GetComponentClass(), SpawnPoint, Fuselage->GetRotation());
+
+	checkf(CehckActor != nullptr, TEXT("CehckActor  is nullptr"));
 }
 
 void FuselageManager::DeleteObject(std::unique_ptr<WrappingFuselage> wraping)
