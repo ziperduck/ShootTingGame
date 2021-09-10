@@ -2,14 +2,12 @@
 
 #include "ShooTingGameModeBase.h"
 #include "Fuselage.h"
-#include "FuselageManager.h"
+
 #include "EnemyDragon.h"
 
 AShooTingGameModeBase::AShooTingGameModeBase() {
 	PrimaryActorTick.bCanEverTick = true;
-	m_object_manager = FuselageManager::GetInstance();
 	UE_LOG(LogTemp, Log, TEXT("AShooTingGameModeBase"));
-	m_object_manager->AddFuselage(FuselageKind::EnemyFuselage,FVector{ 200.0f,100.0f,50.0f});
 
 }
 
@@ -20,5 +18,4 @@ void AShooTingGameModeBase::StartPlay() {
 
 void AShooTingGameModeBase::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
-	m_object_manager->ObjectsUpdate();
 }

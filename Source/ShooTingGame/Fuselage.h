@@ -11,7 +11,7 @@
 UINTERFACE(MinimalAPI)
 class UFuselage : public UInterface
 {
-	GENERATED_IINTERFACE_BODY()
+	GENERATED_BODY()
 };
 
 /**
@@ -19,7 +19,7 @@ class UFuselage : public UInterface
  */
 class SHOOTINGGAME_API IFuselage
 {
-	GENERATED_IINTERFACE_BODY()
+	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:

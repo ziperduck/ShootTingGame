@@ -17,7 +17,7 @@ public:
 	virtual ~EastMove() override{}
 public:
 
-	virtual void execute(TSharedPtr<IFuselage>) override;
+	virtual void execute(IFuselage*) override;
 };
 class WestMove : public IAction
 {
@@ -27,7 +27,7 @@ public:
 
 public:
 
-	virtual void execute(TSharedPtr<IFuselage>) override;
+	virtual void execute(IFuselage*) override;
 
 };
 class SouthMove : public IAction
@@ -37,7 +37,7 @@ public:
 	virtual ~SouthMove() override{}
 public:
 
-	virtual void execute(TSharedPtr<IFuselage>) override;
+	virtual void execute(IFuselage*) override;
 
 };
 class NorthMove : public IAction
@@ -47,7 +47,7 @@ public:
 	virtual ~NorthMove() override{}
 public:
 
-	virtual void execute(TSharedPtr<IFuselage>) override;
+	virtual void execute(IFuselage*) override;
 
 };
 
@@ -59,6 +59,6 @@ public:
 	virtual ~Shooting() override{}
 public:
 
-	virtual void execute(TSharedPtr<IFuselage>) override;
+	virtual void execute(IFuselage*) override;
 
 };

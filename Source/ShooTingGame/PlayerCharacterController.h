@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "FuselageManager.h"
+
 #include "PlayerCharacterController.generated.h"
 
 UCLASS()
@@ -34,8 +34,5 @@ private:
 	void EventA();
 
 private:
-
-	std::unique_ptr<WrappingFuselage> m_object;
-
 	float ApratVector;
 };

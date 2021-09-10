@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "FuselageFoundation.h"
 #include "Fuselage.h"
-#include "Components/SceneComponent.h"
+#include "GameFramework/Actor.h"
 #include "Rifle.generated.h"
 
 UCLASS()
-class SHOOTINGGAME_API URifle : public USceneComponent, public IFuselage
+class SHOOTINGGAME_API ARifle : public AActor, public IFuselage
 {
 	GENERATED_BODY()
 	
 public:	
-	URifle();
+	ARifle();
 
 	//Getter
 	virtual const FuselageKind GetKind() const override;

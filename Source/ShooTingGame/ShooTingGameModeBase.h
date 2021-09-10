@@ -29,6 +29,4 @@ public:
 
 private:
 
-	FuselageManager* m_object_manager;
-
 };

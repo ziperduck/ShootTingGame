@@ -5,18 +5,18 @@
 #include "CoreMinimal.h"
 #include "FuselageFoundation.h"
 #include "Fuselage.h"
-#include "Components/SceneComponent.h"
+#include "GameFramework/Actor.h"
 #include "EnemyDragon.generated.h"
 
 
 UCLASS()
-class SHOOTINGGAME_API UEnemyDragon : public USceneComponent, public IFuselage
+class SHOOTINGGAME_API AEnemyDragon : public AActor , public IFuselage
 {
 	GENERATED_BODY()
 
 
 public:
-	UEnemyDragon();
+	AEnemyDragon();
 
 	//Getter
 	virtual const FuselageKind GetKind() const override;
@@ -29,7 +29,7 @@ public:
 
 	virtual UWorld* GetFuselageWorld() const override;
 
-	TSharedPtr<IFuselage> GetWeapon() const;
+	IFuselage* GetWeapon() const;
 
 	virtual UClass* GetComponentClass() const override;
 
@@ -56,7 +56,7 @@ private:
 
 	int8 m_current_HP;
 
-	TSharedPtr<IFuselage> m_weapon;
+	IFuselage* m_weapon;
 
 	std::queue<std::shared_ptr<IAction>> m_actions;
 
