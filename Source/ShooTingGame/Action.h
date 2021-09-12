@@ -2,23 +2,27 @@
 
 #pragma once
 
-#include <memory>
-
-/**
- *
- */
+#include "CoreMinimal.h"
+#include "UObject/Interface.h"
+#include "Action.generated.h"
 
 class IFuselage;
-
-//모든 행동들의 기본이 되는 IAction 움직이는 물체의 행동들은 모두 IAction에서 파생된다.
-class IAction
+// This class does not need to be modified.
+UINTERFACE(BlueprintType, MinimalAPI)
+class UAction : public UInterface
 {
+	GENERATED_BODY()
+};
+
+/**
+ * 
+ */
+class SHOOTINGGAME_API IAction
+{
+	GENERATED_BODY()
+	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	IAction(){}
-	virtual ~IAction() = 0 {}
-
-public:
-
-	virtual void execute(IFuselage*) = 0;
-
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
+		void execute(IFuselage* Fuselage);
+	virtual void execute_Implementation(IFuselage* Fuselage) {};
 };

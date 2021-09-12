@@ -25,38 +25,38 @@ ARifle::ARifle()
 
 }
 
-const FuselageKind ARifle::GetKind() const
+const FuselageKind ARifle::GetKind_Implementation() const
 {
 	return m_kind;
 }
 
-const float ARifle::GetSpeed() const
+const float ARifle::GetSpeed_Implementation() const
 {
 	return m_speed;
 }
 
-const FVector ARifle::GetLocation() const
+const FVector ARifle::GetLocation_Implementation() const
 {
 	return K2_GetActorLocation();
 }
 
-const FRotator ARifle::GetRotation() const
+const FRotator ARifle::GetRotation_Implementation() const
 {
 	return K2_GetActorRotation();
 }
 
-UWorld* ARifle::GetFuselageWorld() const
+UWorld* ARifle::GetFuselageWorld_Implementation() const
 {
 	return GetWorld();
 }
 
- UClass* ARifle::GetComponentClass() const
+ UClass* ARifle::GetComponentClass_Implementation() const
 {
 	return GetClass();
 }
 
 
-void ARifle::SetLocation(const FVector& MoveLocation) {
+void ARifle::SetLocation_Implementation(const FVector& MoveLocation) {
 	/*
 	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
 	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
@@ -73,7 +73,7 @@ void ARifle::SetLocation(const FVector& MoveLocation) {
 }
 
 
-void ARifle::AddAction(std::shared_ptr<IAction> Action)
+void ARifle::AddAction_Implementation(IAction* Action)
 {
 	m_actions.push(Action);
 }
@@ -83,7 +83,7 @@ void ARifle::AddNextAction(std::queue<std::shared_ptr<IAction>> Animation)
 	m_animation = Animation;
 }
 
-void ARifle::Update() {
+void ARifle::EventUpdate_Implementation() {
 
 	UE_LOG(LogTemp, Log, TEXT("m_actions size %d"), m_actions.size());
 	while (!m_actions.empty())

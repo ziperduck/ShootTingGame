@@ -15,24 +15,19 @@ public:
 	ActionInstance(){}
 	~ActionInstance(){}
 
-	static std::shared_ptr<IAction> GetEastMove(){
-		static std::shared_ptr<IAction> East = std::make_shared<EastMove>();
-		return East;
+	static IAction* GetEastMove(){
+		return nullptr;
 	}
-	static std::shared_ptr<IAction> GetWestMove() {
-		static std::shared_ptr<IAction> West = std::make_shared<WestMove>();
-		return West;
+	static IAction* GetWestMove() {
+		return nullptr;
 	}
-	static std::shared_ptr<IAction> GetNorthMove() {
-		static std::shared_ptr<IAction> North = std::make_shared<NorthMove>();
-		return North;
+	static IAction* GetNorthMove() {
+		return nullptr;
 	}
-	static std::shared_ptr<IAction> GetSouthMove() {
-		static std::shared_ptr<IAction> South = std::make_shared<SouthMove>();
-		return South;
+	static IAction* GetSouthMove() {
+		return nullptr;
 	}
-	static std::shared_ptr<IAction> GetShoot() {
-		static std::shared_ptr<IAction> Shoot = std::make_shared<Shooting>();
-		return Shoot;
+	static IAction* GetShoot() {
+		return nullptr;
 	}
 };

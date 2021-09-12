@@ -19,30 +19,30 @@ public:
 	AEnemyDragon();
 
 	//Getter
-	virtual const FuselageKind GetKind() const override;
+	virtual const FuselageKind GetKind_Implementation() const override;
 
-	virtual const float GetSpeed() const override;
+	virtual const float GetSpeed_Implementation() const override;
 
-	virtual const FVector GetLocation() const override;
+	virtual const FVector GetLocation_Implementation() const override;
 
-	virtual const FRotator GetRotation() const override;
+	virtual const FRotator GetRotation_Implementation() const override;
 
-	virtual UWorld* GetFuselageWorld() const override;
+	virtual UWorld* GetFuselageWorld_Implementation() const override;
 
 	IFuselage* GetWeapon() const;
 
-	virtual UClass* GetComponentClass() const override;
+	virtual UClass* GetComponentClass_Implementation() const override;
 
 	//Setter
-	virtual void SetLocation(const FVector& MoveLocation) override;
+	virtual void SetLocation_Implementation(const FVector& MoveLocation) override;
 
 
 	//Event
 	void AddNextAction(std::queue<std::shared_ptr<IAction>>);
 
-	virtual void AddAction(std::shared_ptr<IAction>) override;
+	virtual void AddAction_Implementation(IAction* Action) override;
 
-	virtual void Update() override;
+	virtual void EventUpdate_Implementation() override;
 
 private:
 	UStaticMeshComponent* CharacterMesh;
@@ -58,7 +58,7 @@ private:
 
 	IFuselage* m_weapon;
 
-	std::queue<std::shared_ptr<IAction>> m_actions;
+	std::queue<IAction*> m_actions;
 
 	std::queue<std::shared_ptr<IAction>> m_animation;
 };

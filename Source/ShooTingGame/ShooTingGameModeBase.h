@@ -23,9 +23,9 @@ public:
 	AShooTingGameModeBase();
 
 
-	virtual void StartPlay() override;
+	 virtual void StartPlay() override;
 
-	virtual void Tick(float) override;
+	 virtual void Tick(float) override;
 
 private:
 

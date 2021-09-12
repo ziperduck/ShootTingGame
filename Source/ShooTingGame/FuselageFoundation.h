@@ -5,9 +5,10 @@
 #include <memory>
 #include "Action.h"
 
-enum class FuselageKind
+UENUM(BlueprintType,Category = "Fuselage")
+enum class FuselageKind : uint8
 {
-	PlayerFuselage
-	, EnemyFuselage
-	, RifleFuselage
+	PlayerFuselage UMETA(DisplayName = "PlayerFuselage")
+	, EnemyFuselage UMETA(DisplayName = "EnemyFuselage")
+	, RifleFuselage UMETA(DisplayName = "RifleFuselage")
 };

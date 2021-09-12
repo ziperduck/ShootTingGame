@@ -13,41 +13,29 @@ class IFuselage;
 class EastMove : public IAction
 {
 public:
-	EastMove(){}
-	virtual ~EastMove() override{}
-public:
 
-	virtual void execute(IFuselage*) override;
+	 virtual void execute_Implementation(IFuselage* Fuselage) override;
 };
 class WestMove : public IAction
 {
-public:
-	WestMove(){}
-	virtual~WestMove()override{}
 
 public:
 
-	virtual void execute(IFuselage*) override;
+	virtual void execute_Implementation(IFuselage* Fuselage) override;
 
 };
 class SouthMove : public IAction
 {
 public:
-	SouthMove(){}
-	virtual ~SouthMove() override{}
-public:
 
-	virtual void execute(IFuselage*) override;
+	virtual void execute_Implementation(IFuselage* Fuselage) override;
 
 };
 class NorthMove : public IAction
 {
 public:
-	NorthMove(){}
-	virtual ~NorthMove() override{}
-public:
 
-	virtual void execute(IFuselage*) override;
+	virtual void execute_Implementation(IFuselage* Fuselage) override;
 
 };
 
@@ -55,10 +43,7 @@ public:
 class Shooting : public IAction
 {
 public:
-	Shooting(){}
-	virtual ~Shooting() override{}
-public:
 
-	virtual void execute(IFuselage*) override;
+	virtual void execute_Implementation(IFuselage* Fuselage) override;
 
 };

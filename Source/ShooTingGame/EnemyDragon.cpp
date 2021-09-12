@@ -25,27 +25,27 @@ AEnemyDragon::AEnemyDragon()
 
 }
 
-const FuselageKind AEnemyDragon::GetKind() const
+const FuselageKind AEnemyDragon::GetKind_Implementation() const
 {
 	return m_kind;
 }
 
-const float AEnemyDragon::GetSpeed() const
+const float AEnemyDragon::GetSpeed_Implementation() const
 {
 	return m_speed;
 }
 
-const FVector AEnemyDragon::GetLocation() const
+const FVector AEnemyDragon::GetLocation_Implementation() const
 {
 	return K2_GetActorLocation();
 }
 
-const FRotator AEnemyDragon::GetRotation() const
+const FRotator AEnemyDragon::GetRotation_Implementation() const
 {
 	return K2_GetActorRotation();
 };
 
-UWorld* AEnemyDragon::GetFuselageWorld() const
+UWorld* AEnemyDragon::GetFuselageWorld_Implementation() const
 {
 	return GetWorld();
 }
@@ -55,12 +55,12 @@ IFuselage* AEnemyDragon::GetWeapon() const
 	return m_weapon;
 }
 
- UClass* AEnemyDragon::GetComponentClass() const
+ UClass* AEnemyDragon::GetComponentClass_Implementation() const
 {
 	return GetClass();
 }
 
-void AEnemyDragon::SetLocation(const FVector& MoveLocation) {
+void AEnemyDragon::SetLocation_Implementation(const FVector& MoveLocation) {
 	/*
 	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
 	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
@@ -78,7 +78,7 @@ void AEnemyDragon::SetLocation(const FVector& MoveLocation) {
 }
 
 
-void AEnemyDragon::AddAction(std::shared_ptr<IAction> Action)
+void AEnemyDragon::AddAction_Implementation(IAction* Action)
 {
 	m_actions.push(Action);
 }
@@ -87,8 +87,7 @@ void AEnemyDragon::AddNextAction(std::queue<std::shared_ptr<IAction>> Animation)
 {
 	m_animation = Animation;
 }
-
-void AEnemyDragon::Update() {
+void AEnemyDragon::EventUpdate_Implementation() {
 
 	UE_LOG(LogTemp, Log, TEXT("m_actions size %d"), m_actions.size());
 	while (!m_actions.empty())

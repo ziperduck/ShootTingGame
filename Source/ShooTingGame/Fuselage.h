@@ -7,8 +7,9 @@
 #include "FuselageFoundation.h"
 #include "Fuselage.generated.h"
 
+class IAction;
 // This class does not need to be modified.
-UINTERFACE(Blueprintable, BlueprintType,MinimalAPI)
+UINTERFACE(BlueprintType,MinimalAPI)
 class UFuselage : public UInterface
 {
 	GENERATED_BODY()
@@ -25,23 +26,41 @@ class SHOOTINGGAME_API IFuselage
 public:
 
 	//Getter
-	virtual const FuselageKind GetKind() const = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
+		const FuselageKind GetKind() const;
+	virtual const FuselageKind GetKind_Implementation() const { return FuselageKind::PlayerFuselage; };
 
-	virtual const float GetSpeed() const = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
+		const float GetSpeed() const;
+	virtual const float GetSpeed_Implementation() const { return 1.0f; };
 
-	virtual const FVector GetLocation() const = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
+		const FVector GetLocation() const;
+	virtual const FVector GetLocation_Implementation() const { return FVector::ZeroVector; };
 
-	virtual const FRotator GetRotation() const = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
+		const FRotator GetRotation() const;
+	virtual const FRotator GetRotation_Implementation() const { return FRotator::ZeroRotator; };
 
-	virtual UWorld* GetFuselageWorld() const = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
+		UWorld* GetFuselageWorld() const;
+	virtual UWorld* GetFuselageWorld_Implementation() const { return nullptr; };
 
-	virtual  UClass* GetComponentClass() const = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
+		UClass* GetComponentClass() const;
+	virtual UClass* GetComponentClass_Implementation() const { return nullptr; };
 
 	//Setter
-	virtual void SetLocation(const FVector&) = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
+		void SetLocation(const FVector& Vector);
+	virtual void SetLocation_Implementation(const FVector& Vector) {};
 
 	//Event
-	virtual void AddAction(std::shared_ptr<IAction>) = 0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
+		void AddAction(IAction* Action);
+	virtual void AddAction_Implementation(IAction* Action) {};
 
-	virtual	void Update() =0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
+		void EventUpdate();
+	virtual void EventUpdate_Implementation() {};
 };
