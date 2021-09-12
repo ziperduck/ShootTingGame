@@ -7,7 +7,7 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerCharacter.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable, BlueprintType, ClassGroup = "Fuselage")
 class SHOOTINGGAME_API APlayerCharacter : public APawn
 {
 	GENERATED_BODY()

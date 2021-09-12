@@ -8,7 +8,7 @@
 #include "GameFramework/Actor.h"
 #include "Rifle.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable, BlueprintType, ClassGroup = "Fuselage")
 class SHOOTINGGAME_API ARifle : public AActor, public IFuselage
 {
 	GENERATED_BODY()

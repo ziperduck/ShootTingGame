@@ -8,7 +8,7 @@
 #include "Fuselage.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(Blueprintable, BlueprintType,MinimalAPI)
 class UFuselage : public UInterface
 {
 	GENERATED_BODY()
@@ -40,9 +40,8 @@ public:
 	//Setter
 	virtual void SetLocation(const FVector&) = 0;
 
-
 	//Event
 	virtual void AddAction(std::shared_ptr<IAction>) = 0;
 
-	virtual void Update() = 0;
+	virtual	void Update() =0;
 };
