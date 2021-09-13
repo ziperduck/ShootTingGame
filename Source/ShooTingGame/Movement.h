@@ -14,28 +14,28 @@ class EastMove : public IAction
 {
 public:
 
-	 virtual void execute_Implementation(IFuselage* Fuselage) override;
+	 virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) override;
 };
 class WestMove : public IAction
 {
 
 public:
 
-	virtual void execute_Implementation(IFuselage* Fuselage) override;
+	virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) override;
 
 };
 class SouthMove : public IAction
 {
 public:
 
-	virtual void execute_Implementation(IFuselage* Fuselage) override;
+	virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) override;
 
 };
 class NorthMove : public IAction
 {
 public:
 
-	virtual void execute_Implementation(IFuselage* Fuselage) override;
+	virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) override;
 
 };
 
@@ -44,6 +44,6 @@ class Shooting : public IAction
 {
 public:
 
-	virtual void execute_Implementation(IFuselage* Fuselage) override;
+	virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) override;
 
 };

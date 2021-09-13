@@ -2,12 +2,20 @@
 
 #pragma once
 
+#include "Action.h"
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "FuselageFoundation.h"
 #include "Fuselage.generated.h"
 
-class IAction;
+UENUM(BlueprintType, Category = "Fuselage")
+enum class FuselageKind : uint8
+{
+	PlayerFuselage UMETA(DisplayName = "PlayerFuselage")
+	, EnemyFuselage UMETA(DisplayName = "EnemyFuselage")
+	, RifleFuselage UMETA(DisplayName = "RifleFuselage")
+};
+
 // This class does not need to be modified.
 UINTERFACE(BlueprintType,MinimalAPI)
 class UFuselage : public UInterface
@@ -57,8 +65,8 @@ public:
 
 	//Event
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		void AddAction(IAction* Action);
-	virtual void AddAction_Implementation(IAction* Action) {};
+		void AddAction(TScriptInterface<IAction>  Action);
+	virtual void AddAction_Implementation(TScriptInterface<IAction>  Action) {};
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
 		void EventUpdate();

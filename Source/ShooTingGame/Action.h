@@ -2,11 +2,11 @@
 
 #pragma once
 
+#include "Fuselage.h"
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "Action.generated.h"
 
-class IFuselage;
 // This class does not need to be modified.
 UINTERFACE(BlueprintType, MinimalAPI)
 class UAction : public UInterface
@@ -22,7 +22,8 @@ class SHOOTINGGAME_API IAction
 	GENERATED_BODY()
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		void execute(IFuselage* Fuselage);
-	virtual void execute_Implementation(IFuselage* Fuselage) {};
+		void execute(TScriptInterface<IFuselage> Fuselage);
+	virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) {};
 };

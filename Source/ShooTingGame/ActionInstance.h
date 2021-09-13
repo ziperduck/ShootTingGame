@@ -15,19 +15,19 @@ public:
 	ActionInstance(){}
 	~ActionInstance(){}
 
-	static IAction* GetEastMove(){
+	static TScriptInterface<IAction>  GetEastMove(){
 		return nullptr;
 	}
-	static IAction* GetWestMove() {
+	static TScriptInterface<IAction>  GetWestMove() {
 		return nullptr;
 	}
-	static IAction* GetNorthMove() {
+	static TScriptInterface<IAction>  GetNorthMove() {
 		return nullptr;
 	}
-	static IAction* GetSouthMove() {
+	static TScriptInterface<IAction>  GetSouthMove() {
 		return nullptr;
 	}
-	static IAction* GetShoot() {
+	static TScriptInterface<IAction>  GetShoot() {
 		return nullptr;
 	}
 };

@@ -29,7 +29,7 @@ public:
 
 	virtual UWorld* GetFuselageWorld_Implementation() const override;
 
-	IFuselage* GetWeapon() const;
+	TScriptInterface<IFuselage>  GetWeapon() const;
 
 	virtual UClass* GetComponentClass_Implementation() const override;
 
@@ -38,9 +38,9 @@ public:
 
 
 	//Event
-	void AddNextAction(std::queue<std::shared_ptr<IAction>>);
+	void AddNextAction(std::queue<TScriptInterface<IAction>>);
 
-	virtual void AddAction_Implementation(IAction* Action) override;
+	virtual void AddAction_Implementation(TScriptInterface<IAction>  Action) override;
 
 	virtual void EventUpdate_Implementation() override;
 
@@ -56,9 +56,9 @@ private:
 
 	int8 m_current_HP;
 
-	IFuselage* m_weapon;
+	TScriptInterface<IFuselage>  m_weapon;
 
-	std::queue<IAction*> m_actions;
+	std::queue<TScriptInterface<IAction> > m_actions;
 
-	std::queue<std::shared_ptr<IAction>> m_animation;
+	std::queue<TScriptInterface<IAction>> m_animation;
 };

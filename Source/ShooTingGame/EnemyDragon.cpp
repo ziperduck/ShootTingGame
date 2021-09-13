@@ -2,6 +2,7 @@
 
 
 #include "EnemyDragon.h"
+
 // Sets default values
 AEnemyDragon::AEnemyDragon()
 {
@@ -50,7 +51,7 @@ UWorld* AEnemyDragon::GetFuselageWorld_Implementation() const
 	return GetWorld();
 }
 
-IFuselage* AEnemyDragon::GetWeapon() const
+TScriptInterface<IFuselage>  AEnemyDragon::GetWeapon() const
 {
 	return m_weapon;
 }
@@ -78,12 +79,12 @@ void AEnemyDragon::SetLocation_Implementation(const FVector& MoveLocation) {
 }
 
 
-void AEnemyDragon::AddAction_Implementation(IAction* Action)
+void AEnemyDragon::AddAction_Implementation(TScriptInterface<IAction>  Action)
 {
 	m_actions.push(Action);
 }
 
-void AEnemyDragon::AddNextAction(std::queue<std::shared_ptr<IAction>> Animation)
+void AEnemyDragon::AddNextAction(std::queue<TScriptInterface<IAction>> Animation)
 {
 	m_animation = Animation;
 }
@@ -92,7 +93,7 @@ void AEnemyDragon::EventUpdate_Implementation() {
 	UE_LOG(LogTemp, Log, TEXT("m_actions size %d"), m_actions.size());
 	while (!m_actions.empty())
 	{
-		m_actions.front()->execute(Cast<IFuselage>(this));
+		m_actions.front()->execute_Implementation(Cast<IFuselage>(this));
 		m_actions.pop();
 	}
 	if (!m_animation.empty())

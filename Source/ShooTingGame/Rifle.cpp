@@ -73,12 +73,12 @@ void ARifle::SetLocation_Implementation(const FVector& MoveLocation) {
 }
 
 
-void ARifle::AddAction_Implementation(IAction* Action)
+void ARifle::AddAction_Implementation(TScriptInterface<IAction>  Action)
 {
 	m_actions.push(Action);
 }
 
-void ARifle::AddNextAction(std::queue<std::shared_ptr<IAction>> Animation)
+void ARifle::AddNextAction(std::queue<TScriptInterface<IAction>> Animation)
 {
 	m_animation = Animation;
 }
@@ -88,7 +88,7 @@ void ARifle::EventUpdate_Implementation() {
 	UE_LOG(LogTemp, Log, TEXT("m_actions size %d"), m_actions.size());
 	while (!m_actions.empty())
 	{
-		m_actions.front()->execute(Cast<IFuselage>(this));
+		m_actions.front()->execute_Implementation(Cast<IFuselage>(this));
 		m_actions.pop();
 	}
 	if (!m_actions.empty())

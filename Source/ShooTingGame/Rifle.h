@@ -34,9 +34,9 @@ public:
 
 
 	//Event
-	void AddNextAction(std::queue<std::shared_ptr<IAction>>);
+	void AddNextAction(std::queue<TScriptInterface<IAction>>);
 
-	virtual void AddAction_Implementation(IAction* Action) override;
+	virtual void AddAction_Implementation(TScriptInterface<IAction>  Action) override;
 
 	virtual void EventUpdate_Implementation() override;
 private:
@@ -54,7 +54,7 @@ private:
 
 	int8 m_current_HP;
 
-	std::queue<IAction*> m_actions;
+	std::queue<TScriptInterface<IAction> > m_actions;
 
-	std::queue<std::shared_ptr<IAction>> m_animation;
+	std::queue<TScriptInterface<IAction>> m_animation;
 };
