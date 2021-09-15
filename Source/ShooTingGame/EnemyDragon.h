@@ -2,9 +2,10 @@
 
 #pragma once
 
+#include "Fuselage.h"
+#include "Action.h"
 #include "CoreMinimal.h"
 #include "FuselageFoundation.h"
-#include "Fuselage.h"
 #include "GameFramework/Actor.h"
 #include "EnemyDragon.generated.h"
 
@@ -29,7 +30,7 @@ public:
 
 	virtual UWorld* GetFuselageWorld_Implementation() const override;
 
-	TScriptInterface<IFuselage>  GetWeapon() const;
+	TSubclassOf<UFuselage>  GetWeapon() const;
 
 	virtual UClass* GetComponentClass_Implementation() const override;
 
@@ -37,12 +38,6 @@ public:
 	virtual void SetLocation_Implementation(const FVector& MoveLocation) override;
 
 
-	//Event
-	void AddNextAction(std::queue<TScriptInterface<IAction>>);
-
-	virtual void AddAction_Implementation(TScriptInterface<IAction>  Action) override;
-
-	virtual void EventUpdate_Implementation() override;
 
 private:
 	UStaticMeshComponent* CharacterMesh;
@@ -56,9 +51,9 @@ private:
 
 	int8 m_current_HP;
 
-	TScriptInterface<IFuselage>  m_weapon;
+	TSubclassOf<UFuselage>  m_weapon;
 
-	std::queue<TScriptInterface<IAction> > m_actions;
+	std::queue<TSubclassOf<IAction> > m_actions;
 
-	std::queue<TScriptInterface<IAction>> m_animation;
+	std::queue<TSubclassOf<IAction>> m_animation;
 };

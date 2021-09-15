@@ -24,6 +24,6 @@ class SHOOTINGGAME_API IAction
 public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		void execute(TScriptInterface<IFuselage> Fuselage);
-	virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) {};
+		void Execute(TSubclassOf<UFuselage> Fuselage);
+	virtual void Execute_Implementation(TSubclassOf<UFuselage>  Fuselage) {};
 };

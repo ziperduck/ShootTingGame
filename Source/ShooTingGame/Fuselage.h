@@ -2,10 +2,8 @@
 
 #pragma once
 
-#include "Action.h"
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "FuselageFoundation.h"
 #include "Fuselage.generated.h"
 
 UENUM(BlueprintType, Category = "Fuselage")
@@ -63,12 +61,4 @@ public:
 		void SetLocation(const FVector& Vector);
 	virtual void SetLocation_Implementation(const FVector& Vector) {};
 
-	//Event
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		void AddAction(TScriptInterface<IAction>  Action);
-	virtual void AddAction_Implementation(TScriptInterface<IAction>  Action) {};
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		void EventUpdate();
-	virtual void EventUpdate_Implementation() {};
 };

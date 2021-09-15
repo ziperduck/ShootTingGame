@@ -3,39 +3,38 @@
 #pragma once
 
 #include "Action.h"
+#include "Fuselage.h"
 
 /**
  * 동서남북으로 움직이는 값을 전달하는 (XXX)Move 물체의 움직임을 제어한다.
  */
 
-class IFuselage;
-
 class EastMove : public IAction
 {
 public:
 
-	 virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) override;
+	 virtual void Execute_Implementation(TSubclassOf<UFuselage>  Fuselage) override;
 };
 class WestMove : public IAction
 {
 
 public:
 
-	virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) override;
+	virtual void Execute_Implementation(TSubclassOf<UFuselage>  Fuselage) override;
 
 };
 class SouthMove : public IAction
 {
 public:
 
-	virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) override;
+	virtual void Execute_Implementation(TSubclassOf<UFuselage>  Fuselage) override;
 
 };
 class NorthMove : public IAction
 {
 public:
 
-	virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) override;
+	virtual void Execute_Implementation(TSubclassOf<UFuselage>  Fuselage) override;
 
 };
 
@@ -43,7 +42,7 @@ public:
 class Shooting : public IAction
 {
 public:
-
-	virtual void execute_Implementation(TScriptInterface<IFuselage>  Fuselage) override;
+	
+	virtual void Execute_Implementation(TSubclassOf<UFuselage>  Fuselage) override;
 
 };
