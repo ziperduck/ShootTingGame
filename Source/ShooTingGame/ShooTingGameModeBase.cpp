@@ -6,7 +6,7 @@
 #include "EnemyDragon.h"
 
 AShooTingGameModeBase::AShooTingGameModeBase() {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	UE_LOG(LogTemp, Log, TEXT("AShooTingGameModeBase"));
 
 }

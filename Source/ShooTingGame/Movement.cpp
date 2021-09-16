@@ -10,31 +10,35 @@ const FVector& CalculationRatioSpeed(const FVector& Ratio) {
 }
 
 void EastMove::Execute_Implementation(TSubclassOf<UFuselage>  Target) {
-	IFuselage* TargetObject = Cast<IFuselage>(Target.GetDefaultObject()->StaticClass());
-	float Speed = TargetObject->GetSpeed();
+	bool BIsIemented = Target.GetDefaultObject()->GetClass()->ImplementsInterface(UFuselage::StaticClass());
+
+	checkf(BIsIemented, TEXT("not Iemented"));
+
+	IFuselage* TargetObject = Cast<IFuselage>(Target);
+	float Speed = TargetObject->GetSpeed_Implementation();
 	FVector EastVector = CalculationRatioSpeed({ 0.0f,-Speed,  0.0f });
-	TargetObject->SetLocation(EastVector);
+	TargetObject->SetLocation_Implementation(EastVector);
 }
 
 void WestMove::Execute_Implementation(TSubclassOf<UFuselage>  Target) {
 	IFuselage* TargetObject = Cast<IFuselage>(Target.GetDefaultObject()->StaticClass());
-	float Speed = TargetObject->GetSpeed();
+	float Speed = TargetObject->GetSpeed_Implementation();
 	FVector WestVector = CalculationRatioSpeed({ 0.0f, Speed, 0.0f });
-	TargetObject->SetLocation(WestVector);
+	TargetObject->SetLocation_Implementation(WestVector);
 }
 
 void SouthMove::Execute_Implementation(TSubclassOf<UFuselage>  Target) {
 	IFuselage* TargetObject = Cast<IFuselage>(Target.GetDefaultObject()->StaticClass());
-	float Speed = TargetObject->GetSpeed();
+	float Speed = TargetObject->GetSpeed_Implementation();
 	FVector SouthVector = CalculationRatioSpeed({ Speed,0.0f,  0.0f });
-	TargetObject->SetLocation(SouthVector);
+	TargetObject->SetLocation_Implementation(SouthVector);
 }
 
 void NorthMove::Execute_Implementation(TSubclassOf<UFuselage>  Target) {
 	IFuselage* TargetObject = Cast<IFuselage>(Target.GetDefaultObject()->StaticClass());
-	float Speed = TargetObject->GetSpeed();
+	float Speed = TargetObject->GetSpeed_Implementation();
 	FVector NortVector = CalculationRatioSpeed({ -Speed,0.0f,  0.0f });
-	TargetObject->SetLocation(NortVector);
+	TargetObject->SetLocation_Implementation(NortVector);
 }
 
 void Shooting::Execute_Implementation(TSubclassOf<UFuselage>  Target) {

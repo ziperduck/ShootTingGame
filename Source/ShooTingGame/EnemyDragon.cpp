@@ -18,12 +18,22 @@ AEnemyDragon::AEnemyDragon()
 		CharacterMesh->SetAllMassScale(0.5f);
 		RootComponent = CharacterMesh;
 	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Object is nullptr"));
+	}
 
 	m_kind = FuselageKind::RifleFuselage;
 	m_speed = 4.0f;
 	m_max_HP = 1;
 	m_current_HP = m_max_HP;
 
+}
+
+void AEnemyDragon::BeginPlay()
+{
+	Super::BeginPlay();
+	UE_LOG(LogTemp,Log,TEXT("Spawn EnemyDragon"));
 }
 
 const FuselageKind AEnemyDragon::GetKind_Implementation() const

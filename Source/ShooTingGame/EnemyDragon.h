@@ -15,8 +15,13 @@ class SHOOTINGGAME_API AEnemyDragon : public AActor , public IFuselage
 {
 	GENERATED_BODY()
 
+protected:
+	
+	virtual void BeginPlay() override;
 
 public:
+
+	
 	AEnemyDragon();
 
 	//Getter
