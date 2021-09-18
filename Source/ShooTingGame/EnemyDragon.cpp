@@ -2,6 +2,7 @@
 
 
 #include "EnemyDragon.h"
+#include "Movement.h"
 
 // Sets default values
 AEnemyDragon::AEnemyDragon()
@@ -23,7 +24,7 @@ AEnemyDragon::AEnemyDragon()
 		UE_LOG(LogTemp, Log, TEXT("Object is nullptr"));
 	}
 
-	m_kind = FuselageKind::RifleFuselage;
+	m_kind = EFuselageKind::RifleFuselage;
 	m_speed = 4.0f;
 	m_max_HP = 1;
 	m_current_HP = m_max_HP;
@@ -36,7 +37,7 @@ void AEnemyDragon::BeginPlay()
 	UE_LOG(LogTemp,Log,TEXT("Spawn EnemyDragon"));
 }
 
-const FuselageKind AEnemyDragon::GetKind_Implementation() const
+const EFuselageKind AEnemyDragon::GetKind_Implementation() const
 {
 	return m_kind;
 }
@@ -61,14 +62,14 @@ UWorld* AEnemyDragon::GetFuselageWorld_Implementation() const
 	return GetWorld();
 }
 
+UClass* AEnemyDragon::GetComponentClass_Implementation() const
+{
+	return GetClass();
+}
+
 TSubclassOf<UFuselage>  AEnemyDragon::GetWeapon() const
 {
 	return m_weapon;
-}
-
- UClass* AEnemyDragon::GetComponentClass_Implementation() const
-{
-	return GetClass();
 }
 
 void AEnemyDragon::SetLocation_Implementation(const FVector& MoveLocation) {
@@ -87,5 +88,20 @@ void AEnemyDragon::SetLocation_Implementation(const FVector& MoveLocation) {
 		UE_LOG(LogTemp, Log, TEXT("is Hit Actor"));
 	}
 }
+
+//Event
+void AEnemyDragon::EventUpdate_Implementation() 
+{
+	while (m_actions.size() > 0)
+	{
+		//만약 인터페이스 정의되지 않았을경우를 체크한다.
+		IAction* Action = ChangeAction(m_actions.front());
+		m_actions.pop();
+		checkf(Action != nullptr, TEXT("Player animation No have Interface"));
+		Action->Execute_Implementation(StaticClass());
+	}
+	m_actions = m_next_actions;
+}
+
 
 

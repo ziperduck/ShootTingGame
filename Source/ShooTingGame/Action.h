@@ -8,7 +8,7 @@
 #include "Action.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(BlueprintType, MinimalAPI)
+UINTERFACE(BlueprintType, MinimalAPI, Category = "Movement")
 class UAction : public UInterface
 {
 	GENERATED_BODY()

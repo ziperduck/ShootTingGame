@@ -4,6 +4,35 @@
 #include "EnemyDragon.h"
 #include "CoreMinimal.h"
 
+IAction* ChangeAction(EVariousAction Action)
+{
+	switch (Action)
+	{
+	case EVariousAction::EastMove:
+	{
+		static EastMove* Event = new EastMove();
+		return Event;
+	}
+	case EVariousAction::WestMove:
+	{
+		static WestMove* Event = new WestMove();
+		return Event;
+	}
+	case EVariousAction::SouthMove:
+	{
+		static SouthMove* Event = new SouthMove();
+		return Event;
+	}
+	case EVariousAction::NorthMove:
+	{
+		static NorthMove* Event = new NorthMove();
+		return Event;
+	}
+	default:
+		return nullptr;
+	}
+}
+
 
 const FVector& CalculationRatioSpeed(const FVector& Ratio) {
 	return Ratio;

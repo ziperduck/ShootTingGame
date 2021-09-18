@@ -17,7 +17,7 @@ ARifle::ARifle()
 		CharacterMesh->SetAllMassScale(0.2f);
 		RootComponent = CharacterMesh;
 	}
-	m_kind = FuselageKind::RifleFuselage;
+	m_kind = EFuselageKind::RifleFuselage;
 	m_speed = 4.0f;
 	m_damage = 3;
 	m_max_HP = 1;
@@ -25,7 +25,9 @@ ARifle::ARifle()
 
 }
 
-const FuselageKind ARifle::GetKind_Implementation() const
+//Getter
+
+const EFuselageKind ARifle::GetKind_Implementation() const
 {
 	return m_kind;
 }
@@ -56,6 +58,8 @@ UWorld* ARifle::GetFuselageWorld_Implementation() const
 }
 
 
+ //Setter
+
 void ARifle::SetLocation_Implementation(const FVector& MoveLocation) {
 	/*
 	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
@@ -72,3 +76,10 @@ void ARifle::SetLocation_Implementation(const FVector& MoveLocation) {
 	}
 }
 
+
+//Event
+
+void ARifle::EventUpdate_Implementation() 
+{
+
+}

@@ -18,7 +18,7 @@ public:
 	ARifle();
 
 	//Getter
-	virtual const FuselageKind GetKind_Implementation() const override;
+	virtual const EFuselageKind GetKind_Implementation() const override;
 
 	virtual const float GetSpeed_Implementation() const override;
 
@@ -33,13 +33,16 @@ public:
 	//Setter
 	void SetLocation_Implementation(const FVector& MoveLocation) ;
 
+	//Event
+	virtual void EventUpdate_Implementation() override;
+
 
 private:
 
 	UStaticMeshComponent* CharacterMesh;
 
 private:
-	FuselageKind m_kind;
+	EFuselageKind m_kind;
 
 	uint16 m_damage;
 
@@ -49,7 +52,7 @@ private:
 
 	int8 m_current_HP;
 
-	std::queue<TSubclassOf<IAction> > m_actions;
+	std::queue<EVariousAction> m_actions;
 
-	std::queue<TSubclassOf<IAction>> m_animation;
+	std::queue<EVariousAction> m_animation;
 };

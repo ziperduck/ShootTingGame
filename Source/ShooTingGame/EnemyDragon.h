@@ -3,9 +3,8 @@
 #pragma once
 
 #include "Fuselage.h"
-#include "Action.h"
+#include "EnumPack.h"
 #include "CoreMinimal.h"
-#include "FuselageFoundation.h"
 #include "GameFramework/Actor.h"
 #include "EnemyDragon.generated.h"
 
@@ -25,7 +24,7 @@ public:
 	AEnemyDragon();
 
 	//Getter
-	virtual const FuselageKind GetKind_Implementation() const override;
+	virtual const EFuselageKind GetKind_Implementation() const override;
 
 	virtual const float GetSpeed_Implementation() const override;
 
@@ -35,20 +34,22 @@ public:
 
 	virtual UWorld* GetFuselageWorld_Implementation() const override;
 
-	TSubclassOf<UFuselage>  GetWeapon() const;
-
 	virtual UClass* GetComponentClass_Implementation() const override;
+
+	TSubclassOf<UFuselage>  GetWeapon() const;
 
 	//Setter
 	virtual void SetLocation_Implementation(const FVector& MoveLocation) override;
 
+	//Event
+	virtual void EventUpdate_Implementation() override;
 
 
 private:
 	UStaticMeshComponent* CharacterMesh;
 
 private:
-	FuselageKind m_kind;
+	EFuselageKind m_kind;
 
 	float m_speed;
 
@@ -57,8 +58,8 @@ private:
 	int8 m_current_HP;
 
 	TSubclassOf<UFuselage>  m_weapon;
+	
+	std::queue<EVariousAction> m_actions;
 
-	std::queue<TSubclassOf<IAction> > m_actions;
-
-	std::queue<TSubclassOf<IAction>> m_animation;
+	std::queue<EVariousAction> m_next_actions;
 };
