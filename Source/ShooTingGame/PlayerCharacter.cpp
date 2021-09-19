@@ -10,15 +10,14 @@ APlayerCharacter::APlayerCharacter()
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	UE_LOG(LogTemp, Log, TEXT("AplayerContorller Constructor"));
-	AutoPossessPlayer = EAutoReceiveInput::Player0;
-
+	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
 	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
 	{
 
 		CharacterMesh->SetStaticMesh(MeshAsset.Object);
-		RootComponent = CharacterMesh;
+		CharacterMesh->SetupAttachment(RootComponent);
 	}
 	else
 	{
@@ -38,19 +37,9 @@ void APlayerCharacter::BeginPlay()
 	UE_LOG(LogTemp, Log, TEXT("AplayerContorller BeginPlay"));
 }
 
-
-// Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	InputComponent->BindAxis("MoveX", this, &APlayerCharacter::MoveX);
-	InputComponent->BindAxis("MoveY", this, &APlayerCharacter::MoveY);
-}
-
 void APlayerCharacter::MoveX(float Direction)
 {
-	UE_LOG(LogTemp, Log, TEXT("Move XXX %f"), Direction);
+	UE_LOG(LogTemp, Log, TEXT(" PlayerCharacter Move XXX %f"), Direction);
 	const int8 EastWest = Direction;
 	constexpr int8 East = 1;
 	constexpr int8 West = 2;
@@ -71,7 +60,7 @@ void APlayerCharacter::MoveX(float Direction)
 
 void APlayerCharacter::MoveY(float Direction)
 {
-	UE_LOG(LogTemp, Log, TEXT("Move YYY %f"), Direction);
+	UE_LOG(LogTemp, Log, TEXT("PlayerCharacter YYY %f"), Direction);
 	const int8 SouthNorth = Direction;
 	constexpr int8 South = 1;
 	constexpr int8 North = 2;
@@ -123,7 +112,7 @@ UClass* APlayerCharacter::GetComponentClass_Implementation() const
 	return GetClass();
 }
 
-TSubclassOf<UFuselage>  APlayerCharacter::GetWeapon() const
+IFuselage*  APlayerCharacter::GetWeapon() const
 {
 	return m_weapon;
 }
@@ -151,8 +140,8 @@ void APlayerCharacter::EventUpdate_Implementation()
 	{
 		//만약 인터페이스 정의되지 않았을경우를 체크한다.
 		IAction* Action = ChangeAction(m_actions.front());
-		m_actions.pop();
 		checkf(Action != nullptr, TEXT("Player animation No have Interface"));
-		Action->Execute_Implementation(StaticClass());
+		Action->Execute(GetClass());
+		m_actions.pop();	
 	}
 }

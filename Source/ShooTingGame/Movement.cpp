@@ -6,26 +6,35 @@
 
 IAction* ChangeAction(EVariousAction Action)
 {
+	UE_LOG(LogTemp, Log, TEXT("ChageAction"));
+
+	static IAction* Event1 = new EastMove();
+	return Event1; 
 	switch (Action)
 	{
 	case EVariousAction::EastMove:
 	{
-		static EastMove* Event = new EastMove();
+		static IAction* Event = new EastMove();
 		return Event;
 	}
 	case EVariousAction::WestMove:
 	{
-		static WestMove* Event = new WestMove();
+		static IAction* Event = new WestMove();
 		return Event;
 	}
 	case EVariousAction::SouthMove:
 	{
-		static SouthMove* Event = new SouthMove();
+		static IAction* Event = new SouthMove();
 		return Event;
 	}
 	case EVariousAction::NorthMove:
 	{
-		static NorthMove* Event = new NorthMove();
+		static IAction* Event = new NorthMove();
+		return Event;
+	}
+	case EVariousAction::Shooting:
+	{
+		static IAction* Event = new Shooting();
 		return Event;
 	}
 	default:
@@ -38,40 +47,43 @@ const FVector& CalculationRatioSpeed(const FVector& Ratio) {
 	return Ratio;
 }
 
-void EastMove::Execute_Implementation(TSubclassOf<UFuselage>  Target) {
-	bool BIsIemented = Target.GetDefaultObject()->GetClass()->ImplementsInterface(UFuselage::StaticClass());
+void EastMove::Execute(TSubclassOf<UFuselage> Target) {
 
+	checkf(Target != nullptr, TEXT("Target is nullptr"));
+	bool BIsIemented = Target->GetClass()->ImplementsInterface(UFuselage::StaticClass());
+	
 	checkf(BIsIemented, TEXT("not Iemented"));
-
-	IFuselage* TargetObject = Cast<IFuselage>(Target);
-	float Speed = TargetObject->GetSpeed_Implementation();
+	
+	IFuselage* Fuselage = Cast<IFuselage>(Target->GetClass());
+	float Speed = Fuselage->GetSpeed_Implementation();
 	FVector EastVector = CalculationRatioSpeed({ 0.0f,-Speed,  0.0f });
-	TargetObject->SetLocation_Implementation(EastVector);
+	Fuselage->SetLocation_Implementation(EastVector);
 }
 
-void WestMove::Execute_Implementation(TSubclassOf<UFuselage>  Target) {
-	IFuselage* TargetObject = Cast<IFuselage>(Target.GetDefaultObject()->StaticClass());
-	float Speed = TargetObject->GetSpeed_Implementation();
-	FVector WestVector = CalculationRatioSpeed({ 0.0f, Speed, 0.0f });
-	TargetObject->SetLocation_Implementation(WestVector);
+void WestMove::Execute(TSubclassOf<UFuselage> Target) {
+	IFuselage* Fuselage = Cast<IFuselage>(Target->GetClass());
+	float Speed = Fuselage->GetSpeed_Implementation();
+	FVector WestVector = CalculationRatioSpeed({ 0.0f,-Speed,  0.0f });
+	Fuselage->SetLocation_Implementation(WestVector);
 }
 
-void SouthMove::Execute_Implementation(TSubclassOf<UFuselage>  Target) {
-	IFuselage* TargetObject = Cast<IFuselage>(Target.GetDefaultObject()->StaticClass());
-	float Speed = TargetObject->GetSpeed_Implementation();
+void SouthMove::Execute(TSubclassOf<UFuselage> Target) {
+	IFuselage* Fuselage = Cast<IFuselage>(Target->StaticClass());
+	float Speed = Fuselage->GetSpeed_Implementation();
 	FVector SouthVector = CalculationRatioSpeed({ Speed,0.0f,  0.0f });
-	TargetObject->SetLocation_Implementation(SouthVector);
+	Fuselage->SetLocation_Implementation(SouthVector);
 }
 
-void NorthMove::Execute_Implementation(TSubclassOf<UFuselage>  Target) {
-	IFuselage* TargetObject = Cast<IFuselage>(Target.GetDefaultObject()->StaticClass());
-	float Speed = TargetObject->GetSpeed_Implementation();
+void NorthMove::Execute(TSubclassOf<UFuselage> Target) {
+	IFuselage* Fuselage = Cast<IFuselage>(Target->StaticClass());
+	float Speed = Fuselage->GetSpeed_Implementation();
 	FVector NortVector = CalculationRatioSpeed({ -Speed,0.0f,  0.0f });
-	TargetObject->SetLocation_Implementation(NortVector);
+	Fuselage->SetLocation_Implementation(NortVector);
 }
 
-void Shooting::Execute_Implementation(TSubclassOf<UFuselage>  Target) {
-
+void Shooting::Execute(TSubclassOf<UFuselage> Target) {
+	UE_LOG(LogTemp, Log, TEXT("Shooting Interface"));
+	IFuselage* Fuselage = Cast<IFuselage>(Target->StaticClass());
 	if (Target != nullptr)
 	{
 	}

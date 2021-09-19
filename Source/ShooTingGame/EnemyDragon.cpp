@@ -67,7 +67,7 @@ UClass* AEnemyDragon::GetComponentClass_Implementation() const
 	return GetClass();
 }
 
-TSubclassOf<UFuselage>  AEnemyDragon::GetWeapon() const
+IFuselage*  AEnemyDragon::GetWeapon() const
 {
 	return m_weapon;
 }
@@ -95,10 +95,10 @@ void AEnemyDragon::EventUpdate_Implementation()
 	while (m_actions.size() > 0)
 	{
 		//만약 인터페이스 정의되지 않았을경우를 체크한다.
-		IAction* Action = ChangeAction(m_actions.front());
-		m_actions.pop();
-		checkf(Action != nullptr, TEXT("Player animation No have Interface"));
-		Action->Execute_Implementation(StaticClass());
+		//IAction* Action = ChangeAction(m_actions.front());
+		//m_actions.pop();
+		//checkf(Action != nullptr, TEXT("Player animation No have Interface"));
+		//Action->Execute_Implementation(StaticClass());
 	}
 	m_actions = m_next_actions;
 }

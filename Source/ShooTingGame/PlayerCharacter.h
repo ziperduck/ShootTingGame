@@ -37,24 +37,24 @@ public:
 
 	virtual UClass* GetComponentClass_Implementation() const override;
 
-	TSubclassOf<UFuselage>  GetWeapon() const;
+	IFuselage*  GetWeapon() const;
 
 	//Setter
 	virtual void SetLocation_Implementation(const FVector& MoveLocation) override;
 
 	//Event
 	virtual void EventUpdate_Implementation() override;
-
-
-	// Called to bind functionality to input
-	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	UFUNCTION(BlueprintCallable)
+	void MoveX(float Direction);
+	UFUNCTION(BlueprintCallable)
+	void MoveY(float Direction);
 
 private:
 
 	//player object에게 MoveAction값을 제공하는 함수
-	void MoveX(float);
-	void MoveY(float);
-
+	
+	
 	void EventA();
 
 	UStaticMeshComponent* CharacterMesh;
@@ -70,7 +70,7 @@ private:
 
 	int8 m_current_HP;
 
-	TSubclassOf<UFuselage>  m_weapon;
+	IFuselage*  m_weapon;
 
 	std::queue<EVariousAction> m_actions;
 

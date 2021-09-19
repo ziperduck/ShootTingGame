@@ -23,4 +23,5 @@ enum class EVariousAction : uint8
 	, WestMove UMETA(DisplayName = "WestMove ")
 	, SouthMove UMETA(DisplayName = "SouthMove ")
 	, NorthMove UMETA(DisplayName = "NorthMove ")
+	, Shooting UMETA(DisplayName = "Shooting")
 };

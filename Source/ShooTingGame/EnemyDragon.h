@@ -36,7 +36,7 @@ public:
 
 	virtual UClass* GetComponentClass_Implementation() const override;
 
-	TSubclassOf<UFuselage>  GetWeapon() const;
+	IFuselage*  GetWeapon() const;
 
 	//Setter
 	virtual void SetLocation_Implementation(const FVector& MoveLocation) override;
@@ -57,7 +57,7 @@ private:
 
 	int8 m_current_HP;
 
-	TSubclassOf<UFuselage>  m_weapon;
+	IFuselage*  m_weapon;
 	
 	std::queue<EVariousAction> m_actions;
 

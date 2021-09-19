@@ -3,6 +3,7 @@
 
 #include "ActionInstance.h"
 
+/*
 EastMove* ActionInstance::East = new EastMove();
 WestMove*  ActionInstance::West = new WestMove();
 SouthMove* ActionInstance::South = new SouthMove();
@@ -24,3 +25,4 @@ IAction* ActionInstance::ChangeAction(EVariousAction Action)const
 		return nullptr;
 	}
 }
+*/

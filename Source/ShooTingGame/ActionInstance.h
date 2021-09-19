@@ -19,8 +19,8 @@ public:
 	IAction* ChangeAction(EVariousAction Action) const;
 
 private:
-	static EastMove* East;
-	static WestMove* West;
-	static SouthMove* South;
-	static NorthMove* North;
+	//static EastMove* East;
+	//static WestMove* West;
+	//static SouthMove* South;
+	//static NorthMove* North;
 };
