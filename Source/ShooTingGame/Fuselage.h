@@ -54,7 +54,8 @@ public:
 	//Setter
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
 		void SetLocation(const FVector& Vector);
-	virtual void SetLocation_Implementation(const FVector& Vector) {};
+	virtual void SetLocation_Implementation(const FVector& Vector) { 
+		UE_LOG(LogTemp,Log,TEXT("Pure virtual SetLocation")); };
 
 	//Event
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")

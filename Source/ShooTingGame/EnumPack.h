@@ -16,7 +16,7 @@ enum class EFuselageKind : uint8
 	, RifleFuselage UMETA(DisplayName = "RifleFuselage")
 };
 
-UENUM(BlueprintType, Category = "Fuselage,Action")
+UENUM(BlueprintType, Category = "Fuselage'Action")
 enum class EVariousAction : uint8
 {
 	EastMove UMETA(DisplayName = "EastMove ")

@@ -21,9 +21,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 public:
-
+		
+	
 	//Getter
 	virtual const EFuselageKind GetKind_Implementation() const override;
 
@@ -41,7 +41,7 @@ public:
 
 	//Setter
 	virtual void SetLocation_Implementation(const FVector& MoveLocation) override;
-
+	
 	//Event
 	virtual void EventUpdate_Implementation() override;
 	
@@ -49,18 +49,14 @@ public:
 	void MoveX(float Direction);
 	UFUNCTION(BlueprintCallable)
 	void MoveY(float Direction);
-
-private:
-
-	//player object에게 MoveAction값을 제공하는 함수
-	
-	
+	UFUNCTION(BlueprintCallable)
 	void EventA();
 
-	UStaticMeshComponent* CharacterMesh;
+private:
+
+	USceneComponent* m_characterScene;
 
 private:
-	float ApratVector;
 
 	EFuselageKind m_kind;
 
@@ -71,8 +67,4 @@ private:
 	int8 m_current_HP;
 
 	IFuselage*  m_weapon;
-
-	std::queue<EVariousAction> m_actions;
-
-	std::queue<EVariousAction> m_next_actions;
 };

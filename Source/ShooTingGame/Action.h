@@ -13,5 +13,5 @@ class IAction
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	
-	virtual void Execute(TSubclassOf<UFuselage> Target) = 0;
+	virtual void Execute(const UObject* Target) = 0;
 };

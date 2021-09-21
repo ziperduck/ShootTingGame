@@ -5,27 +5,18 @@
 #include <Engine/Classes/Camera/CameraComponent.h>
 
 // Sets default values
-APlayerCharacter::APlayerCharacter()
-	:ApratVector(0.0f) {
+APlayerCharacter::APlayerCharacter(){
+
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	UE_LOG(LogTemp, Log, TEXT("AplayerContorller Constructor"));
-	
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
-	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
-	{
 
-		CharacterMesh->SetStaticMesh(MeshAsset.Object);
-		CharacterMesh->SetupAttachment(RootComponent);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("Object is nullptr"));
-	}
+
+	m_characterScene = CreateAbstractDefaultSubobject<USceneComponent>(TEXT("Scene"));
+	m_characterScene->SetupAttachment(RootComponent);
 
 	m_kind = EFuselageKind::RifleFuselage;
-	m_speed = 4.0f;
+	m_speed = 1.0f;
 	m_max_HP = 1;
 	m_current_HP = m_max_HP;
 }
@@ -35,51 +26,28 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	UE_LOG(LogTemp, Log, TEXT("AplayerContorller BeginPlay"));
+
 }
+
 
 void APlayerCharacter::MoveX(float Direction)
 {
-	UE_LOG(LogTemp, Log, TEXT(" PlayerCharacter Move XXX %f"), Direction);
-	const int8 EastWest = Direction;
-	constexpr int8 East = 1;
-	constexpr int8 West = 2;
+	float Speed = Direction * m_speed;
+	SetLocation_Implementation(FVector{ 0.0,Speed,0.0 });
 
-	switch (EastWest)
-	{
-	case East:
-		m_actions.push(EVariousAction::EastMove);
-		break;
-	case West:
-		m_actions.push(EVariousAction::WestMove);
-		break;
-	default:
-		break;
-	}
-
+	UE_LOG(LogTemp, Log, TEXT("MoveX"));
 }
 
 void APlayerCharacter::MoveY(float Direction)
 {
-	UE_LOG(LogTemp, Log, TEXT("PlayerCharacter YYY %f"), Direction);
-	const int8 SouthNorth = Direction;
-	constexpr int8 South = 1;
-	constexpr int8 North = 2;
-
-	switch (SouthNorth)
-	{
-	case South:
-		m_actions.push(EVariousAction::SouthMove);
-		break;
-	case North:
-		m_actions.push(EVariousAction::NorthMove);
-		break;
-	default:
-		break;
-	}
-
+	float Speed = Direction * m_speed;
+	SetLocation_Implementation(FVector{ Speed,0.0,0.0 });
+	
+	UE_LOG(LogTemp, Log, TEXT("MoveY"));
 }
 void APlayerCharacter::EventA()
 {
+	GetWeapon();
 }
 
 const EFuselageKind APlayerCharacter::GetKind_Implementation() const
@@ -117,15 +85,16 @@ IFuselage*  APlayerCharacter::GetWeapon() const
 	return m_weapon;
 }
 
+
 void APlayerCharacter::SetLocation_Implementation(const FVector& MoveLocation) {
 	/*
 	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
 	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
 	*/
-
 	FHitResult Hit(1.f);
 
-	GetRootComponent()->MoveComponent(MoveLocation, GetRotation(), true, &Hit);
+	UE_LOG(LogTemp, Log, TEXT("MoveLocation"));
+	m_characterScene->MoveComponent(MoveLocation, Execute_GetRotation(this), true, &Hit);
 	if (Hit.IsValidBlockingHit())
 	{
 		UE_LOG(LogTemp, Log, TEXT("is Hit Actor"));
@@ -135,13 +104,5 @@ void APlayerCharacter::SetLocation_Implementation(const FVector& MoveLocation) {
 //Event
 void APlayerCharacter::EventUpdate_Implementation()
 {
-	UE_LOG(LogTemp, Log, TEXT("Aplyaer Character EventUpdate"));
-	while (m_actions.size() > 0)
-	{
-		//만약 인터페이스 정의되지 않았을경우를 체크한다.
-		IAction* Action = ChangeAction(m_actions.front());
-		checkf(Action != nullptr, TEXT("Player animation No have Interface"));
-		Action->Execute(GetClass());
-		m_actions.pop();	
-	}
+
 }
