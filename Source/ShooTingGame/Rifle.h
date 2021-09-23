@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Fuselage.h"
-#include "FuselageFoundation.h"
 #include "Action.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -31,7 +30,7 @@ public:
 	virtual UClass* GetComponentClass_Implementation() const override;
 
 	//Setter
-	void SetLocation_Implementation(const FVector& MoveLocation) ;
+	void MoveLocation_Implementation(const FVector& MoveLocation) ;
 
 	//Event
 	virtual void EventUpdate_Implementation() override;
@@ -39,7 +38,7 @@ public:
 
 private:
 
-	UStaticMeshComponent* CharacterMesh;
+	USceneComponent* m_characterScene;
 
 private:
 	EFuselageKind m_kind;
@@ -51,8 +50,4 @@ private:
 	int8 m_max_HP;
 
 	int8 m_current_HP;
-
-	std::queue<EVariousAction> m_actions;
-
-	std::queue<EVariousAction> m_animation;
 };

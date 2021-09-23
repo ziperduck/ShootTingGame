@@ -17,28 +17,28 @@ class EastMove : public IAction
 {
 public:
 
-	 virtual void Execute(const UObject* Target) override;
+	 virtual void Execute(AActor* Target) override;
 };
 class WestMove : public IAction
 {
 
 public:
 
-	virtual void Execute(const UObject* Target) override;
+	virtual void Execute(AActor* Target) override;
 
 };
 class SouthMove : public IAction
 {
 public:
 
-	virtual void Execute(const UObject* Target) override;
+	virtual void Execute(AActor* Target) override;
 
 };
 class NorthMove : public IAction
 {
 public:
 
-	virtual void Execute(const UObject* Target) override;
+	virtual void Execute(AActor* Target) override;
 
 };
 
@@ -47,6 +47,6 @@ class Shooting : public IAction
 {
 public:
 	
-	virtual void Execute(const UObject* Target) override;
+	virtual void Execute(AActor* Target) override;
 
 };

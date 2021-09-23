@@ -45,62 +45,59 @@ const FVector& CalculationRatioSpeed(const FVector& Ratio) {
 	return Ratio;
 }
 
-void EastMove::Execute(const UObject* Target) {
-	
+void EastMove::Execute(AActor* Target) {
+
 	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
-	bool BIsIemented = Target->GetClass()->ImplementsInterface(UFuselage::StaticClass());
-	
-	checkf(BIsIemented, TEXT("not Iemented"));
-	
-	IFuselage* Fuselage = Cast<IFuselage>(Target->GetClass());
+
+	IFuselage* Fuselage = Cast<IFuselage>(Target);
+	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
+
 	float Speed = Fuselage->GetSpeed_Implementation();
-	FVector EastVector = CalculationRatioSpeed({ 0.0f,-Speed,  0.0f });
-	Fuselage->SetLocation_Implementation(EastVector);
+	FVector EastVector = CalculationRatioSpeed({ 0.0f,Speed,  0.0f });
+	Fuselage->MoveLocation_Implementation(EastVector);
 }
 
-void WestMove::Execute(const UObject* Target) {
+void WestMove::Execute(AActor* Target) {
 
 	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
-	bool BIsIemented = Target->GetClass()->ImplementsInterface(UFuselage::StaticClass());
 
-	checkf(BIsIemented, TEXT("not Iemented"));
+	IFuselage* Fuselage = Cast<IFuselage>(Target);
+	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
-	IFuselage* Fuselage = Cast<IFuselage>(Target->GetClass());
 	float Speed = Fuselage->GetSpeed_Implementation();
 	FVector WestVector = CalculationRatioSpeed({ 0.0f,-Speed,  0.0f });
-	Fuselage->SetLocation_Implementation(WestVector);
+	Fuselage->MoveLocation_Implementation(WestVector);
 }
 
-void SouthMove::Execute(const UObject* Target) {
+void SouthMove::Execute(AActor* Target) {
 
 	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
-	bool BIsIemented = Target->GetClass()->ImplementsInterface(UFuselage::StaticClass());
 
-	checkf(BIsIemented, TEXT("not Iemented"));
+	IFuselage* Fuselage = Cast<IFuselage>(Target);
+	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
-	IFuselage* Fuselage = Cast<IFuselage>(Target->StaticClass());
 	float Speed = Fuselage->GetSpeed_Implementation();
 	FVector SouthVector = CalculationRatioSpeed({ Speed,0.0f,  0.0f });
-	Fuselage->SetLocation_Implementation(SouthVector);
+	Fuselage->MoveLocation_Implementation(SouthVector);
 }
 
-void NorthMove::Execute(const UObject* Target) {
+void NorthMove::Execute(AActor* Target) {
 
 	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
-	bool BIsIemented = Target->GetClass()->ImplementsInterface(UFuselage::StaticClass());
 
-	checkf(BIsIemented, TEXT("not Iemented"));
-	IFuselage* Fuselage = Cast<IFuselage>(Target->StaticClass());
+	IFuselage* Fuselage = Cast<IFuselage>(Target);
+	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
+
 	float Speed = Fuselage->GetSpeed_Implementation();
 	FVector NortVector = CalculationRatioSpeed({ -Speed,0.0f,  0.0f });
-	Fuselage->SetLocation_Implementation(NortVector);
+	Fuselage->MoveLocation_Implementation(NortVector);
 }
 
-void Shooting::Execute(const UObject* Target) {
+void Shooting::Execute(AActor* Target) {
 	UE_LOG(LogTemp, Log, TEXT("Shooting Interface"));
 	IFuselage* Fuselage = Cast<IFuselage>(Target->StaticClass());
 	if (Target != nullptr)

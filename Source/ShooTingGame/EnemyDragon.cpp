@@ -72,7 +72,7 @@ IFuselage*  AEnemyDragon::GetWeapon() const
 	return m_weapon;
 }
 
-void AEnemyDragon::SetLocation_Implementation(const FVector& MoveLocation) {
+void AEnemyDragon::MoveLocation_Implementation(const FVector& MoveLocation) {
 	/*
 	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
 	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.

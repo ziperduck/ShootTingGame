@@ -37,21 +37,26 @@ public:
 
 	virtual UClass* GetComponentClass_Implementation() const override;
 
-	IFuselage*  GetWeapon() const;
-
 	//Setter
-	virtual void SetLocation_Implementation(const FVector& MoveLocation) override;
+	virtual void MoveLocation_Implementation(const FVector& MoveLocation) override;
 	
 	//Event
 	virtual void EventUpdate_Implementation() override;
 	
 	UFUNCTION(BlueprintCallable)
 	void MoveX(float Direction);
+
 	UFUNCTION(BlueprintCallable)
 	void MoveY(float Direction);
-	UFUNCTION(BlueprintCallable)
-	void EventA();
 
+	//UFUNCTION(BlueprintSetter)
+	//	void SetWeapon(TSubclassOf<class AActor> Weapon)
+	//
+	//UFUNCTION(BlueprintSetter)
+	//	void ShootingGun();
+public:
+	UPROPERTY(BlueprintReadWrite)
+	TSubclassOf<class AActor> m_weapon;
 private:
 
 	USceneComponent* m_characterScene;
@@ -66,5 +71,5 @@ private:
 
 	int8 m_current_HP;
 
-	IFuselage*  m_weapon;
+	std::queue<EVariousAction> m_actions;
 };

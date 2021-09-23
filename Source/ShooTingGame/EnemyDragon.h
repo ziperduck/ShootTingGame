@@ -39,7 +39,7 @@ public:
 	IFuselage*  GetWeapon() const;
 
 	//Setter
-	virtual void SetLocation_Implementation(const FVector& MoveLocation) override;
+	virtual void MoveLocation_Implementation(const FVector& MoveLocation) override;
 
 	//Event
 	virtual void EventUpdate_Implementation() override;

@@ -2,21 +2,17 @@
 
 
 #include "Rifle.h"
+#include "Movement.h"
 
 // Sets default values
 ARifle::ARifle()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
-	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
-	{
+	m_characterScene = CreateAbstractDefaultSubobject<USceneComponent>(TEXT("Scene"));
+	m_characterScene->SetupAttachment(RootComponent);
 
-		CharacterMesh->SetStaticMesh(MeshAsset.Object);
-		CharacterMesh->SetAllMassScale(0.2f);
-		RootComponent = CharacterMesh;
-	}
+
 	m_kind = EFuselageKind::RifleFuselage;
 	m_speed = 4.0f;
 	m_damage = 3;
@@ -60,7 +56,7 @@ UWorld* ARifle::GetFuselageWorld_Implementation() const
 
  //Setter
 
-void ARifle::SetLocation_Implementation(const FVector& MoveLocation) {
+void ARifle::MoveLocation_Implementation(const FVector& MoveLocation) {
 	/*
 	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
 	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
@@ -69,7 +65,7 @@ void ARifle::SetLocation_Implementation(const FVector& MoveLocation) {
 	FHitResult Hit(1.f);
 	checkf(this != nullptr, TEXT("ARifle is nullptr"));
 
-	GetRootComponent()->MoveComponent(MoveLocation, GetRotation(), true, &Hit);
+	m_characterScene->MoveComponent(MoveLocation, K2_GetActorRotation(), true, &Hit);
 	if (Hit.IsValidBlockingHit())
 	{
 		UE_LOG(LogTemp, Log, TEXT("is Hit Actor"));
@@ -81,5 +77,10 @@ void ARifle::SetLocation_Implementation(const FVector& MoveLocation) {
 
 void ARifle::EventUpdate_Implementation() 
 {
-
+	IAction* Action = ChangeAction(EVariousAction::EastMove);
+	if (Action != nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Change Action had Action"));
+		Action->Execute(this);
+	}
 }
