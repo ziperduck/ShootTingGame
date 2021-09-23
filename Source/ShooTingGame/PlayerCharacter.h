@@ -2,7 +2,7 @@
 
 #pragma once
 
-
+#include "Airframe.h"
 #include "Fuselage.h"
 #include "EnumPack.h"
 #include "CoreMinimal.h"
@@ -22,26 +22,26 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 public:
-		
+	virtual void Tick(float Delta) override;
 	
 	//Getter
-	virtual const EFuselageKind GetKind_Implementation() const override;
+	virtual const EFuselageKind GetKind() const override;
 
-	virtual const float GetSpeed_Implementation() const override;
+	virtual const float GetSpeed() const override;
 
-	virtual const FVector GetLocation_Implementation() const override;
+	virtual const FVector GetLocation() const override;
 
-	virtual const FRotator GetRotation_Implementation() const override;
+	virtual const FRotator GetRotation() const override;
 
-	virtual UWorld* GetFuselageWorld_Implementation() const override;
+	virtual UWorld* GetFuselageWorld() const override;
 
-	virtual UClass* GetComponentClass_Implementation() const override;
+	virtual UClass* GetComponentClass() const override;
 
 	//Setter
-	virtual void MoveLocation_Implementation(const FVector& MoveLocation) override;
+	virtual void MoveLocation(const FVector& MoveLocation) override;
 	
 	//Event
-	virtual void EventUpdate_Implementation() override;
+	virtual void EventUpdate() override;
 	
 	UFUNCTION(BlueprintCallable)
 	void MoveX(float Direction);
@@ -49,11 +49,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void MoveY(float Direction);
 
-	//UFUNCTION(BlueprintSetter)
-	//	void SetWeapon(TSubclassOf<class AActor> Weapon)
-	//
-	//UFUNCTION(BlueprintSetter)
-	//	void ShootingGun();
+	UFUNCTION(BlueprintCallable)
+		void MoveA(float Direction);
+
+	UFUNCTION(BlueprintSetter)
+		void SetWeapon(TSubclassOf<class AActor> Weapon);
+	
+	UFUNCTION(BlueprintCallable)
+		void ShootingGun();
+
 public:
 	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<class AActor> m_weapon;

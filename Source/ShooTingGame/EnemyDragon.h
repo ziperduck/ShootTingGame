@@ -20,29 +20,30 @@ protected:
 
 public:
 
-	
 	AEnemyDragon();
 
+	virtual void Tick(float Delta) override;
+
 	//Getter
-	virtual const EFuselageKind GetKind_Implementation() const override;
+	virtual const EFuselageKind GetKind() const override;
 
-	virtual const float GetSpeed_Implementation() const override;
+	virtual const float GetSpeed() const override;
 
-	virtual const FVector GetLocation_Implementation() const override;
+	virtual const FVector GetLocation() const override;
 
-	virtual const FRotator GetRotation_Implementation() const override;
+	virtual const FRotator GetRotation() const override;
 
-	virtual UWorld* GetFuselageWorld_Implementation() const override;
+	virtual UWorld* GetFuselageWorld() const override;
 
-	virtual UClass* GetComponentClass_Implementation() const override;
+	virtual UClass* GetComponentClass() const override;
 
 	IFuselage*  GetWeapon() const;
 
 	//Setter
-	virtual void MoveLocation_Implementation(const FVector& MoveLocation) override;
+	virtual void MoveLocation(const FVector& MoveLocation) override;
 
 	//Event
-	virtual void EventUpdate_Implementation() override;
+	virtual void EventUpdate() override;
 
 
 private:

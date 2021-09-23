@@ -53,9 +53,9 @@ void EastMove::Execute(AActor* Target) {
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
-	float Speed = Fuselage->GetSpeed_Implementation();
+	float Speed = Fuselage->GetSpeed();
 	FVector EastVector = CalculationRatioSpeed({ 0.0f,Speed,  0.0f });
-	Fuselage->MoveLocation_Implementation(EastVector);
+	Fuselage->MoveLocation(EastVector);
 }
 
 void WestMove::Execute(AActor* Target) {
@@ -66,9 +66,9 @@ void WestMove::Execute(AActor* Target) {
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
-	float Speed = Fuselage->GetSpeed_Implementation();
+	float Speed = Fuselage->GetSpeed();
 	FVector WestVector = CalculationRatioSpeed({ 0.0f,-Speed,  0.0f });
-	Fuselage->MoveLocation_Implementation(WestVector);
+	Fuselage->MoveLocation(WestVector);
 }
 
 void SouthMove::Execute(AActor* Target) {
@@ -79,9 +79,9 @@ void SouthMove::Execute(AActor* Target) {
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
-	float Speed = Fuselage->GetSpeed_Implementation();
+	float Speed = Fuselage->GetSpeed();
 	FVector SouthVector = CalculationRatioSpeed({ Speed,0.0f,  0.0f });
-	Fuselage->MoveLocation_Implementation(SouthVector);
+	Fuselage->MoveLocation(SouthVector);
 }
 
 void NorthMove::Execute(AActor* Target) {
@@ -92,16 +92,15 @@ void NorthMove::Execute(AActor* Target) {
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
-	float Speed = Fuselage->GetSpeed_Implementation();
+	float Speed = Fuselage->GetSpeed();
 	FVector NortVector = CalculationRatioSpeed({ -Speed,0.0f,  0.0f });
-	Fuselage->MoveLocation_Implementation(NortVector);
+	Fuselage->MoveLocation(NortVector);
 }
 
 void Shooting::Execute(AActor* Target) {
-	UE_LOG(LogTemp, Log, TEXT("Shooting Interface"));
-	IFuselage* Fuselage = Cast<IFuselage>(Target->StaticClass());
-	if (Target != nullptr)
-	{
-	}
+	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
+	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
+	IFuselage* Fuselage = Cast<IFuselage>(Target);
+	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 }

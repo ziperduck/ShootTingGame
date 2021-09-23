@@ -8,7 +8,7 @@
 AEnemyDragon::AEnemyDragon()
 {
 
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
 	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
@@ -37,32 +37,32 @@ void AEnemyDragon::BeginPlay()
 	UE_LOG(LogTemp,Log,TEXT("Spawn EnemyDragon"));
 }
 
-const EFuselageKind AEnemyDragon::GetKind_Implementation() const
+const EFuselageKind AEnemyDragon::GetKind() const
 {
 	return m_kind;
 }
 
-const float AEnemyDragon::GetSpeed_Implementation() const
+const float AEnemyDragon::GetSpeed() const
 {
 	return m_speed;
 }
 
-const FVector AEnemyDragon::GetLocation_Implementation() const
+const FVector AEnemyDragon::GetLocation() const
 {
 	return K2_GetActorLocation();
 }
 
-const FRotator AEnemyDragon::GetRotation_Implementation() const
+const FRotator AEnemyDragon::GetRotation() const
 {
 	return K2_GetActorRotation();
 };
 
-UWorld* AEnemyDragon::GetFuselageWorld_Implementation() const
+UWorld* AEnemyDragon::GetFuselageWorld() const
 {
 	return GetWorld();
 }
 
-UClass* AEnemyDragon::GetComponentClass_Implementation() const
+UClass* AEnemyDragon::GetComponentClass() const
 {
 	return GetClass();
 }
@@ -72,7 +72,7 @@ IFuselage*  AEnemyDragon::GetWeapon() const
 	return m_weapon;
 }
 
-void AEnemyDragon::MoveLocation_Implementation(const FVector& MoveLocation) {
+void AEnemyDragon::MoveLocation(const FVector& MoveLocation) {
 	/*
 	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
 	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
@@ -90,7 +90,7 @@ void AEnemyDragon::MoveLocation_Implementation(const FVector& MoveLocation) {
 }
 
 //Event
-void AEnemyDragon::EventUpdate_Implementation() 
+void AEnemyDragon::EventUpdate()
 {
 	while (m_actions.size() > 0)
 	{
@@ -103,5 +103,11 @@ void AEnemyDragon::EventUpdate_Implementation()
 	m_actions = m_next_actions;
 }
 
+void AEnemyDragon::Tick(float Delta)
+{
+	Super::Tick(Delta);
+
+	EventUpdate();
+}
 
 

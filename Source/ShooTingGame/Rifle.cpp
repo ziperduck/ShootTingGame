@@ -23,32 +23,32 @@ ARifle::ARifle()
 
 //Getter
 
-const EFuselageKind ARifle::GetKind_Implementation() const
+const EFuselageKind ARifle::GetKind() const
 {
 	return m_kind;
 }
 
-const float ARifle::GetSpeed_Implementation() const
+const float ARifle::GetSpeed() const
 {
 	return m_speed;
 }
 
-const FVector ARifle::GetLocation_Implementation() const
+const FVector ARifle::GetLocation() const
 {
 	return K2_GetActorLocation();
 }
 
-const FRotator ARifle::GetRotation_Implementation() const
+const FRotator ARifle::GetRotation() const
 {
 	return K2_GetActorRotation();
 }
 
-UWorld* ARifle::GetFuselageWorld_Implementation() const
+UWorld* ARifle::GetFuselageWorld() const
 {
 	return GetWorld();
 }
 
- UClass* ARifle::GetComponentClass_Implementation() const
+ UClass* ARifle::GetComponentClass() const
 {
 	return GetClass();
 }
@@ -56,7 +56,7 @@ UWorld* ARifle::GetFuselageWorld_Implementation() const
 
  //Setter
 
-void ARifle::MoveLocation_Implementation(const FVector& MoveLocation) {
+void ARifle::MoveLocation(const FVector& MoveLocation) {
 	/*
 	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
 	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
@@ -74,8 +74,7 @@ void ARifle::MoveLocation_Implementation(const FVector& MoveLocation) {
 
 
 //Event
-
-void ARifle::EventUpdate_Implementation() 
+void ARifle::EventUpdate()
 {
 	IAction* Action = ChangeAction(EVariousAction::EastMove);
 	if (Action != nullptr)
@@ -83,4 +82,11 @@ void ARifle::EventUpdate_Implementation()
 		UE_LOG(LogTemp, Log, TEXT("Change Action had Action"));
 		Action->Execute(this);
 	}
+}
+
+void ARifle::Tick(float Delta)
+{
+	Super::Tick(Delta);
+
+	EventUpdate();
 }

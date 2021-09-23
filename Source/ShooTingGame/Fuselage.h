@@ -26,42 +26,23 @@ class SHOOTINGGAME_API IFuselage
 public:
 
 	//Getter
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		const EFuselageKind GetKind() const;
-	virtual const EFuselageKind GetKind_Implementation() const { return EFuselageKind::PlayerFuselage; };
+	virtual const EFuselageKind GetKind() const { return EFuselageKind::PlayerFuselage; };
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		const float GetSpeed() const;
-	virtual const float GetSpeed_Implementation() const { return 1.0f; };
+	virtual const float GetSpeed() const { return 1.0f; };
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		const FVector GetLocation() const;
-	virtual const FVector GetLocation_Implementation() const { return FVector::ZeroVector; };
+	virtual const FVector GetLocation() const { return FVector::ZeroVector; };
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		const FRotator GetRotation() const;
-	virtual const FRotator GetRotation_Implementation() const { return FRotator::ZeroRotator; };
+	virtual const FRotator GetRotation() const { return FRotator::ZeroRotator; };
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		UWorld* GetFuselageWorld() const;
-	virtual UWorld* GetFuselageWorld_Implementation() const { return nullptr; };
+	virtual UWorld* GetFuselageWorld() const { return nullptr; };
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		UClass* GetComponentClass() const;
-	virtual UClass* GetComponentClass_Implementation() const { return nullptr; };
+	virtual UClass* GetComponentClass() const { return nullptr; };
 
 
 	//Setter
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		void MoveLocation(const FVector& Vector);
-	virtual void MoveLocation_Implementation(const FVector& Vector) { 
+	virtual void MoveLocation(const FVector& Vector) { 
 		UE_LOG(LogTemp,Log,TEXT("Pure virtual MoveLocation")); };
 
 	//Event
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Fuselage")
-		void EventUpdate();
-	virtual void EventUpdate_Implementation() {
-		UE_LOG(LogTemp, Log, TEXT("Fuselage EventUpdate"));
-	};
-
+	virtual void EventUpdate(){}
 };
