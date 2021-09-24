@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Movement.h"
+#include "Airframe.h"
 #include "EnemyDragon.h"
+#include "Rifle.h"
 #include "CoreMinimal.h"
 
 IAction* ChangeAction(EVariousAction Action)
@@ -101,6 +103,15 @@ void Shooting::Execute(AActor* Target) {
 	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
-	IFuselage* Fuselage = Cast<IFuselage>(Target);
-	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
+	UWorld* TargetWorld = Target->GetWorld();
+	
+	IAirframe* Airframe = Cast<IAirframe>(Target);
+	if (Airframe == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("shooting Airframe is nullptr"));
+		return;
+	}
+	checkf(Airframe != nullptr, TEXT("Airframe is nullptr"));
+	Airframe->ShootingGun();
+
 }

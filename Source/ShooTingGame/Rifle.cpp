@@ -7,11 +7,19 @@
 // Sets default values
 ARifle::ARifle()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	m_characterScene = CreateAbstractDefaultSubobject<USceneComponent>(TEXT("Scene"));
 	m_characterScene->SetupAttachment(RootComponent);
-
+	
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Meshes/Projectile.Projectile"));
+	UStaticMeshComponent* CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
+	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
+		CharacterMesh->SetStaticMesh(MeshAsset.Object);
+		CharacterMesh->SetupAttachment(m_characterScene);
+	}
 
 	m_kind = EFuselageKind::RifleFuselage;
 	m_speed = 4.0f;
@@ -76,7 +84,7 @@ void ARifle::MoveLocation(const FVector& MoveLocation) {
 //Event
 void ARifle::EventUpdate()
 {
-	IAction* Action = ChangeAction(EVariousAction::EastMove);
+	IAction* Action = ChangeAction(EVariousAction::SouthMove);
 	if (Action != nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Change Action had Action"));

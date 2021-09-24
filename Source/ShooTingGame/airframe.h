@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnumPack.h"
 #include "UObject/Interface.h"
 #include "Airframe.generated.h"
 
@@ -24,5 +25,5 @@ class SHOOTINGGAME_API IAirframe
 public:
 
 	//airgrame을 dragon이나 character에 상속시키고 action값에서 불러와서 shooting을 만들자
-
+	virtual void ShootingGun(){ }
 };

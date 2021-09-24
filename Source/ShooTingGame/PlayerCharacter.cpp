@@ -2,6 +2,7 @@
 
 #include "PlayerCharacter.h"
 #include "Movement.h"
+#include "Rifle.h"
 #include <Engine/Classes/Camera/CameraComponent.h>
 
 // Sets default values
@@ -15,7 +16,8 @@ APlayerCharacter::APlayerCharacter(){
 	m_characterScene = CreateAbstractDefaultSubobject<USceneComponent>(TEXT("Scene"));
 	m_characterScene->SetupAttachment(RootComponent);
 
-	m_kind = EFuselageKind::RifleFuselage;
+	m_kind = EFuselageKind::PlayerFuselage;
+	m_weapon = EFuselageKind::RifleFuselage;
 	m_speed = 1.0f;
 	m_max_HP = 1;
 	m_current_HP = m_max_HP;
@@ -135,36 +137,21 @@ void APlayerCharacter::MoveA(float Direction)
 	m_actions.push(EVariousAction::Shooting);
 }
 
-void APlayerCharacter::SetWeapon(TSubclassOf<class AActor> Weapon)
+void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
 {
-
-	UE_LOG(LogTemp, Log, TEXT("SetWeapon playercharacter Name : %s"), *GetHumanReadableName());
-	if (Weapon == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("SetWeapon weapon is nullptr"));
-		return;
-	}
-	checkf(Weapon != nullptr, TEXT("Weapon is nullptr"));
-	checkf(Weapon->ImplementsInterface(UFuselage::StaticClass())
-		, TEXT("Weapon is not Derived"));
-
-	UE_LOG(LogTemp, Log, TEXT("SetWeapon Weapon Name : %s"), Weapon->StaticConfigName());
-	m_weapon = Weapon;
-	UE_LOG(LogTemp, Log, TEXT("SetWeapon m_weapon Name : %s"), m_weapon->StaticConfigName());
+	UE_LOG(LogTemp, Log, TEXT("Overlap actor"));
 }
 
 
 void APlayerCharacter::ShootingGun()
 {
-	if (m_weapon == nullptr)
+	switch (m_weapon)
 	{
-		UE_LOG(LogTemp, Log, TEXT("ShootingGun no have m_weapon"));
-		UE_LOG(LogTemp, Log, TEXT("ShootingGun playercharacter Name : %s"), *GetHumanReadableName());
-		return;
+	case EFuselageKind::RifleFuselage:
+		GetWorld()->SpawnActor<ARifle>(
+			GetActorLocation() + FVector{ 30.0f,0.0f,0.0f }, FRotator::ZeroRotator);
+		break;
+	default:
+		break;
 	}
-	UE_LOG(LogTemp, Log, TEXT("ShootingGun m_weapon Name : %s"), m_weapon->StaticConfigName());
-	FTransform SpawnTransform{ K2_GetActorRotation() ,FVector{0.0f,0.0f,50.0f},FVector::OneVector };
-	GetWorld()->SpawnActor<AActor>(m_weapon, SpawnTransform);
-
-
 }

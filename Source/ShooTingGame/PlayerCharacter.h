@@ -10,7 +10,7 @@
 #include "PlayerCharacter.generated.h"
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup = "Fuselage")
-class SHOOTINGGAME_API APlayerCharacter : public APawn, public IFuselage
+class SHOOTINGGAME_API APlayerCharacter : public APawn, public IFuselage, public IAirframe
 {
 	GENERATED_BODY()
 
@@ -52,15 +52,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void MoveA(float Direction);
 
-	UFUNCTION(BlueprintSetter)
-		void SetWeapon(TSubclassOf<class AActor> Weapon);
-	
-	UFUNCTION(BlueprintCallable)
-		void ShootingGun();
+	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
+
+
+	virtual void ShootingGun() override;
 
 public:
-	UPROPERTY(BlueprintReadWrite)
-	TSubclassOf<class AActor> m_weapon;
+
 private:
 
 	USceneComponent* m_characterScene;
@@ -76,4 +74,6 @@ private:
 	int8 m_current_HP;
 
 	std::queue<EVariousAction> m_actions;
+
+	EFuselageKind m_weapon;
 };

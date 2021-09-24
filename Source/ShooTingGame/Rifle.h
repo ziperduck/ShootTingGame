@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Fuselage.h"
-#include "Action.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Rifle.generated.h"
