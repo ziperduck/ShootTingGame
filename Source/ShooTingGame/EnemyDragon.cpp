@@ -3,12 +3,19 @@
 
 #include "EnemyDragon.h"
 #include "Movement.h"
+#include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
-AEnemyDragon::AEnemyDragon()
+AEnemyDragon::AEnemyDragon() 
 {
 
 	PrimaryActorTick.bCanEverTick = true;
+
+	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	Sphere->SetNotifyRigidBodyCollision(true);
+	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
+	Sphere->InitSphereRadius(100.0f);
+	RootComponent = Sphere;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
 	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
@@ -17,7 +24,7 @@ AEnemyDragon::AEnemyDragon()
 
 		CharacterMesh->SetStaticMesh(MeshAsset.Object);
 		CharacterMesh->SetAllMassScale(0.5f);
-		RootComponent = CharacterMesh;
+		CharacterMesh->SetupAttachment(RootComponent);
 	}
 	else
 	{
@@ -27,6 +34,7 @@ AEnemyDragon::AEnemyDragon()
 	m_kind = EFuselageKind::RifleFuselage;
 	m_speed = 4.0f;
 	m_max_HP = 1;
+	m_struck_damage = 0;
 	m_current_HP = m_max_HP;
 
 }
@@ -62,14 +70,24 @@ UWorld* AEnemyDragon::GetFuselageWorld() const
 	return GetWorld();
 }
 
-UClass* AEnemyDragon::GetComponentClass() const
+const int32 AEnemyDragon::GetStruckDamage() const
 {
-	return GetClass();
+	return m_struck_damage;
+}
+
+const int32 AEnemyDragon::GetAttackPower() const
+{
+	return m_attack_power;
 }
 
 IFuselage*  AEnemyDragon::GetWeapon() const
 {
 	return m_weapon;
+}
+
+void AEnemyDragon::SetCurrentHP(const int8 HP)
+{
+	m_current_HP += HP;
 }
 
 void AEnemyDragon::MoveLocation(const FVector& MoveLocation) {
@@ -94,13 +112,30 @@ void AEnemyDragon::EventUpdate()
 {
 	while (m_actions.size() > 0)
 	{
-		//만약 인터페이스 정의되지 않았을경우를 체크한다.
-		//IAction* Action = ChangeAction(m_actions.front());
-		//m_actions.pop();
-		//checkf(Action != nullptr, TEXT("Player animation No have Interface"));
-		//Action->Execute_Implementation(StaticClass());
+		IAction* Action = ChangeAction(m_actions.front());
+		m_actions.pop();
+		checkf(Action != nullptr, TEXT("Player animation No have Interface"));
+		Action->Execute(this);
 	}
-	m_actions = m_next_actions;
+
+	if (m_current_HP < 1)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Enemy Dragon Death"));
+		ChangeAction(EVariousAction::Death)->Execute(this);
+	}
+	//m_actions = m_next_actions;
+}
+
+void AEnemyDragon::NotifyActorBeginOverlap(AActor* Actor)
+{
+	UE_LOG(LogTemp, Log, TEXT("Overlap AEnemyDragon"));
+	if (Actor == nullptr)
+		return;
+	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
+	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
+	
+	m_actions.push(EVariousAction::Struck);
+	m_struck_damage = OverlapTarget->GetAttackPower();
 }
 
 void AEnemyDragon::Tick(float Delta)

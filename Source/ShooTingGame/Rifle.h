@@ -28,14 +28,19 @@ public:
 
 	virtual UWorld* GetFuselageWorld() const override;
 
-	virtual UClass* GetComponentClass() const override;
+	virtual const int32 GetStruckDamage() const override;
+
+	virtual const int32 GetAttackPower() const override;
 
 	//Setter
+	virtual void SetCurrentHP(const int8 HP) override;
+
 	void MoveLocation(const FVector& MoveLocation) ;
 
 	//Event
 	virtual void EventUpdate() override;
 
+	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
 
 private:
 
@@ -51,4 +56,10 @@ private:
 	int8 m_max_HP;
 
 	int8 m_current_HP;
+
+	const int32 m_struck_damage = 1;
+
+	int32 m_attack_power;
+
+	std::queue<EVariousAction> m_actions;
 };

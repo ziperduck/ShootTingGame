@@ -50,3 +50,19 @@ public:
 	virtual void Execute(AActor* Target) override;
 
 };
+
+class Struck : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};
+
+class Death : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};

@@ -4,14 +4,20 @@
 #include "Movement.h"
 #include "Rifle.h"
 #include <Engine/Classes/Camera/CameraComponent.h>
+#include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
-APlayerCharacter::APlayerCharacter(){
+APlayerCharacter::APlayerCharacter() {
 
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	UE_LOG(LogTemp, Log, TEXT("AplayerContorller Constructor"));
 
+	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	Sphere->SetNotifyRigidBodyCollision(true);
+	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
+	Sphere->InitSphereRadius(20.0f);
+	RootComponent = Sphere;
 
 	m_characterScene = CreateAbstractDefaultSubobject<USceneComponent>(TEXT("Scene"));
 	m_characterScene->SetupAttachment(RootComponent);
@@ -58,9 +64,19 @@ UWorld* APlayerCharacter::GetFuselageWorld() const
 	return GetWorld();
 }
 
-UClass* APlayerCharacter::GetComponentClass() const
+const int32 APlayerCharacter::GetStruckDamage() const
 {
-	return GetClass();
+	return m_struck_damage;
+}
+
+const int32 APlayerCharacter::GetAttackPower() const
+{
+	return m_attack_power;
+}
+
+void APlayerCharacter::SetCurrentHP(const int8 HP)
+{
+	m_current_HP += HP;
 }
 
 void APlayerCharacter::MoveLocation(const FVector& MoveLocation) {
@@ -71,7 +87,7 @@ void APlayerCharacter::MoveLocation(const FVector& MoveLocation) {
 	FHitResult Hit(1.f);
 
 	UE_LOG(LogTemp, Log, TEXT("MoveLocation"));
-	m_characterScene->MoveComponent(MoveLocation, K2_GetActorRotation(), true, &Hit);
+	RootComponent->MoveComponent(MoveLocation, K2_GetActorRotation(), true, &Hit);
 	if (Hit.IsValidBlockingHit())
 	{
 		UE_LOG(LogTemp, Log, TEXT("is Hit Actor"));
@@ -86,6 +102,11 @@ void APlayerCharacter::EventUpdate()
 		IAction* Action = ChangeAction(m_actions.front());
 		Action->Execute(this);
 		m_actions.pop();
+	}
+	if (m_current_HP < 1)
+	{
+		UE_LOG(LogTemp, Log, TEXT("You Death"));
+		PrimaryActorTick.bCanEverTick = false;
 	}
 }
 
@@ -139,7 +160,21 @@ void APlayerCharacter::MoveA(float Direction)
 
 void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
 {
-	UE_LOG(LogTemp, Log, TEXT("Overlap actor"));
+	UE_LOG(LogTemp, Log, TEXT("Overlap Player Character"));
+	if (Actor == nullptr)
+		return;
+	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
+	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
+
+	switch (OverlapTarget->GetKind())
+	{
+	case EFuselageKind::PlayerFuselage:
+		UE_LOG(LogTemp, Log, TEXT("Player Overlap"));
+		break;
+	default:
+		m_actions.push(EVariousAction::Struck);
+		break;
+	}
 }
 
 
@@ -149,7 +184,7 @@ void APlayerCharacter::ShootingGun()
 	{
 	case EFuselageKind::RifleFuselage:
 		GetWorld()->SpawnActor<ARifle>(
-			GetActorLocation() + FVector{ 30.0f,0.0f,0.0f }, FRotator::ZeroRotator);
+			GetActorLocation() + FVector{ 60.0f,0.0f,0.0f }, FRotator::ZeroRotator);
 		break;
 	default:
 		break;

@@ -36,13 +36,17 @@ public:
 
 	virtual UWorld* GetFuselageWorld() const { return nullptr; };
 
-	virtual UClass* GetComponentClass() const { return nullptr; };
+	virtual const int32 GetStruckDamage() const { return 0; };
 
+	virtual const int32 GetAttackPower() const { return 0; };
 
 	//Setter
-	virtual void MoveLocation(const FVector& Vector) { 
-		UE_LOG(LogTemp,Log,TEXT("Pure virtual MoveLocation")); };
+	virtual void SetCurrentHP(const int8 HP){}
 
 	//Event
 	virtual void EventUpdate(){}
+
+	virtual void MoveLocation(const FVector& Vector) {
+		UE_LOG(LogTemp, Log, TEXT("Pure virtual MoveLocation"));
+	};
 };

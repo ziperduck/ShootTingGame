@@ -35,16 +35,22 @@ public:
 
 	virtual UWorld* GetFuselageWorld() const override;
 
-	virtual UClass* GetComponentClass() const override;
+	virtual const int32 GetStruckDamage() const override;
+
+	virtual const int32 GetAttackPower() const override;
+
 
 	IFuselage*  GetWeapon() const;
 
 	//Setter
+	virtual void SetCurrentHP(const int8 HP) override;
+
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 
 	//Event
 	virtual void EventUpdate() override;
 
+	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
 
 private:
 	UStaticMeshComponent* CharacterMesh;
@@ -57,6 +63,10 @@ private:
 	int8 m_max_HP;
 
 	int8 m_current_HP;
+
+	int32 m_struck_damage;
+
+	const int32 m_attack_power = 1;
 
 	IFuselage*  m_weapon;
 	

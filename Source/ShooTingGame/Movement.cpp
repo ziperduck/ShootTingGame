@@ -37,6 +37,16 @@ IAction* ChangeAction(EVariousAction Action)
 		static IAction* Event = new Shooting();
 		return Event;
 	}
+	case EVariousAction::Struck:
+	{
+		static IAction* Event = new Struck();
+		return Event;
+	}
+	case EVariousAction::Death:
+	{
+		static IAction* Event = new Death();
+		return Event;
+	}
 	default:
 		return nullptr;
 	}
@@ -49,7 +59,7 @@ const FVector& CalculationRatioSpeed(const FVector& Ratio) {
 
 void EastMove::Execute(AActor* Target) {
 
-	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
+	UE_LOG(LogTemp, Log, TEXT("EastMove Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
@@ -62,7 +72,7 @@ void EastMove::Execute(AActor* Target) {
 
 void WestMove::Execute(AActor* Target) {
 
-	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
+	UE_LOG(LogTemp, Log, TEXT("WestMove Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
@@ -75,7 +85,7 @@ void WestMove::Execute(AActor* Target) {
 
 void SouthMove::Execute(AActor* Target) {
 
-	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
+	UE_LOG(LogTemp, Log, TEXT("SouthMove Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
@@ -88,7 +98,7 @@ void SouthMove::Execute(AActor* Target) {
 
 void NorthMove::Execute(AActor* Target) {
 
-	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
+	UE_LOG(LogTemp, Log, TEXT("NorthMove Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
@@ -100,7 +110,7 @@ void NorthMove::Execute(AActor* Target) {
 }
 
 void Shooting::Execute(AActor* Target) {
-	UE_LOG(LogTemp, Log, TEXT("Execute Event"));
+	UE_LOG(LogTemp, Log, TEXT("Shooting Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	UWorld* TargetWorld = Target->GetWorld();
@@ -113,5 +123,35 @@ void Shooting::Execute(AActor* Target) {
 	}
 	checkf(Airframe != nullptr, TEXT("Airframe is nullptr"));
 	Airframe->ShootingGun();
+
+}
+
+void Struck::Execute(AActor* Target) {
+	UE_LOG(LogTemp, Log, TEXT("Struck Excute"));
+	checkf(Target != nullptr, TEXT("Target is nullptr"));
+
+	IFuselage* Fuselage = Cast<IFuselage>(Target);
+	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
+
+	const int8 StruckDamage = -(Fuselage->GetStruckDamage());
+	Fuselage->SetCurrentHP(StruckDamage);
+
+}
+
+void Death::Execute(AActor* Target) {
+	UE_LOG(LogTemp, Log, TEXT("Death Excute"));
+	checkf(Target != nullptr, TEXT("Target is nullptr"));
+
+	UWorld* TargetWorld = Target->GetWorld();
+
+	IFuselage* Fuselage = Cast<IFuselage>(Target);
+	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
+
+	if (Fuselage->GetKind() == EFuselageKind::PlayerFuselage)
+	{
+		return;
+	}
+	
+	TargetWorld->DestroyActor(Target);
 
 }
