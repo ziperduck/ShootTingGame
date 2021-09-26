@@ -27,7 +27,6 @@ ARifle::ARifle() {
 		WeaponMesh->SetupAttachment(m_characterScene);
 	}
 
-	m_kind = EFuselageKind::RifleFuselage;
 	m_speed = 4.0f;
 	m_damage = 3;
 	m_max_HP = 1;
@@ -61,7 +60,7 @@ const int32 ARifle::GetAttackPower() const
 
  //Setter
 
-void ARifle::SetCurrentHP(const int8 HP)
+void ARifle::AddCurrentHP(const int8 HP)
 {
 	m_current_HP += HP;
 }
@@ -69,6 +68,11 @@ void ARifle::SetCurrentHP(const int8 HP)
 void ARifle::MoveLocation(const FVector& MoveLocation) {
 
 	SetActorLocation(GetActorLocation() + MoveLocation);
+}
+
+void ARifle::SetKind(const EFuselageKind& Kind)
+{
+	m_kind = Kind;
 }
 
 
@@ -84,21 +88,40 @@ void ARifle::EventUpdate()
 		m_actions.pop();
 	}
 
-	if (m_current_HP < 1)
+	//플레이어가 쏘는 경우 남쪽으로 적은 북쪽으로 쏜다.
+	switch (GetKind())
 	{
-		UE_LOG(LogTemp, Log, TEXT("Enemy Dragon Death"));
-		ChangeAction(EVariousAction::Death)->Execute(this);
-	}
-	else
-	{
+	case EFuselageKind::PlayerRifle:
+		m_actions.push(EVariousAction::NorthMove);
+		break;
+	case EFuselageKind::EnemyRifle:
 		m_actions.push(EVariousAction::SouthMove);
+		break;
+	default:
+		break;
 	}
 }
 
 void ARifle::NotifyActorBeginOverlap(AActor* Actor)
 {
-	m_actions.push(EVariousAction::Struck);
-	UE_LOG(LogTemp, Log, TEXT("Overlap Rifle"));
+	UE_LOG(LogTemp, Log, TEXT("Overlap ARifle"));
+	if (Actor == nullptr)
+		return;
+	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
+	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
+
+	//지금 rifle의 상태에 따라 어떤 캐릭터를 공격해야하는지 판단한다.
+	if (GetKind() == EFuselageKind::PlayerRifle
+		&& OverlapTarget->GetKind() == EFuselageKind::EnemyFuselage)
+	{
+		m_actions.push(EVariousAction::Death);
+	}
+	else if (GetKind() == EFuselageKind::EnemyRifle
+		&& OverlapTarget->GetKind() == EFuselageKind::PlayerFuselage)
+	{
+		m_actions.push(EVariousAction::Death);
+	}
+
 }
 
 void ARifle::Tick(float Delta)

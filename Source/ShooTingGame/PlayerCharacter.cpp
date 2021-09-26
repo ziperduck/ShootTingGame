@@ -23,7 +23,7 @@ APlayerCharacter::APlayerCharacter() {
 	m_characterScene->SetupAttachment(RootComponent);
 
 	m_kind = EFuselageKind::PlayerFuselage;
-	m_weapon = EFuselageKind::RifleFuselage;
+	m_weapon = EFuselageKind::PlayerRifle;
 	m_speed = 1.0f;
 	m_max_HP = 1;
 	m_current_HP = m_max_HP;
@@ -64,7 +64,7 @@ const int32 APlayerCharacter::GetAttackPower() const
 }
 
 //Setter
-void APlayerCharacter::SetCurrentHP(const int8 HP)
+void APlayerCharacter::AddCurrentHP(const int8 HP)
 {
 	m_current_HP += HP;
 }
@@ -126,8 +126,8 @@ void APlayerCharacter::MoveX(float Direction)
 void APlayerCharacter::MoveY(float Direction)
 {
 	const int NorthOrSouth = Direction;
-	constexpr int North = -1;
-	constexpr int South = 1;
+	constexpr int North = 1;
+	constexpr int South = -1;
 	switch (NorthOrSouth)
 	{
 	case North:
@@ -164,11 +164,12 @@ void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
 
 	switch (OverlapTarget->GetKind())
 	{
-	case EFuselageKind::PlayerFuselage:
-		UE_LOG(LogTemp, Log, TEXT("Player Overlap"));
+	case EFuselageKind::EnemyFuselage:
+	case EFuselageKind::EnemyRifle:
+		m_actions.push(EVariousAction::Struck);
 		break;
 	default:
-		m_actions.push(EVariousAction::Struck);
+		UE_LOG(LogTemp, Log, TEXT("Player Overlap Ignore"));
 		break;
 	}
 }
@@ -178,9 +179,10 @@ void APlayerCharacter::ShootingGun()
 {
 	switch (m_weapon)
 	{
-	case EFuselageKind::RifleFuselage:
+	case EFuselageKind::PlayerRifle:
 		GetWorld()->SpawnActor<ARifle>(
-			GetActorLocation() + FVector{ 60.0f,0.0f,0.0f }, FRotator::ZeroRotator);
+			GetActorLocation() + FVector{ 60.0f,0.0f,0.0f }, FRotator::ZeroRotator)
+			->SetKind(EFuselageKind::PlayerRifle);
 		break;
 	default:
 		break;

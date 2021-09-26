@@ -92,7 +92,7 @@ void SouthMove::Execute(AActor* Target) {
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
 	float Speed = Fuselage->GetSpeed();
-	FVector SouthVector = CalculationRatioSpeed({ Speed,0.0f,  0.0f });
+	FVector SouthVector = CalculationRatioSpeed({ -Speed,0.0f,  0.0f });
 	Fuselage->MoveLocation(SouthVector);
 }
 
@@ -105,7 +105,7 @@ void NorthMove::Execute(AActor* Target) {
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
 	float Speed = Fuselage->GetSpeed();
-	FVector NortVector = CalculationRatioSpeed({ -Speed,0.0f,  0.0f });
+	FVector NortVector = CalculationRatioSpeed({ Speed,0.0f,  0.0f });
 	Fuselage->MoveLocation(NortVector);
 }
 
@@ -134,7 +134,7 @@ void Struck::Execute(AActor* Target) {
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
 	const int8 StruckDamage = -(Fuselage->GetStruckDamage());
-	Fuselage->SetCurrentHP(StruckDamage);
+	Fuselage->AddCurrentHP(StruckDamage);
 
 }
 

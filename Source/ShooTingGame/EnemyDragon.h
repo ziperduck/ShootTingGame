@@ -25,6 +25,9 @@ public:
 
 	virtual void Tick(float Delta) override;
 
+	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
+
+
 	//Getter
 	virtual const EFuselageKind GetKind() const override;
 
@@ -35,19 +38,24 @@ public:
 	virtual const int32 GetAttackPower() const override;
 
 	//Setter
-	virtual void SetCurrentHP(const int8 HP) override;
+	virtual void AddCurrentHP(const int8 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 
 	//Event
 	virtual void EventUpdate() override;
 
-	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
-
 	virtual void ShootingGun() override;
+
 private:
 
 	UStaticMeshComponent* m_character_mesh;
+
+	FTimerHandle m_shooting_timer;
+
+public:
+	UPROPERTY(BlueprintReadOnly,Category = "Fuselage")
+		TArray<EVariousAction> m_next_actions;
 
 private:
 	EFuselageKind m_kind;
@@ -58,9 +66,8 @@ private:
 
 	int8 m_current_HP;
 
-	std::queue<EVariousAction> m_actions;
-
-	std::queue<EVariousAction> m_next_actions;
+	
+	TArray<EVariousAction> m_actions;
 
 
 	//캐릭터가 받은 피해
@@ -73,8 +80,6 @@ private:
 	//플레이어의 무기에 관한 변수들
 
 	EFuselageKind m_weapon;
-
-	bool m_can_shooting;
 
 	float m_shooting_delay;
 };

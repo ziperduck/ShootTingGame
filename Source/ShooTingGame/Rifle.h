@@ -27,9 +27,11 @@ public:
 	virtual const int32 GetAttackPower() const override;
 
 	//Setter
-	virtual void SetCurrentHP(const int8 HP) override;
+	virtual void AddCurrentHP(const int8 HP) override;
 
 	void MoveLocation(const FVector& MoveLocation) ;
+
+	void SetKind(const EFuselageKind& Kind);
 
 	//Event
 	virtual void EventUpdate() override;

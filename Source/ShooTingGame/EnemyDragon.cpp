@@ -15,7 +15,7 @@ AEnemyDragon::AEnemyDragon()
 	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetNotifyRigidBodyCollision(true);
 	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
-	Sphere->InitSphereRadius(100.0f);
+	Sphere->InitSphereRadius(40.0f);
 	RootComponent = Sphere;
 
 	//static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
@@ -32,12 +32,13 @@ AEnemyDragon::AEnemyDragon()
 	//	UE_LOG(LogTemp, Log, TEXT("Object is nullptr"));
 	//}
 
-	m_kind = EFuselageKind::RifleFuselage;
-	m_speed = 4.0f;
+	m_kind = EFuselageKind::EnemyFuselage;
+	m_weapon = EFuselageKind::EnemyRifle;
+	m_speed = 2.0f;
 	m_max_HP = 1;
 	m_struck_damage = 0;
 	m_current_HP = m_max_HP;
-
+	m_shooting_delay = 1.0f;
 }
 
 void AEnemyDragon::BeginPlay()
@@ -68,7 +69,7 @@ const int32 AEnemyDragon::GetAttackPower() const
 }
 
 //Setter
-void AEnemyDragon::SetCurrentHP(const int8 HP)
+void AEnemyDragon::AddCurrentHP(const int8 HP)
 {
 	m_current_HP += HP;
 }
@@ -81,10 +82,9 @@ void AEnemyDragon::MoveLocation(const FVector& MoveLocation) {
 //Event
 void AEnemyDragon::EventUpdate()
 {
-	while (m_actions.size() > 0)
+	while (m_actions.GetAllocatedSize() > 0)
 	{
-		IAction* Action = ChangeAction(m_actions.front());
-		m_actions.pop();
+		IAction* Action = ChangeAction(m_actions.Pop());
 		checkf(Action != nullptr, TEXT("Player animation No have Interface"));
 		Action->Execute(this);
 	}
@@ -94,7 +94,7 @@ void AEnemyDragon::EventUpdate()
 		UE_LOG(LogTemp, Log, TEXT("Enemy Dragon Death"));
 		ChangeAction(EVariousAction::Death)->Execute(this);
 	}
-	//m_actions = m_next_actions;
+	m_actions = m_next_actions;
 }
 
 void AEnemyDragon::NotifyActorBeginOverlap(AActor* Actor)
@@ -104,16 +104,30 @@ void AEnemyDragon::NotifyActorBeginOverlap(AActor* Actor)
 		return;
 	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
 	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
-	
-	m_actions.push(EVariousAction::Struck);
-	m_struck_damage = OverlapTarget->GetAttackPower();
+
+	switch (OverlapTarget->GetKind())
+	{
+	case EFuselageKind::PlayerFuselage:
+	case EFuselageKind::PlayerRifle:
+		m_actions.Push(EVariousAction::Struck);
+		break;
+	default:
+		UE_LOG(LogTemp, Log, TEXT("Enemy Overlap Ignore"));
+		break;
+	}
 }
 
+//타임머 만들고 드레곤에 붙이자
 void AEnemyDragon::Tick(float Delta)
 {
 	Super::Tick(Delta);
 
 	EventUpdate();
+	if (!GetWorldTimerManager().IsTimerActive(m_shooting_timer))
+	{
+		m_actions.Push(EVariousAction::Shooting);
+		GetWorldTimerManager().SetTimer(m_shooting_timer, m_shooting_delay, false);
+	}
 }
 
 
@@ -122,9 +136,10 @@ void AEnemyDragon::ShootingGun()
 {
 	switch (m_weapon)
 	{
-	case EFuselageKind::RifleFuselage:
+	case EFuselageKind::EnemyRifle:
 		GetWorld()->SpawnActor<ARifle>(
-			GetActorLocation() + FVector{ -60.0f,0.0f,0.0f }, FRotator::ZeroRotator);
+			GetActorLocation() + FVector{ -40.0f,0.0f,0.0f }, FRotator::ZeroRotator)
+			->SetKind(EFuselageKind::EnemyRifle);
 		break;
 	default:
 		break;

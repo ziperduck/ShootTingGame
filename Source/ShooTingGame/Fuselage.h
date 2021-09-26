@@ -35,7 +35,7 @@ public:
 	virtual const int32 GetAttackPower() const { return 0; };
 
 	//Setter
-	virtual void SetCurrentHP(const int8 HP){}
+	virtual void AddCurrentHP(const int8 HP){}
 
 	//Event
 	virtual void EventUpdate(){}

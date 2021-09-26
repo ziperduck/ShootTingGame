@@ -23,7 +23,10 @@ protected:
 	virtual void BeginPlay() override;
 public:
 	virtual void Tick(float Delta) override;
-	
+
+	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
+
+
 	//Getter
 	virtual const EFuselageKind GetKind() const override;
 
@@ -32,12 +35,13 @@ public:
 	virtual const int32 GetStruckDamage() const override;
 
 	virtual const int32 GetAttackPower() const override;
-
+	
 	//Setter
-	virtual void SetCurrentHP(const int8 HP) override;
+	virtual void AddCurrentHP(const int8 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 	
+
 	//Event
 	virtual void EventUpdate() override;
 	
@@ -52,9 +56,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void ReleaseAttack(float Direction);
-
-	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
-
 
 	virtual void ShootingGun() override;
 
