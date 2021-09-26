@@ -23,7 +23,7 @@ APlayerCharacter::APlayerCharacter() {
 	m_characterScene->SetupAttachment(RootComponent);
 
 	m_kind = EFuselageKind::PlayerFuselage;
-	m_weapon = EFuselageKind::PlayerRifle;
+	m_weapon = EFuselageKind::Rifle;
 	m_speed = 1.0f;
 	m_max_HP = 1;
 	m_current_HP = m_max_HP;
@@ -77,16 +77,16 @@ void APlayerCharacter::MoveLocation(const FVector& MoveLocation) {
 //Event
 void APlayerCharacter::EventUpdate()
 {
+	if (m_current_HP < 1)
+	{
+		UE_LOG(LogTemp, Log, TEXT("You Death"));
+		PrimaryActorTick.bCanEverTick = false;
+	}
 	while (m_actions.size() > 0)
 	{
 		IAction* Action = ChangeAction(m_actions.front());
 		Action->Execute(this);
 		m_actions.pop();
-	}
-	if (m_current_HP < 1)
-	{
-		UE_LOG(LogTemp, Log, TEXT("You Death"));
-		PrimaryActorTick.bCanEverTick = false;
 	}
 }
 
@@ -165,7 +165,7 @@ void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
 	switch (OverlapTarget->GetKind())
 	{
 	case EFuselageKind::EnemyFuselage:
-	case EFuselageKind::EnemyRifle:
+	case EFuselageKind::FireShoot:
 		m_actions.push(EVariousAction::Struck);
 		break;
 	default:
@@ -179,10 +179,9 @@ void APlayerCharacter::ShootingGun()
 {
 	switch (m_weapon)
 	{
-	case EFuselageKind::PlayerRifle:
+	case EFuselageKind::Rifle:
 		GetWorld()->SpawnActor<ARifle>(
-			GetActorLocation() + FVector{ 60.0f,0.0f,0.0f }, FRotator::ZeroRotator)
-			->SetKind(EFuselageKind::PlayerRifle);
+			GetActorLocation() + FVector{ 60.0f,0.0f,0.0f }, FRotator::ZeroRotator);
 		break;
 	default:
 		break;

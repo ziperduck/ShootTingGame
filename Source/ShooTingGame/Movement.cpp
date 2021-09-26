@@ -5,6 +5,7 @@
 #include "EnemyDragon.h"
 #include "Rifle.h"
 #include "CoreMinimal.h"
+#include <Engine/Classes/Components/SphereComponent.h>
 
 IAction* ChangeAction(EVariousAction Action)
 {
@@ -48,6 +49,7 @@ IAction* ChangeAction(EVariousAction Action)
 		return Event;
 	}
 	default:
+		checkNoEntry();
 		return nullptr;
 	}
 }
@@ -143,6 +145,7 @@ void Death::Execute(AActor* Target) {
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	UWorld* TargetWorld = Target->GetWorld();
+	Target->SetActorEnableCollision(false);
 
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));

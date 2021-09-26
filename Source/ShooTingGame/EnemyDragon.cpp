@@ -2,7 +2,7 @@
 
 
 #include "EnemyDragon.h"
-#include "Rifle.h"
+#include "FireShoot.h"
 #include "Movement.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
@@ -32,9 +32,8 @@ AEnemyDragon::AEnemyDragon()
 	//	UE_LOG(LogTemp, Log, TEXT("Object is nullptr"));
 	//}
 
-	m_kind = EFuselageKind::EnemyFuselage;
-	m_weapon = EFuselageKind::EnemyRifle;
-	m_speed = 2.0f;
+	m_weapon = EFuselageKind::FireShoot;
+	m_speed = 4.0f;
 	m_max_HP = 1;
 	m_struck_damage = 0;
 	m_current_HP = m_max_HP;
@@ -82,34 +81,38 @@ void AEnemyDragon::MoveLocation(const FVector& MoveLocation) {
 //Event
 void AEnemyDragon::EventUpdate()
 {
+
 	while (m_actions.GetAllocatedSize() > 0)
 	{
 		IAction* Action = ChangeAction(m_actions.Pop());
 		checkf(Action != nullptr, TEXT("Player animation No have Interface"));
 		Action->Execute(this);
 	}
-
 	if (m_current_HP < 1)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Enemy Dragon Death"));
 		ChangeAction(EVariousAction::Death)->Execute(this);
 	}
-	m_actions = m_next_actions;
+	else
+	{
+		m_actions = m_next_actions;
+	}
 }
 
 void AEnemyDragon::NotifyActorBeginOverlap(AActor* Actor)
 {
 	UE_LOG(LogTemp, Log, TEXT("Overlap AEnemyDragon"));
-	if (Actor == nullptr)
-		return;
+
 	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
 	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
 
 	switch (OverlapTarget->GetKind())
 	{
 	case EFuselageKind::PlayerFuselage:
-	case EFuselageKind::PlayerRifle:
+	case EFuselageKind::Rifle:
+		UE_LOG(LogTemp, Log, TEXT("Enemy Overlap Rifle"));
 		m_actions.Push(EVariousAction::Struck);
+		m_struck_damage = OverlapTarget->GetAttackPower();
 		break;
 	default:
 		UE_LOG(LogTemp, Log, TEXT("Enemy Overlap Ignore"));
@@ -136,10 +139,9 @@ void AEnemyDragon::ShootingGun()
 {
 	switch (m_weapon)
 	{
-	case EFuselageKind::EnemyRifle:
-		GetWorld()->SpawnActor<ARifle>(
-			GetActorLocation() + FVector{ -40.0f,0.0f,0.0f }, FRotator::ZeroRotator)
-			->SetKind(EFuselageKind::EnemyRifle);
+	case EFuselageKind::FireShoot:
+		GetWorld()->SpawnActor<AFireShoot>(
+			GetActorLocation() + FVector{ -60.0f,0.0f,0.0f }, FRotator::ZeroRotator);
 		break;
 	default:
 		break;

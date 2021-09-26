@@ -13,8 +13,9 @@ enum class EFuselageKind : uint8
 {
 	PlayerFuselage UMETA(DisplayName = "PlayerFuselage"),
 	EnemyFuselage UMETA(DisplayName = "EnemyFuselage"),
-	PlayerRifle UMETA(DisplayName = "PlayerRifle"),
-	EnemyRifle UMETA(DisplayName = "EnemyRifle"),
+	Rifle UMETA(DisplayName = "Rifle"),
+	FireShoot UMETA(DisplayName = "FireShoot"),
+	MeteoricStone UMETA(DisplayName = "MeteoricStone"),
 };
 
 UENUM(BlueprintType, Category = "Fuselage'Action")

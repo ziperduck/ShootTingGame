@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Rifle.h"
+#include "FireShoot.h"
 #include "Movement.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
-ARifle::ARifle() {
+AFireShoot::AFireShoot() {
 	PrimaryActorTick.bCanEverTick = true;
 
 	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
@@ -36,22 +36,22 @@ ARifle::ARifle() {
 }
 
 //Getter
-const EFuselageKind ARifle::GetKind() const
+const EFuselageKind AFireShoot::GetKind() const
 {
 	return m_kind;
 }
 
-const float ARifle::GetSpeed() const
+const float AFireShoot::GetSpeed() const
 {
 	return m_speed;
 }
 
-const int32 ARifle::GetStruckDamage() const
+const int32 AFireShoot::GetStruckDamage() const
 {
 	return m_struck_damage;
 }
 
-const int32 ARifle::GetAttackPower() const
+const int32 AFireShoot::GetAttackPower() const
 {
 	return m_attack_power;
 }
@@ -60,61 +60,59 @@ const int32 ARifle::GetAttackPower() const
 
  //Setter
 
-void ARifle::AddCurrentHP(const int8 HP)
+void AFireShoot::AddCurrentHP(const int8 HP)
 {
 	m_current_HP += HP;
 }
 
-void ARifle::MoveLocation(const FVector& MoveLocation) {
+void AFireShoot::MoveLocation(const FVector& MoveLocation) {
 
 	SetActorLocation(GetActorLocation() + MoveLocation);
 }
 
 //Event
-void ARifle::EventUpdate()
+void AFireShoot::EventUpdate()
 {
-
-
 	while (m_actions.size() > 0)
 	{
 		IAction* Action = ChangeAction(m_actions.front());
 		UE_LOG(LogTemp, Log, TEXT("Change Action had Action"));
-		checkf(Action != nullptr, TEXT("ARifle EventUpdate in Action is nullptr"));
+		checkf(Action != nullptr, TEXT("AFireShoot EventUpdate in Action is nullptr"));
 		Action->Execute(this);
 		m_actions.pop();
 	}
-	if (m_current_HP < 1)
+
+	//플레이어가 쏘는 경우 남쪽으로 적은 북쪽으로 쏜다.
+	switch (GetKind())
 	{
-		ChangeAction(EVariousAction::Death)->Execute(this);
-	}
-	else
-	{
+	case EFuselageKind::Rifle:
 		m_actions.push(EVariousAction::NorthMove);
-	}
-
-}
-
-void ARifle::NotifyActorBeginOverlap(AActor* Actor)
-{
-	UE_LOG(LogTemp, Log, TEXT("Overlap ARifle"));
-
-	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
-	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
-
-	switch (OverlapTarget->GetKind())
-	{
-	case EFuselageKind::EnemyFuselage:
-	case EFuselageKind::MeteoricStone:
-		UE_LOG(LogTemp, Log, TEXT("Rifle Collision Enemy"));
-		m_actions.push(EVariousAction::Struck);
+		break;
+	case EFuselageKind::FireShoot:
+		m_actions.push(EVariousAction::SouthMove);
 		break;
 	default:
 		break;
 	}
+}
+
+void AFireShoot::NotifyActorBeginOverlap(AActor* Actor)
+{
+	UE_LOG(LogTemp, Log, TEXT("Overlap AFireShoot"));
+	if (Actor == nullptr)
+		return;
+	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
+	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
+
+	if (OverlapTarget->GetKind() == EFuselageKind::PlayerFuselage)
+	{
+		UE_LOG(LogTemp, Log, TEXT("FireShoot Collision Player"));
+		m_actions.push(EVariousAction::Death);
+	}
 
 }
 
-void ARifle::Tick(float Delta)
+void AFireShoot::Tick(float Delta)
 {
 	Super::Tick(Delta);
 	EventUpdate();

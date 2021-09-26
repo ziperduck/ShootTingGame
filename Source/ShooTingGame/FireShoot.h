@@ -3,17 +3,18 @@
 #pragma once
 
 #include "Fuselage.h"
+#include "EnumPack.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Rifle.generated.h"
+#include "FireShoot.generated.h"
 
-UCLASS(Blueprintable, BlueprintType, ClassGroup = "Fuselage")
-class SHOOTINGGAME_API ARifle : public AActor, public IFuselage
+UCLASS()
+class SHOOTINGGAME_API AFireShoot : public AActor, public IFuselage
 {
 	GENERATED_BODY()
 	
-public:	
-	ARifle();
+public:
+	AFireShoot();
 
 	virtual void Tick(float Delta) override;
 
@@ -29,7 +30,7 @@ public:
 	//Setter
 	virtual void AddCurrentHP(const int8 HP) override;
 
-	void MoveLocation(const FVector& MoveLocation) ;
+	void MoveLocation(const FVector& MoveLocation);
 
 	//Event
 	virtual void EventUpdate() override;
@@ -41,7 +42,7 @@ private:
 	USceneComponent* m_characterScene;
 
 private:
-	const EFuselageKind m_kind = EFuselageKind::Rifle;
+	const EFuselageKind m_kind = EFuselageKind::FireShoot;
 
 	uint16 m_damage;
 

@@ -3,30 +3,26 @@
 #pragma once
 
 #include "Fuselage.h"
-#include "EnumPack.h"
-#include "Airframe.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "EnemyDragon.generated.h"
-
+#include "MeteoricStone.generated.h"
 
 UCLASS()
-class SHOOTINGGAME_API AEnemyDragon : public AActor , public IFuselage, public IAirframe
+class SHOOTINGGAME_API AMeteoricStone : public AActor, public IFuselage
 {
 	GENERATED_BODY()
-
-protected:
 	
+protected:
+	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-
-	AEnemyDragon();
+	// Sets default values for this actor's properties
+	AMeteoricStone();
 
 	virtual void Tick(float Delta) override;
 
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
-
 
 	//Getter
 	virtual const EFuselageKind GetKind() const override;
@@ -42,23 +38,12 @@ public:
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 
+
 	//Event
 	virtual void EventUpdate() override;
-
-	virtual void ShootingGun() override;
-
 private:
 
-	//UStaticMeshComponent* m_character_mesh;
-
-	FTimerHandle m_shooting_timer;
-
-public:
-	UPROPERTY(BlueprintReadOnly,Category = "Fuselage")
-		TArray<EVariousAction> m_next_actions;
-
-private:
-	const EFuselageKind m_kind = EFuselageKind::EnemyFuselage;
+	const EFuselageKind m_kind = EFuselageKind::MeteoricStone;
 
 	float m_speed;
 
@@ -66,20 +51,8 @@ private:
 
 	int8 m_current_HP;
 
-	
-	TArray<EVariousAction> m_actions;
-
+	std::queue<EVariousAction> m_actions;
 
 	//캐릭터가 받은 피해
 	int32 m_struck_damage;
-
-	//캐필터가 충돌시 주는 피해
-	const int32 m_attack_power = 1;
-
-
-	//플레이어의 무기에 관한 변수들
-
-	EFuselageKind m_weapon;
-
-	float m_shooting_delay;
 };
