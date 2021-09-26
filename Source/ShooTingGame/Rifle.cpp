@@ -19,12 +19,12 @@ ARifle::ARifle() {
 	m_characterScene->SetupAttachment(RootComponent);
 	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Meshes/Projectile.Projectile"));
-	UStaticMeshComponent* CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
+	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
-		CharacterMesh->SetStaticMesh(MeshAsset.Object);
-		CharacterMesh->SetupAttachment(m_characterScene);
+		WeaponMesh->SetStaticMesh(MeshAsset.Object);
+		WeaponMesh->SetupAttachment(m_characterScene);
 	}
 
 	m_kind = EFuselageKind::RifleFuselage;
@@ -37,7 +37,6 @@ ARifle::ARifle() {
 }
 
 //Getter
-
 const EFuselageKind ARifle::GetKind() const
 {
 	return m_kind;
@@ -48,34 +47,19 @@ const float ARifle::GetSpeed() const
 	return m_speed;
 }
 
-const FVector ARifle::GetLocation() const
-{
-	return K2_GetActorLocation();
-}
-
-const FRotator ARifle::GetRotation() const
-{
-	return K2_GetActorRotation();
-}
-
-UWorld* ARifle::GetFuselageWorld() const
-{
-	return GetWorld();
-}
-
 const int32 ARifle::GetStruckDamage() const
 {
 	return m_struck_damage;
 }
 
-
-
- //Setter
-
 const int32 ARifle::GetAttackPower() const
 {
 	return m_attack_power;
 }
+
+
+
+ //Setter
 
 void ARifle::SetCurrentHP(const int8 HP)
 {
@@ -83,19 +67,8 @@ void ARifle::SetCurrentHP(const int8 HP)
 }
 
 void ARifle::MoveLocation(const FVector& MoveLocation) {
-	/*
-	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
-	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
-	*/
 
-	FHitResult Hit(1.f);
-	checkf(this != nullptr, TEXT("ARifle is nullptr"));
-
-	m_characterScene->MoveComponent(MoveLocation, K2_GetActorRotation(), true, &Hit);
-	if (Hit.IsValidBlockingHit())
-	{
-		UE_LOG(LogTemp, Log, TEXT("is Hit Actor"));
-	}
+	SetActorLocation(GetActorLocation() + MoveLocation);
 }
 
 

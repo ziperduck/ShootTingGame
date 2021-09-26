@@ -29,12 +29,6 @@ public:
 
 	virtual const float GetSpeed() const override;
 
-	virtual const FVector GetLocation() const override;
-
-	virtual const FRotator GetRotation() const override;
-
-	virtual UWorld* GetFuselageWorld() const override;
-
 	virtual const int32 GetStruckDamage() const override;
 
 	virtual const int32 GetAttackPower() const override;
@@ -54,20 +48,27 @@ public:
 	void MoveY(float Direction);
 
 	UFUNCTION(BlueprintCallable)
-		void MoveA(float Direction);
+		void PressAttack(float Direction);
+
+	UFUNCTION(BlueprintCallable)
+		void ReleaseAttack(float Direction);
 
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
 
 
 	virtual void ShootingGun() override;
 
-public:
-
 private:
+
+	//외형 및 언리얼에서 제공해주는 기능들
 
 	USceneComponent* m_characterScene;
 
+	FTimerHandle m_shooting_timer;
+
 private:
+
+	//캐릭터에 관한 필요한 정보들
 
 	EFuselageKind m_kind;
 
@@ -77,11 +78,22 @@ private:
 
 	int8 m_current_HP;
 
-	const int32 m_struck_damage = 1;
-
-	const int32 m_attack_power = 1;
-
 	std::queue<EVariousAction> m_actions;
 
+	//플레어가 받는 데미지 1로 고정해놨다
+	const int32 m_struck_damage = 1;
+
+	//플레이어가 주는 데미지 무기데미지가 아니라 직접 충돌시 주는 데미지
+	const int32 m_attack_power = 1;
+
+
+	//플레이어의 무기에 관한 변수들
+
 	EFuselageKind m_weapon;
+
+	bool mb_press;
+
+	bool m_can_shooting;
+
+	float m_shooting_delay;
 };

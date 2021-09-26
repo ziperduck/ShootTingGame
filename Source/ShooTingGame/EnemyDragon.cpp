@@ -2,6 +2,7 @@
 
 
 #include "EnemyDragon.h"
+#include "Rifle.h"
 #include "Movement.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
@@ -17,19 +18,19 @@ AEnemyDragon::AEnemyDragon()
 	Sphere->InitSphereRadius(100.0f);
 	RootComponent = Sphere;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
-	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
-	{
-
-		CharacterMesh->SetStaticMesh(MeshAsset.Object);
-		CharacterMesh->SetAllMassScale(0.5f);
-		CharacterMesh->SetupAttachment(RootComponent);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("Object is nullptr"));
-	}
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
+	//m_character_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
+	//if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
+	//{
+	//
+	//	m_character_mesh->SetStaticMesh(MeshAsset.Object);
+	//	m_character_mesh->SetAllMassScale(0.5f);
+	//	m_character_mesh->SetupAttachment(RootComponent);
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Log, TEXT("Object is nullptr"));
+	//}
 
 	m_kind = EFuselageKind::RifleFuselage;
 	m_speed = 4.0f;
@@ -45,6 +46,7 @@ void AEnemyDragon::BeginPlay()
 	UE_LOG(LogTemp,Log,TEXT("Spawn EnemyDragon"));
 }
 
+//Getter
 const EFuselageKind AEnemyDragon::GetKind() const
 {
 	return m_kind;
@@ -53,21 +55,6 @@ const EFuselageKind AEnemyDragon::GetKind() const
 const float AEnemyDragon::GetSpeed() const
 {
 	return m_speed;
-}
-
-const FVector AEnemyDragon::GetLocation() const
-{
-	return K2_GetActorLocation();
-}
-
-const FRotator AEnemyDragon::GetRotation() const
-{
-	return K2_GetActorRotation();
-};
-
-UWorld* AEnemyDragon::GetFuselageWorld() const
-{
-	return GetWorld();
 }
 
 const int32 AEnemyDragon::GetStruckDamage() const
@@ -80,31 +67,15 @@ const int32 AEnemyDragon::GetAttackPower() const
 	return m_attack_power;
 }
 
-IFuselage*  AEnemyDragon::GetWeapon() const
-{
-	return m_weapon;
-}
-
+//Setter
 void AEnemyDragon::SetCurrentHP(const int8 HP)
 {
 	m_current_HP += HP;
 }
 
 void AEnemyDragon::MoveLocation(const FVector& MoveLocation) {
-	/*
-	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
-	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
-	*/
-
-	FHitResult Hit(1.f);
-
-	checkf(this != nullptr, TEXT("ARifle is nullptr"));
 	
-	GetRootComponent()->MoveComponent(MoveLocation, GetRotation(), true, &Hit);
-	if (Hit.IsValidBlockingHit())
-	{
-		UE_LOG(LogTemp, Log, TEXT("is Hit Actor"));
-	}
+	SetActorLocation(GetActorLocation() + MoveLocation);
 }
 
 //Event
@@ -146,3 +117,16 @@ void AEnemyDragon::Tick(float Delta)
 }
 
 
+
+void AEnemyDragon::ShootingGun()
+{
+	switch (m_weapon)
+	{
+	case EFuselageKind::RifleFuselage:
+		GetWorld()->SpawnActor<ARifle>(
+			GetActorLocation() + FVector{ -60.0f,0.0f,0.0f }, FRotator::ZeroRotator);
+		break;
+	default:
+		break;
+	}
+}

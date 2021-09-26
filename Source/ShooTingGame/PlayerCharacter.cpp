@@ -27,6 +27,10 @@ APlayerCharacter::APlayerCharacter() {
 	m_speed = 1.0f;
 	m_max_HP = 1;
 	m_current_HP = m_max_HP;
+
+	mb_press = false;
+	m_can_shooting = true;
+	m_shooting_delay = 1.0f;
 }
 
 // Called when the game starts or when spawned
@@ -38,7 +42,7 @@ void APlayerCharacter::BeginPlay()
 
 }
 
-
+//Getter
 const EFuselageKind APlayerCharacter::GetKind() const
 {
 	return m_kind;
@@ -47,21 +51,6 @@ const EFuselageKind APlayerCharacter::GetKind() const
 const float APlayerCharacter::GetSpeed() const
 {
 	return m_speed;
-}
-
-const FVector APlayerCharacter::GetLocation() const
-{
-	return K2_GetActorLocation();
-}
-
-const FRotator APlayerCharacter::GetRotation() const
-{
-	return K2_GetActorRotation();
-};
-
-UWorld* APlayerCharacter::GetFuselageWorld() const
-{
-	return GetWorld();
 }
 
 const int32 APlayerCharacter::GetStruckDamage() const
@@ -74,24 +63,15 @@ const int32 APlayerCharacter::GetAttackPower() const
 	return m_attack_power;
 }
 
+//Setter
 void APlayerCharacter::SetCurrentHP(const int8 HP)
 {
 	m_current_HP += HP;
 }
 
 void APlayerCharacter::MoveLocation(const FVector& MoveLocation) {
-	/*
-	* setLocatino은 충돌처리를 못하고 랜더링 값을 가지고있기때문에
-	* USceneComponenet를 이용해 충돌처리와 이동을 같이 처리하게 만들었다.
-	*/
-	FHitResult Hit(1.f);
-
-	UE_LOG(LogTemp, Log, TEXT("MoveLocation"));
-	RootComponent->MoveComponent(MoveLocation, K2_GetActorRotation(), true, &Hit);
-	if (Hit.IsValidBlockingHit())
-	{
-		UE_LOG(LogTemp, Log, TEXT("is Hit Actor"));
-	}
+	
+	SetActorLocation(GetActorLocation() + MoveLocation);
 }
 
 //Event
@@ -115,6 +95,14 @@ void APlayerCharacter::Tick(float Delta)
 	Super::Tick(Delta);
 
 	EventUpdate();
+
+	if (mb_press && m_can_shooting)
+	{
+		m_can_shooting = false;
+		m_actions.push(EVariousAction::Shooting);
+		GetWorldTimerManager().SetTimer(
+			m_shooting_timer, [&] {m_can_shooting = true; }, m_shooting_delay, false);
+	}
 }
 
 void APlayerCharacter::MoveX(float Direction)
@@ -152,10 +140,18 @@ void APlayerCharacter::MoveY(float Direction)
 		break;
 	}
 }
-
-void APlayerCharacter::MoveA(float Direction)
+/*
+* 
+*/
+void APlayerCharacter::PressAttack(float Direction)
 {
-	m_actions.push(EVariousAction::Shooting);
+	mb_press = true;
+}
+
+
+void APlayerCharacter::ReleaseAttack(float Direction)
+{
+	mb_press = false;
 }
 
 void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)

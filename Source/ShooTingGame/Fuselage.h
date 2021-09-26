@@ -30,12 +30,6 @@ public:
 
 	virtual const float GetSpeed() const { return 1.0f; };
 
-	virtual const FVector GetLocation() const { return FVector::ZeroVector; };
-
-	virtual const FRotator GetRotation() const { return FRotator::ZeroRotator; };
-
-	virtual UWorld* GetFuselageWorld() const { return nullptr; };
-
 	virtual const int32 GetStruckDamage() const { return 0; };
 
 	virtual const int32 GetAttackPower() const { return 0; };

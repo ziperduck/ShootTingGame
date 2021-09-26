@@ -22,12 +22,6 @@ public:
 
 	virtual const float GetSpeed() const override;
 
-	virtual const FVector GetLocation() const override;
-
-	virtual const FRotator GetRotation() const override;
-
-	virtual UWorld* GetFuselageWorld() const override;
-
 	virtual const int32 GetStruckDamage() const override;
 
 	virtual const int32 GetAttackPower() const override;
