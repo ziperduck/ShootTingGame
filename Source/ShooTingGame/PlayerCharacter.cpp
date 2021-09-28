@@ -71,11 +71,6 @@ const float APlayerCharacter::GetSpeed() const
 	return m_speed;
 }
 
-const int32 APlayerCharacter::GetStruckDamage() const
-{
-	return m_struck_damage;
-}
-
 const int32 APlayerCharacter::GetAttackPower() const
 {
 	return m_attack_power;
@@ -185,22 +180,7 @@ const EFuselageKind APlayerCharacter::GetWeapon()const
 
 void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
 {
+	UE_LOG(LogTemp, Log, TEXT("Overlap Player Character"));
 	m_actions.push(EVariousAction::ATTACK);
 	return;
-	UE_LOG(LogTemp, Log, TEXT("Overlap Player Character"));
-	if (Actor == nullptr)
-		return;
-	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
-	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
-
-	switch (OverlapTarget->GetKind())
-	{
-	case EFuselageKind::ENEMY_FUSELAGE:
-	case EFuselageKind::FIRESHOOT_WEAPON:
-		m_actions.push(EVariousAction::STRUCK);
-		break;
-	default:
-		UE_LOG(LogTemp, Log, TEXT("Player Overlap Ignore"));
-		break;
-	}
 }

@@ -2,19 +2,20 @@
 
 #pragma once
 
-#include "Fuselage.h"
 #include "CoreMinimal.h"
+#include "Fuselage.h"
+#include "EnumPack.h"
 #include "GameFramework/Actor.h"
-#include "Rifle.generated.h"
+#include "LaserBeam.generated.h"
 
-UCLASS(Blueprintable, BlueprintType, ClassGroup = "Fuselage")
-class SHOOTINGGAME_API ARifle : public AActor, public IFuselage
+UCLASS()
+class SHOOTINGGAME_API ALaserBeam : public AActor, public IFuselage
 {
 	GENERATED_BODY()
 	
 public:	
-	ARifle();
-
+	// Sets default values for this actor's properties
+	ALaserBeam();
 	virtual void Tick(float Delta) override;
 
 	//Getter
@@ -37,9 +38,7 @@ public:
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
 
 private:
-	const EFuselageKind m_kind = EFuselageKind::RIFLE_WEAPON;
-
-	uint16 m_damage;
+	const EFuselageKind m_kind = EFuselageKind::LASERBEAM_WEAPON;
 
 	float m_speed;
 
@@ -47,7 +46,9 @@ private:
 
 	int32 m_current_HP;
 
+	std::queue<EVariousAction> m_actions;
+
 	int32 m_attack_power;
 
-	std::queue<EVariousAction> m_actions;
+	float m_attack_term;
 };

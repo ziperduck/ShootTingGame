@@ -23,8 +23,6 @@ public:
 
 	virtual const float GetSpeed() const override;
 
-	virtual const int32 GetStruckDamage() const override;
-
 	virtual const int32 GetAttackPower() const override;
 
 	virtual const int32 GetMaxHP() const override;
@@ -40,10 +38,6 @@ public:
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
 
 private:
-
-	USceneComponent* m_characterScene;
-
-private:
 	const EFuselageKind m_kind = EFuselageKind::FIRESHOOT_WEAPON;
 
 	uint16 m_damage;
@@ -53,8 +47,6 @@ private:
 	int32 m_max_HP;
 
 	int32 m_current_HP;
-
-	const int32 m_struck_damage = 1;
 
 	int32 m_attack_power;
 

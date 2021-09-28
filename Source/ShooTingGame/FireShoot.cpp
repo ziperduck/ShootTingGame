@@ -10,22 +10,16 @@
 AFireShoot::AFireShoot() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->SetNotifyRigidBodyCollision(true);
-	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
-	Sphere->InitSphereRadius(20.0f);
-	RootComponent = Sphere;
-
-	m_characterScene = CreateAbstractDefaultSubobject<USceneComponent>(TEXT("Scene"));
-	m_characterScene->SetupAttachment(RootComponent);
-	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Meshes/Projectile.Projectile"));
 	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
+		WeaponMesh->SetupAttachment(RootComponent);
 		WeaponMesh->SetStaticMesh(MeshAsset.Object);
-		WeaponMesh->SetupAttachment(m_characterScene);
+	
+		WeaponMesh->SetNotifyRigidBodyCollision(true);
+		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
 	}
 
 	m_speed = 4.0f;
@@ -45,11 +39,6 @@ const EFuselageKind AFireShoot::GetKind() const
 const float AFireShoot::GetSpeed() const
 {
 	return m_speed;
-}
-
-const int32 AFireShoot::GetStruckDamage() const
-{
-	return m_struck_damage;
 }
 
 const int32 AFireShoot::GetAttackPower() const

@@ -36,8 +36,6 @@ public:
 
 	virtual const float GetSpeed() const override;
 
-	virtual const int32 GetStruckDamage() const override;
-
 	virtual const int32 GetAttackPower() const override;
 
 	virtual const EFuselageKind GetWeapon() const override;
@@ -74,10 +72,6 @@ private:
 	bool mb_initialize;
 	
 	TArray<EVariousAction> m_actions;
-
-
-	//캐릭터가 받은 피해
-	int32 m_struck_damage;
 
 	//캐필터가 충돌시 주는 피해
 	const int32 m_attack_power = 1;

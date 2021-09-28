@@ -34,8 +34,6 @@ public:
 
 	virtual const float GetSpeed() const override;
 
-	virtual const int32 GetStruckDamage() const override;
-
 	virtual const int32 GetAttackPower() const override;
 
 	virtual const int32 GetMaxHP() const override;
@@ -67,7 +65,4 @@ private:
 	TArray<EVariousAction> m_next_actions;
 
 	const EFuselageKind m_weapon = EFuselageKind::MISSILEDRAGON_FUSELAGE;
-
-	//캐릭터가 받은 피해
-	int32 m_struck_damage;
 };

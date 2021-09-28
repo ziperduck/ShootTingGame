@@ -12,13 +12,6 @@ AMeteoricStone::AMeteoricStone()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-
-	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->SetNotifyRigidBodyCollision(true);
-	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
-	Sphere->InitSphereRadius(40.0f);
-	RootComponent = Sphere;
-
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
 	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
@@ -27,6 +20,9 @@ AMeteoricStone::AMeteoricStone()
 		WeaponMesh->SetupAttachment(RootComponent);
 		WeaponMesh->SetStaticMesh(MeshAsset.Object);
 		WeaponMesh->SetRelativeScale3D(FVector{ 0.4f,0.4f,0.4f });
+
+		WeaponMesh->SetNotifyRigidBodyCollision(true);
+		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
 	}
 
 	mb_initialize = false;
@@ -70,25 +66,9 @@ void AMeteoricStone::Tick(float DeltaTime)
 
 void AMeteoricStone::NotifyActorBeginOverlap(AActor* Actor)
 {
+	UE_LOG(LogTemp, Log, TEXT("Meteoric Overlap"));
 	m_actions.Push(EVariousAction::ATTACK);
 	return;
-	UE_LOG(LogTemp, Log, TEXT("Meteoric Overlap"));
-
-	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
-	checkf(OverlapTarget != nullptr, TEXT("Meteoric Fuselgae is nullptr"));
-
-	switch (OverlapTarget->GetKind())
-	{
-	case EFuselageKind::PLAYER_FUSELAGE:
-	case EFuselageKind::RIFLE_WEAPON:
-		m_actions.Push(EVariousAction::STRUCK);
-		m_struck_damage = OverlapTarget->GetAttackPower();
-		break;
-	default:
-		UE_LOG(LogTemp, Log, TEXT("Meteoric Ignore Overlap"));
-		break;
-	}
-
 }
 
 const EFuselageKind AMeteoricStone::GetKind() const
@@ -99,11 +79,6 @@ const EFuselageKind AMeteoricStone::GetKind() const
 const float AMeteoricStone::GetSpeed() const
 {
 	return m_speed;
-}
-
-const int32 AMeteoricStone::GetStruckDamage() const
-{
-	return m_struck_damage;
 }
 
 const int32 AMeteoricStone::GetAttackPower() const

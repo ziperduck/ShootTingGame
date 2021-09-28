@@ -131,20 +131,8 @@ void Shooting::Execute(AActor* Target) {
 	
 }
 
-void Struck::Execute(AActor* Target) {
-	UE_LOG(LogTemp, Log, TEXT("Struck Excute"));
-	checkf(Target != nullptr, TEXT("Target is nullptr"));
-
-	IFuselage* Fuselage = Cast<IFuselage>(Target);
-	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
-
-	const int32 StruckDamage = -(Fuselage->GetStruckDamage());
-	Fuselage->AddCurrentHP(StruckDamage);
-
-}
-
 void Attack::Execute(AActor* Target) {
-	UE_LOG(LogTemp, Log, TEXT("Struck Excute"));
+	UE_LOG(LogTemp, Log, TEXT("Attack Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	IFuselage* TargetFuselage = Cast<IFuselage>(Target);

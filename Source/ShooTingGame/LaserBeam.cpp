@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Rifle.h"
+#include "LaserBeam.h"
 #include "Action.h"
 #include "ActionInstance.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
-ARifle::ARifle() {
+ALaserBeam::ALaserBeam() {
 	PrimaryActorTick.bCanEverTick = true;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Meshes/Projectile.Projectile"));
@@ -17,86 +17,77 @@ ARifle::ARifle() {
 		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
 		WeaponMesh->SetupAttachment(RootComponent);
 		WeaponMesh->SetStaticMesh(MeshAsset.Object);
+		FTransform transform{ FRotator::ZeroRotator,FVector{ 10.0f,0.0f,0.0f } ,FVector{ 10.0f,1.0f,1.0f } };
+		WeaponMesh->SetRelativeTransform(transform);
 
 		WeaponMesh->SetNotifyRigidBodyCollision(true);
 		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
 	}
 
-	m_speed = 4.0f;
-	m_damage = 3;
-	m_max_HP = 1;
+	m_speed = 0.0f;
+	m_max_HP = 100;
 	m_current_HP = m_max_HP;
 	m_attack_power = 1;
 
 }
 
 //Getter
-const EFuselageKind ARifle::GetKind() const
+const EFuselageKind ALaserBeam::GetKind() const
 {
 	return m_kind;
 }
 
-const float ARifle::GetSpeed() const
+const float ALaserBeam::GetSpeed() const
 {
 	return m_speed;
 }
 
-const int32 ARifle::GetAttackPower() const
+const int32 ALaserBeam::GetAttackPower() const
 {
 	return m_attack_power;
 }
 
-const int32 ARifle::GetMaxHP() const
+const int32 ALaserBeam::GetMaxHP() const
 {
 	return m_max_HP;
 }
 
 
 
- //Setter
+//Setter
 
-void ARifle::AddCurrentHP(const int32 HP)
+void ALaserBeam::AddCurrentHP(const int32 HP)
 {
 	m_current_HP += HP;
 }
 
-void ARifle::MoveLocation(const FVector& MoveLocation) {
+void ALaserBeam::MoveLocation(const FVector& MoveLocation) {
 
 	SetActorLocation(GetActorLocation() + MoveLocation);
 }
 
 //Event
-void ARifle::EventUpdate()
+void ALaserBeam::EventUpdate()
 {
-
-
 	while (m_actions.size() > 0)
 	{
 		IAction* Action = ChangeAction(m_actions.front());
-		UE_LOG(LogTemp, Log, TEXT("Change Action had Action"));
-		checkf(Action != nullptr, TEXT("ARifle EventUpdate in Action is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("ALaserBeam EventUpdate"));
+		checkf(Action != nullptr, TEXT("ALaserBeam EventUpdate in Action is nullptr"));
 		Action->Execute(this);
 		m_actions.pop();
 	}
-	if (m_current_HP < 1)
-	{
-		ChangeAction(EVariousAction::DEATH)->Execute(this);
-	}
-	else
-	{
-		m_actions.push(EVariousAction::NORTH_MOVE);
-	}
 
+	m_actions.push(EVariousAction::GUIDANCE_MOVE);
 }
 
-void ARifle::NotifyActorBeginOverlap(AActor* Actor)
+void ALaserBeam::NotifyActorBeginOverlap(AActor* Actor)
 {
-	UE_LOG(LogTemp, Log, TEXT("Overlap ARifle"));
+	UE_LOG(LogTemp, Log, TEXT("Overlap ALaserBeam"));
 	m_actions.push(EVariousAction::ATTACK);
-	return;
 }
 
-void ARifle::Tick(float Delta)
+void ALaserBeam::Tick(float Delta)
 {
 	Super::Tick(Delta);
 	EventUpdate();

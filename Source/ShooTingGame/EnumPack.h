@@ -29,7 +29,6 @@ enum class EVariousAction : uint8
 	NORTH_MOVE UMETA(DisplayName = "NORTH_MOVE"),
 	GUIDANCE_MOVE UMETA(DisplayName = "GUIDANCE_MOVE"),
 	SHOOTING UMETA(DisplayName = "SHOOTING"),
-	STRUCK UMETA(DisplayName = "STRUCK"),
 	DEATH UMETA(DisplayName = "DEATH"),
 	ATTACK UMETA(DisplayName = "ATTACK"),
 };

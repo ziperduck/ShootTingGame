@@ -33,8 +33,6 @@ public:
 
 	virtual const float GetSpeed() const override;
 
-	virtual const int32 GetStruckDamage() const override;
-
 	virtual const int32 GetAttackPower() const override;
 
 	virtual const int32 GetMaxHP() const override;
@@ -67,6 +65,4 @@ private:
 
 	const EFuselageKind m_weapon = EFuselageKind::METEORICSTONE_FUSELAGE;
 
-	//캐릭터가 받은 피해
-	int32 m_struck_damage;
 };

@@ -39,11 +39,6 @@ IAction* ChangeAction(const EVariousAction& Action)
 		static IAction* Event = new Guidance();
 		return Event;
 	}
-	case EVariousAction::STRUCK:
-	{
-		static IAction* Event = new Struck();
-		return Event;
-	}
 	case EVariousAction::ATTACK:
 	{
 		static IAction* Event = new Attack();

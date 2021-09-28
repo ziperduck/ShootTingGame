@@ -23,20 +23,6 @@ AEnemyDragon::AEnemyDragon()
 	SetActorTickEnabled(false);
 	SetActorEnableCollision(false);
 
-	//static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
-	//m_character_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	//if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
-	//{
-	//
-	//	m_character_mesh->SetStaticMesh(MeshAsset.Object);
-	//	m_character_mesh->SetAllMassScale(0.5f);
-	//	m_character_mesh->SetupAttachment(RootComponent);
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Log, TEXT("Object is nullptr"));
-	//}
-
 }
 
 void AEnemyDragon::Initialize_Implementation(
@@ -77,10 +63,6 @@ const float AEnemyDragon::GetSpeed() const
 	return m_speed;
 }
 
-const int32 AEnemyDragon::GetStruckDamage() const
-{
-	return m_struck_damage;
-}
 
 const int32 AEnemyDragon::GetAttackPower() const
 {
@@ -131,25 +113,9 @@ const int32 AEnemyDragon::GetMaxHP() const
 
 void AEnemyDragon::NotifyActorBeginOverlap(AActor* Actor)
 {
+	UE_LOG(LogTemp, Log, TEXT("Overlap AEnemyDragon"));
 	m_actions.Push(EVariousAction::ATTACK);
 	return;
-	UE_LOG(LogTemp, Log, TEXT("Overlap AEnemyDragon"));
-
-	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
-	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
-
-	switch (OverlapTarget->GetKind())
-	{
-	case EFuselageKind::PLAYER_FUSELAGE:
-	case EFuselageKind::RIFLE_WEAPON:
-		UE_LOG(LogTemp, Log, TEXT("Enemy Overlap Rifle"));
-		m_actions.Push(EVariousAction::STRUCK);
-		m_struck_damage = OverlapTarget->GetAttackPower();
-		break;
-	default:
-		UE_LOG(LogTemp, Log, TEXT("Enemy Overlap Ignore"));
-		break;
-	}
 }
 
 //타임머 만들고 드레곤에 붙이자

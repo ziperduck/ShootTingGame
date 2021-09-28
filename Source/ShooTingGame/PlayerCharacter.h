@@ -36,8 +36,6 @@ public:
 
 	virtual const float GetSpeed() const override;
 
-	virtual const int32 GetStruckDamage() const override;
-
 	virtual const int32 GetAttackPower() const override;
 
 	virtual const int32 GetMaxHP() const override;
@@ -88,9 +86,6 @@ private:
 	bool mb_initialize;
 
 	std::queue<EVariousAction> m_actions;
-
-	//플레어가 받는 데미지 1로 고정해놨다
-	const int32 m_struck_damage = 1;
 
 	//플레이어가 주는 데미지 무기데미지가 아니라 직접 충돌시 주는 데미지
 	const int32 m_attack_power = 1;

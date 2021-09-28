@@ -61,24 +61,10 @@ void AMissileDragon::Tick(float DeltaTime)
 
 void AMissileDragon::NotifyActorBeginOverlap(AActor* Actor)
 {
+	UE_LOG(LogTemp, Log, TEXT("Meteoric Overlap"));
 	m_actions.Push(EVariousAction::ATTACK);
 	return;
-	UE_LOG(LogTemp, Log, TEXT("Meteoric Overlap"));
 
-	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
-	checkf(OverlapTarget != nullptr, TEXT("Meteoric Fuselgae is nullptr"));
-
-	switch (OverlapTarget->GetKind())
-	{
-	case EFuselageKind::PLAYER_FUSELAGE:
-	case EFuselageKind::RIFLE_WEAPON:
-		m_actions.Push(EVariousAction::STRUCK);
-		m_struck_damage = OverlapTarget->GetAttackPower();
-		break;
-	default:
-		UE_LOG(LogTemp, Log, TEXT("Meteoric Ignore Overlap"));
-		break;
-	}
 
 }
 
@@ -90,11 +76,6 @@ const EFuselageKind AMissileDragon::GetKind() const
 const float AMissileDragon::GetSpeed() const
 {
 	return m_speed;
-}
-
-const int32 AMissileDragon::GetStruckDamage() const
-{
-	return m_struck_damage;
 }
 
 const int32 AMissileDragon::GetAttackPower() const
