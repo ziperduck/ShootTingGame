@@ -50,5 +50,7 @@ private:
 
 	int32 m_attack_power;
 
-	float m_attack_term;
+	int32 m_attack_term;
+
+	int32 m_term_count;
 };

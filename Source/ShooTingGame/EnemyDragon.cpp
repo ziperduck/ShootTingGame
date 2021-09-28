@@ -97,6 +97,7 @@ void AEnemyDragon::EventUpdate()
 	}
 	else
 	{
+		return;
 		m_actions = m_next_actions;
 	}
 }

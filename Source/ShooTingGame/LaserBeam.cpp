@@ -17,7 +17,7 @@ ALaserBeam::ALaserBeam() {
 		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
 		WeaponMesh->SetupAttachment(RootComponent);
 		WeaponMesh->SetStaticMesh(MeshAsset.Object);
-		FTransform transform{ FRotator::ZeroRotator,FVector{ 10.0f,0.0f,0.0f } ,FVector{ 10.0f,1.0f,1.0f } };
+		FTransform transform{ FRotator::ZeroRotator,FVector{ 100.0f,0.0f,0.0f } ,FVector{ 50.0f,1.0f,1.0f } };
 		WeaponMesh->SetRelativeTransform(transform);
 
 		WeaponMesh->SetNotifyRigidBodyCollision(true);
@@ -28,6 +28,7 @@ ALaserBeam::ALaserBeam() {
 	m_max_HP = 100;
 	m_current_HP = m_max_HP;
 	m_attack_power = 1;
+	m_attack_term = 60;
 
 }
 
@@ -79,6 +80,12 @@ void ALaserBeam::EventUpdate()
 	}
 
 	m_actions.push(EVariousAction::GUIDANCE_MOVE);
+
+	if (m_attack_term < m_term_count)
+	{
+		m_actions.push(EVariousAction::ATTACK);
+		m_term_count = 0;
+	}
 }
 
 void ALaserBeam::NotifyActorBeginOverlap(AActor* Actor)
@@ -91,4 +98,5 @@ void ALaserBeam::Tick(float Delta)
 {
 	Super::Tick(Delta);
 	EventUpdate();
+	++m_term_count;
 }

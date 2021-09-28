@@ -7,6 +7,7 @@
 #include "Rifle.h"
 #include "FireShoot.h"
 #include "MeteoricStone.h"
+#include "LaserBeam.h"
 #include <set>
 #include "CoreMinimal.h"
 #include <Engine/Classes/Components/SphereComponent.h>
@@ -124,6 +125,8 @@ void Shooting::Execute(AActor* Target) {
 					, EFuselageKind::METEORICSTONE_FUSELAGE, 1.0f);
 		}
 	}
+	case EFuselageKind::LASERBEAM_WEAPON:
+		TargetWorld->SpawnActor<ALaserBeam>(TargetLocation, FRotator::ZeroRotator);
 		break;
 	default:
 		break;
@@ -172,6 +175,7 @@ void Attack::Execute(AActor* Target) {
 	TSet<AActor*> OverlapActors;
 	Target->GetOverlappingActors(OverlapActors);
 
+	UE_LOG(LogTemp, Log, TEXT("OverlapActors Size %d"), OverlapActors.GetAllocatedSize());
 
 	//레이저 빔같은경우 관통데미지를 주기때문에 overlap된 모든 적들을 찾는다.
 	for (auto i : OverlapActors)
