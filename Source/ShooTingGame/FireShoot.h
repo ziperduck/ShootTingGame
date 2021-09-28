@@ -44,7 +44,7 @@ private:
 	USceneComponent* m_characterScene;
 
 private:
-	const EFuselageKind m_kind = EFuselageKind::FireShoot;
+	const EFuselageKind m_kind = EFuselageKind::FIRESHOOT_WEAPON;
 
 	uint16 m_damage;
 

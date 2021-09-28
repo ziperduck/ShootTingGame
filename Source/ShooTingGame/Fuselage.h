@@ -26,7 +26,7 @@ class SHOOTINGGAME_API IFuselage
 public:
 
 	//Getter
-	virtual const EFuselageKind GetKind() const { return EFuselageKind::PlayerFuselage; };
+	virtual const EFuselageKind GetKind() const { return EFuselageKind::PLAYER_FUSELAGE; };
 
 	virtual const float GetSpeed() const { return 1.0f; };
 

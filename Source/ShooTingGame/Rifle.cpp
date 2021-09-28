@@ -91,17 +91,19 @@ void ARifle::EventUpdate()
 	}
 	if (m_current_HP < 1)
 	{
-		ChangeAction(EVariousAction::Death)->Execute(this);
+		ChangeAction(EVariousAction::DEATH)->Execute(this);
 	}
 	else
 	{
-		m_actions.push(EVariousAction::NorthMove);
+		m_actions.push(EVariousAction::NORTH_MOVE);
 	}
 
 }
 
 void ARifle::NotifyActorBeginOverlap(AActor* Actor)
 {
+	m_actions.push(EVariousAction::ATTACK);
+	return;
 	UE_LOG(LogTemp, Log, TEXT("Overlap ARifle"));
 
 	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
@@ -109,10 +111,11 @@ void ARifle::NotifyActorBeginOverlap(AActor* Actor)
 
 	switch (OverlapTarget->GetKind())
 	{
-	case EFuselageKind::EnemyFuselage:
-	case EFuselageKind::MeteoricStone:
+	case EFuselageKind::ENEMY_FUSELAGE:
+	case EFuselageKind::METEORICSTONE_FUSELAGE:
+	case EFuselageKind::MISSILEDRAGON_FUSELAGE:
 		UE_LOG(LogTemp, Log, TEXT("Rifle Collision Enemy"));
-		m_actions.push(EVariousAction::Struck);
+		m_actions.push(EVariousAction::STRUCK);
 		break;
 	default:
 		break;

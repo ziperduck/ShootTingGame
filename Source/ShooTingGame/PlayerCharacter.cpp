@@ -123,7 +123,7 @@ void APlayerCharacter::Tick(float Delta)
 	if (mb_press && m_can_shooting)
 	{
 		m_can_shooting = false;
-		m_actions.push(EVariousAction::Shooting);
+		m_actions.push(EVariousAction::SHOOTING);
 		GetWorldTimerManager().SetTimer(
 			m_shooting_timer, [&] {m_can_shooting = true; }, m_shooting_delay, false);
 	}
@@ -137,10 +137,10 @@ void APlayerCharacter::MoveX(float Direction)
 	switch (EastOrWeast)
 	{
 	case East:
-		m_actions.push(EVariousAction::EastMove);
+		m_actions.push(EVariousAction::EAST_MOVE);
 		break;
 	case West:
-		m_actions.push(EVariousAction::WestMove);
+		m_actions.push(EVariousAction::WEST_MOVE);
 		break;
 	default:
 		break;
@@ -155,10 +155,10 @@ void APlayerCharacter::MoveY(float Direction)
 	switch (NorthOrSouth)
 	{
 	case North:
-		m_actions.push(EVariousAction::NorthMove);
+		m_actions.push(EVariousAction::NORTH_MOVE);
 		break;
 	case South:
-		m_actions.push(EVariousAction::SouthMove);
+		m_actions.push(EVariousAction::SOUTH_MOVE);
 		break;
 	default:
 		break;
@@ -185,6 +185,8 @@ const EFuselageKind APlayerCharacter::GetWeapon()const
 
 void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
 {
+	m_actions.push(EVariousAction::ATTACK);
+	return;
 	UE_LOG(LogTemp, Log, TEXT("Overlap Player Character"));
 	if (Actor == nullptr)
 		return;
@@ -193,9 +195,9 @@ void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
 
 	switch (OverlapTarget->GetKind())
 	{
-	case EFuselageKind::EnemyFuselage:
-	case EFuselageKind::FireShoot:
-		m_actions.push(EVariousAction::Struck);
+	case EFuselageKind::ENEMY_FUSELAGE:
+	case EFuselageKind::FIRESHOOT_WEAPON:
+		m_actions.push(EVariousAction::STRUCK);
 		break;
 	default:
 		UE_LOG(LogTemp, Log, TEXT("Player Overlap Ignore"));

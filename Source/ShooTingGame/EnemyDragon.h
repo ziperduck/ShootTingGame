@@ -63,7 +63,7 @@ public:
 		TArray<EVariousAction> m_next_actions;
 
 private:
-	const EFuselageKind m_kind = EFuselageKind::EnemyFuselage;
+	const EFuselageKind m_kind = EFuselageKind::ENEMY_FUSELAGE;
 
 	float m_speed;
 

@@ -1,13 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MeteoricStone.h"
+#include "MissileDragon.h"
+
 #include "Action.h"
 #include "ActionInstance.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
-AMeteoricStone::AMeteoricStone()
+AMissileDragon::AMissileDragon()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
@@ -19,16 +20,6 @@ AMeteoricStone::AMeteoricStone()
 	Sphere->InitSphereRadius(40.0f);
 	RootComponent = Sphere;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
-	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
-		WeaponMesh->SetupAttachment(RootComponent);
-		WeaponMesh->SetStaticMesh(MeshAsset.Object);
-		WeaponMesh->SetRelativeScale3D(FVector{ 0.4f,0.4f,0.4f });
-	}
-
 	mb_initialize = false;
 
 	SetActorTickEnabled(false);
@@ -36,7 +27,7 @@ AMeteoricStone::AMeteoricStone()
 
 }
 
-void AMeteoricStone::Initialize_Implementation(const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay)
+void AMissileDragon::Initialize_Implementation(const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay)
 {
 	if (!mb_initialize)
 	{
@@ -54,21 +45,21 @@ void AMeteoricStone::Initialize_Implementation(const float Speed, const int32 Ma
 }
 
 // Called when the game starts or when spawned
-void AMeteoricStone::BeginPlay()
+void AMissileDragon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
-void AMeteoricStone::Tick(float DeltaTime)
+void AMissileDragon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	EventUpdate();
 }
 
-void AMeteoricStone::NotifyActorBeginOverlap(AActor* Actor)
+void AMissileDragon::NotifyActorBeginOverlap(AActor* Actor)
 {
 	m_actions.Push(EVariousAction::ATTACK);
 	return;
@@ -91,42 +82,42 @@ void AMeteoricStone::NotifyActorBeginOverlap(AActor* Actor)
 
 }
 
-const EFuselageKind AMeteoricStone::GetKind() const
+const EFuselageKind AMissileDragon::GetKind() const
 {
 	return m_kind;
 }
 
-const float AMeteoricStone::GetSpeed() const
+const float AMissileDragon::GetSpeed() const
 {
 	return m_speed;
 }
 
-const int32 AMeteoricStone::GetStruckDamage() const
+const int32 AMissileDragon::GetStruckDamage() const
 {
 	return m_struck_damage;
 }
 
-const int32 AMeteoricStone::GetAttackPower() const
+const int32 AMissileDragon::GetAttackPower() const
 {
 	return 1;
 }
 
-const int32 AMeteoricStone::GetMaxHP() const
+const int32 AMissileDragon::GetMaxHP() const
 {
 	return m_max_HP;
 }
 
-void AMeteoricStone::AddCurrentHP(const int32 HP)
+void AMissileDragon::AddCurrentHP(const int32 HP)
 {
 	m_current_HP += HP;
 }
 
-void AMeteoricStone::MoveLocation(const FVector& MoveLocation)
+void AMissileDragon::MoveLocation(const FVector& MoveLocation)
 {
 	SetActorLocation(GetActorLocation() + MoveLocation);
 }
 
-void AMeteoricStone::EventUpdate()
+void AMissileDragon::EventUpdate()
 {
 	while (m_actions.GetAllocatedSize() > 0)
 	{
@@ -136,7 +127,6 @@ void AMeteoricStone::EventUpdate()
 	if (m_current_HP < 1)
 	{
 		//분해되는 건 그냥 운석을 두개 생성하자
-		ChangeAction(EVariousAction::SHOOTING)->Execute(this);
 		ChangeAction(EVariousAction::DEATH)->Execute(this);
 	}
 	else
@@ -145,8 +135,9 @@ void AMeteoricStone::EventUpdate()
 	}
 }
 
-const EFuselageKind AMeteoricStone::GetWeapon()const
+const EFuselageKind AMissileDragon::GetWeapon()const
 {
 	return m_weapon;
 }
+
 

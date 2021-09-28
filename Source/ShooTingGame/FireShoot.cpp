@@ -91,11 +91,11 @@ void AFireShoot::EventUpdate()
 	//플레이어가 쏘는 경우 남쪽으로 적은 북쪽으로 쏜다.
 	switch (GetKind())
 	{
-	case EFuselageKind::Rifle:
-		m_actions.push(EVariousAction::NorthMove);
+	case EFuselageKind::RIFLE_WEAPON:
+		m_actions.push(EVariousAction::NORTH_MOVE);
 		break;
-	case EFuselageKind::FireShoot:
-		m_actions.push(EVariousAction::SouthMove);
+	case EFuselageKind::FIRESHOOT_WEAPON:
+		m_actions.push(EVariousAction::SOUTH_MOVE);
 		break;
 	default:
 		break;
@@ -104,16 +104,18 @@ void AFireShoot::EventUpdate()
 
 void AFireShoot::NotifyActorBeginOverlap(AActor* Actor)
 {
+	m_actions.push(EVariousAction::ATTACK);
+	return;
 	UE_LOG(LogTemp, Log, TEXT("Overlap AFireShoot"));
 	if (Actor == nullptr)
 		return;
 	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
 	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
 
-	if (OverlapTarget->GetKind() == EFuselageKind::PlayerFuselage)
+	if (OverlapTarget->GetKind() == EFuselageKind::PLAYER_FUSELAGE)
 	{
 		UE_LOG(LogTemp, Log, TEXT("FireShoot Collision Player"));
-		m_actions.push(EVariousAction::Death);
+		m_actions.push(EVariousAction::DEATH);
 	}
 
 }

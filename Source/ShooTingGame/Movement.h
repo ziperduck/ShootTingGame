@@ -39,6 +39,14 @@ public:
 
 };
 
+class Guidance : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};
+
 
 class Shooting : public IAction
 {
@@ -49,6 +57,14 @@ public:
 };
 
 class Struck : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};
+
+class Attack : public IAction
 {
 public:
 

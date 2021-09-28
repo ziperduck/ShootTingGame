@@ -9,37 +9,47 @@ IAction* ChangeAction(const EVariousAction& Action)
 
 	switch (Action)
 	{
-	case EVariousAction::EastMove:
+	case EVariousAction::EAST_MOVE:
 	{
 		static IAction* Event = new EastMove();
 		return Event;
 	}
-	case EVariousAction::WestMove:
+	case EVariousAction::WEST_MOVE:
 	{
 		static IAction* Event = new WestMove();
 		return Event;
 	}
-	case EVariousAction::SouthMove:
+	case EVariousAction::SOUTH_MOVE:
 	{
 		static IAction* Event = new SouthMove();
 		return Event;
 	}
-	case EVariousAction::NorthMove:
+	case EVariousAction::NORTH_MOVE:
 	{
 		static IAction* Event = new NorthMove();
 		return Event;
 	}
-	case EVariousAction::Shooting:
+	case EVariousAction::SHOOTING:
 	{
 		static IAction* Event = new Shooting();
 		return Event;
 	}
-	case EVariousAction::Struck:
+	case EVariousAction::GUIDANCE_MOVE:
+	{
+		static IAction* Event = new Guidance();
+		return Event;
+	}
+	case EVariousAction::STRUCK:
 	{
 		static IAction* Event = new Struck();
 		return Event;
 	}
-	case EVariousAction::Death:
+	case EVariousAction::ATTACK:
+	{
+		static IAction* Event = new Attack();
+		return Event;
+	}
+	case EVariousAction::DEATH:
 	{
 		static IAction* Event = new Death();
 		return Event;

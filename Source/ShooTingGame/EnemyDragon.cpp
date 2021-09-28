@@ -111,7 +111,7 @@ void AEnemyDragon::EventUpdate()
 	if (m_current_HP < 1)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Enemy Dragon Death"));
-		ChangeAction(EVariousAction::Death)->Execute(this);
+		ChangeAction(EVariousAction::DEATH)->Execute(this);
 	}
 	else
 	{
@@ -131,6 +131,8 @@ const int32 AEnemyDragon::GetMaxHP() const
 
 void AEnemyDragon::NotifyActorBeginOverlap(AActor* Actor)
 {
+	m_actions.Push(EVariousAction::ATTACK);
+	return;
 	UE_LOG(LogTemp, Log, TEXT("Overlap AEnemyDragon"));
 
 	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
@@ -138,10 +140,10 @@ void AEnemyDragon::NotifyActorBeginOverlap(AActor* Actor)
 
 	switch (OverlapTarget->GetKind())
 	{
-	case EFuselageKind::PlayerFuselage:
-	case EFuselageKind::Rifle:
+	case EFuselageKind::PLAYER_FUSELAGE:
+	case EFuselageKind::RIFLE_WEAPON:
 		UE_LOG(LogTemp, Log, TEXT("Enemy Overlap Rifle"));
-		m_actions.Push(EVariousAction::Struck);
+		m_actions.Push(EVariousAction::STRUCK);
 		m_struck_damage = OverlapTarget->GetAttackPower();
 		break;
 	default:
@@ -158,7 +160,7 @@ void AEnemyDragon::Tick(float Delta)
 	EventUpdate();
 	if (!GetWorldTimerManager().IsTimerActive(m_shooting_timer))
 	{
-		m_actions.Push(EVariousAction::Shooting);
+		m_actions.Push(EVariousAction::SHOOTING);
 		GetWorldTimerManager().SetTimer(m_shooting_timer, m_shooting_delay, false);
 	}
 }

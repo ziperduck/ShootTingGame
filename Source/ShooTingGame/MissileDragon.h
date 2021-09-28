@@ -4,22 +4,23 @@
 
 #include "Fuselage.h"
 #include "Airframe.h"
+#include "EnumPack.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "MeteoricStone.generated.h"
+#include "MissileDragon.generated.h"
 
 UCLASS()
-class SHOOTINGGAME_API AMeteoricStone : public AActor, public IFuselage, public IAirframe
+class SHOOTINGGAME_API AMissileDragon : public AActor, public IFuselage, public IAirframe
 {
 	GENERATED_BODY()
-	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
 	// Sets default values for this actor's properties
-	AMeteoricStone();
+	AMissileDragon();
 
 	void Initialize_Implementation(
 		const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay) override;
@@ -51,7 +52,7 @@ public:
 	virtual const EFuselageKind GetWeapon() const override;
 private:
 
-	const EFuselageKind m_kind = EFuselageKind::METEORICSTONE_FUSELAGE;
+	const EFuselageKind m_kind = EFuselageKind::MISSILEDRAGON_FUSELAGE;
 
 	float m_speed;
 
@@ -65,7 +66,7 @@ private:
 
 	TArray<EVariousAction> m_next_actions;
 
-	const EFuselageKind m_weapon = EFuselageKind::METEORICSTONE_FUSELAGE;
+	const EFuselageKind m_weapon = EFuselageKind::MISSILEDRAGON_FUSELAGE;
 
 	//캐릭터가 받은 피해
 	int32 m_struck_damage;

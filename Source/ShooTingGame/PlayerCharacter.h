@@ -77,7 +77,7 @@ private:
 
 	//캐릭터에 관한 필요한 정보들
 
-	const EFuselageKind m_kind = EFuselageKind::PlayerFuselage;
+	const EFuselageKind m_kind = EFuselageKind::PLAYER_FUSELAGE;
 
 	float m_speed;
 

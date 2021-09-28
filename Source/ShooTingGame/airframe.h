@@ -28,5 +28,5 @@ public:
 		void Initialize(const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay);
 
 	//airgrame을 dragon이나 character에 상속시키고 action값에서 불러와서 shooting을 만들자
-	virtual const EFuselageKind GetWeapon() const { return EFuselageKind::PlayerFuselage; }
+	virtual const EFuselageKind GetWeapon() const { return EFuselageKind::PLAYER_FUSELAGE; }
 };
