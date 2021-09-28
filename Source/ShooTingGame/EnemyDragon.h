@@ -5,6 +5,7 @@
 #include "Fuselage.h"
 #include "EnumPack.h"
 #include "Airframe.h"
+#include <Engine/Classes/Components/SphereComponent.h>
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "EnemyDragon.generated.h"
@@ -23,10 +24,12 @@ public:
 
 	AEnemyDragon();
 
+	void Initialize_Implementation(
+		const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay) override;
+
 	virtual void Tick(float Delta) override;
 
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
-
 
 	//Getter
 	virtual const EFuselageKind GetKind() const override;
@@ -37,19 +40,21 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
+	virtual const EFuselageKind GetWeapon() const override;
+
+	virtual const int32 GetMaxHP() const override;
+
 	//Setter
-	virtual void AddCurrentHP(const int8 HP) override;
+	virtual void AddCurrentHP(const int32 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 
 	//Event
 	virtual void EventUpdate() override;
 
-	virtual void ShootingGun() override;
-
 private:
 
-	//UStaticMeshComponent* m_character_mesh;
+	//USphereComponent* m_character_mesh;
 
 	FTimerHandle m_shooting_timer;
 
@@ -62,10 +67,11 @@ private:
 
 	float m_speed;
 
-	int8 m_max_HP;
+	int32 m_max_HP;
 
-	int8 m_current_HP;
+	int32 m_current_HP;
 
+	bool mb_initialize;
 	
 	TArray<EVariousAction> m_actions;
 

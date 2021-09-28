@@ -3,26 +3,49 @@
 
 #include "ActionInstance.h"
 
-/*
-EastMove* ActionInstance::East = new EastMove();
-WestMove*  ActionInstance::West = new WestMove();
-SouthMove* ActionInstance::South = new SouthMove();
-NorthMove* ActionInstance::North = new NorthMove();
-
-IAction* ActionInstance::ChangeAction(EVariousAction Action)const
+IAction* ChangeAction(const EVariousAction& Action) 
 {
+	UE_LOG(LogTemp, Log, TEXT("ChageAction"));
+
 	switch (Action)
 	{
 	case EVariousAction::EastMove:
-		return East;
+	{
+		static IAction* Event = new EastMove();
+		return Event;
+	}
 	case EVariousAction::WestMove:
-		return West;
+	{
+		static IAction* Event = new WestMove();
+		return Event;
+	}
 	case EVariousAction::SouthMove:
-		return South;
+	{
+		static IAction* Event = new SouthMove();
+		return Event;
+	}
 	case EVariousAction::NorthMove:
-		return North;
+	{
+		static IAction* Event = new NorthMove();
+		return Event;
+	}
+	case EVariousAction::Shooting:
+	{
+		static IAction* Event = new Shooting();
+		return Event;
+	}
+	case EVariousAction::Struck:
+	{
+		static IAction* Event = new Struck();
+		return Event;
+	}
+	case EVariousAction::Death:
+	{
+		static IAction* Event = new Death();
+		return Event;
+	}
 	default:
+		checkNoEntry();
 		return nullptr;
 	}
 }
-*/

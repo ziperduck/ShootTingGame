@@ -1,36 +1,33 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PlayerCharacter.h"
-#include "Movement.h"
-#include "Rifle.h"
+#include "Action.h"
+#include "ActionInstance.h"
 #include <Engine/Classes/Camera/CameraComponent.h>
 #include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() {
 
-	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
 	UE_LOG(LogTemp, Log, TEXT("AplayerContorller Constructor"));
+
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+
 
 	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetNotifyRigidBodyCollision(true);
 	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
-	Sphere->InitSphereRadius(20.0f);
+	Sphere->InitSphereRadius(40.0f);
 	RootComponent = Sphere;
 
-	m_characterScene = CreateAbstractDefaultSubobject<USceneComponent>(TEXT("Scene"));
-	m_characterScene->SetupAttachment(RootComponent);
+	mb_initialize = false;
 
-	m_kind = EFuselageKind::PlayerFuselage;
-	m_weapon = EFuselageKind::Rifle;
-	m_speed = 1.0f;
-	m_max_HP = 1;
-	m_current_HP = m_max_HP;
+	SetActorTickEnabled(false);
+	SetActorEnableCollision(false);
 
 	mb_press = false;
 	m_can_shooting = true;
-	m_shooting_delay = 1.0f;
 }
 
 // Called when the game starts or when spawned
@@ -40,6 +37,27 @@ void APlayerCharacter::BeginPlay()
 	UE_LOG(LogTemp, Log, TEXT("AplayerContorller BeginPlay"));
 
 
+}
+
+void APlayerCharacter::Initialize_Implementation(
+	const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay)
+{
+	if (!mb_initialize)
+	{
+		mb_initialize = true;
+
+		UE_LOG(LogTemp, Log, TEXT("Initialize"));
+
+		SetActorTickEnabled(true);
+		SetActorEnableCollision(true);
+
+		m_speed = Speed;
+		m_max_HP = MaxHP;
+		m_current_HP = MaxHP;
+
+		m_weapon = Weapon;
+		m_shooting_delay = Delay;
+	}
 }
 
 //Getter
@@ -63,8 +81,13 @@ const int32 APlayerCharacter::GetAttackPower() const
 	return m_attack_power;
 }
 
+const int32 APlayerCharacter::GetMaxHP() const
+{
+	return m_max_HP;
+}
+
 //Setter
-void APlayerCharacter::AddCurrentHP(const int8 HP)
+void APlayerCharacter::AddCurrentHP(const int32 HP)
 {
 	m_current_HP += HP;
 }
@@ -89,6 +112,7 @@ void APlayerCharacter::EventUpdate()
 		m_actions.pop();
 	}
 }
+
 
 void APlayerCharacter::Tick(float Delta)
 {
@@ -154,6 +178,11 @@ void APlayerCharacter::ReleaseAttack(float Direction)
 	mb_press = false;
 }
 
+const EFuselageKind APlayerCharacter::GetWeapon()const
+{
+	return m_weapon;
+}
+
 void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
 {
 	UE_LOG(LogTemp, Log, TEXT("Overlap Player Character"));
@@ -170,20 +199,6 @@ void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
 		break;
 	default:
 		UE_LOG(LogTemp, Log, TEXT("Player Overlap Ignore"));
-		break;
-	}
-}
-
-
-void APlayerCharacter::ShootingGun()
-{
-	switch (m_weapon)
-	{
-	case EFuselageKind::Rifle:
-		GetWorld()->SpawnActor<ARifle>(
-			GetActorLocation() + FVector{ 60.0f,0.0f,0.0f }, FRotator::ZeroRotator);
-		break;
-	default:
 		break;
 	}
 }

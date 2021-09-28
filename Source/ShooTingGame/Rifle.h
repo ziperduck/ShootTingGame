@@ -26,8 +26,10 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
+	virtual const int32 GetMaxHP() const override;
+
 	//Setter
-	virtual void AddCurrentHP(const int8 HP) override;
+	virtual void AddCurrentHP(const int32 HP) override;
 
 	void MoveLocation(const FVector& MoveLocation) ;
 
@@ -47,9 +49,9 @@ private:
 
 	float m_speed;
 
-	int8 m_max_HP;
+	int32 m_max_HP;
 
-	int8 m_current_HP;
+	int32 m_current_HP;
 
 	const int32 m_struck_damage = 1;
 

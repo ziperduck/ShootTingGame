@@ -1,58 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Movement.h"
+#include "EnumPack.h"
 #include "Airframe.h"
 #include "EnemyDragon.h"
 #include "Rifle.h"
+#include "FireShoot.h"
+#include "MeteoricStone.h"
 #include "CoreMinimal.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
-IAction* ChangeAction(EVariousAction Action)
-{
-	UE_LOG(LogTemp, Log, TEXT("ChageAction"));
-
-	switch (Action)
-	{
-	case EVariousAction::EastMove:
-	{
-		static IAction* Event = new EastMove();
-		return Event;
-	}
-	case EVariousAction::WestMove:
-	{
-		static IAction* Event = new WestMove();
-		return Event;
-	}
-	case EVariousAction::SouthMove:
-	{
-		static IAction* Event = new SouthMove();
-		return Event;
-	}
-	case EVariousAction::NorthMove:
-	{
-		static IAction* Event = new NorthMove();
-		return Event;
-	}
-	case EVariousAction::Shooting:
-	{
-		static IAction* Event = new Shooting();
-		return Event;
-	}
-	case EVariousAction::Struck:
-	{
-		static IAction* Event = new Struck();
-		return Event;
-	}
-	case EVariousAction::Death:
-	{
-		static IAction* Event = new Death();
-		return Event;
-	}
-	default:
-		checkNoEntry();
-		return nullptr;
-	}
-}
 
 
 const FVector& CalculationRatioSpeed(const FVector& Ratio) {
@@ -116,16 +73,37 @@ void Shooting::Execute(AActor* Target) {
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	UWorld* TargetWorld = Target->GetWorld();
-	
-	IAirframe* Airframe = Cast<IAirframe>(Target);
-	if (Airframe == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("shooting Airframe is nullptr"));
-		return;
-	}
-	checkf(Airframe != nullptr, TEXT("Airframe is nullptr"));
-	Airframe->ShootingGun();
+	FVector TargetLocation = Target->GetActorLocation();
 
+	IAirframe* Airframe = Cast<IAirframe>(Target);
+	checkf(Airframe != nullptr, TEXT("Airframe is nullptr"));
+
+	//GetWeapon으로 무기를 만들자.
+	
+	switch (Airframe->GetWeapon())
+	{
+	case EFuselageKind::Rifle:
+		TargetWorld->SpawnActor<ARifle>(TargetLocation, FRotator::ZeroRotator);
+		break;
+	case EFuselageKind::FireShoot:
+		TargetWorld->SpawnActor<AFireShoot>(TargetLocation, FRotator::ZeroRotator);
+		break;
+	case EFuselageKind::MeteoricStone: 
+	{
+		AMeteoricStone* MeteoricStone = Cast<AMeteoricStone>(Airframe);
+		checkf(MeteoricStone != nullptr, TEXT("MeteoricStone is not casting"));
+		if (MeteoricStone->GetMaxHP() > 1)
+		{
+			TargetWorld->SpawnActor<AMeteoricStone>(TargetLocation, FRotator::ZeroRotator)
+				->Initialize_Implementation(MeteoricStone->GetSpeed(), MeteoricStone->GetMaxHP() - 1
+					, EFuselageKind::MeteoricStone, 1.0f);
+		}
+	}
+		break;
+	default:
+		break;
+	}
+	
 }
 
 void Struck::Execute(AActor* Target) {
@@ -135,7 +113,7 @@ void Struck::Execute(AActor* Target) {
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
-	const int8 StruckDamage = -(Fuselage->GetStruckDamage());
+	const int32 StruckDamage = -(Fuselage->GetStruckDamage());
 	Fuselage->AddCurrentHP(StruckDamage);
 
 }

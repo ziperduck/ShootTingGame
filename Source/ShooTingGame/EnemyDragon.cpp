@@ -2,21 +2,26 @@
 
 
 #include "EnemyDragon.h"
-#include "FireShoot.h"
-#include "Movement.h"
-#include <Engine/Classes/Components/SphereComponent.h>
+#include "Action.h"
+#include "ActionInstance.h"
 
 // Sets default values
 AEnemyDragon::AEnemyDragon() 
 {
-
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+
 
 	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetNotifyRigidBodyCollision(true);
 	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
 	Sphere->InitSphereRadius(40.0f);
 	RootComponent = Sphere;
+
+	mb_initialize = false;
+
+	SetActorTickEnabled(false);
+	SetActorEnableCollision(false);
 
 	//static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
 	//m_character_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
@@ -32,18 +37,33 @@ AEnemyDragon::AEnemyDragon()
 	//	UE_LOG(LogTemp, Log, TEXT("Object is nullptr"));
 	//}
 
-	m_weapon = EFuselageKind::FireShoot;
-	m_speed = 4.0f;
-	m_max_HP = 1;
-	m_struck_damage = 0;
-	m_current_HP = m_max_HP;
-	m_shooting_delay = 1.0f;
+}
+
+void AEnemyDragon::Initialize_Implementation(
+	const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay)
+{
+	if (!mb_initialize)
+	{
+		mb_initialize = true;
+
+		UE_LOG(LogTemp, Log, TEXT("Initialize"));
+
+		SetActorTickEnabled(true);
+		SetActorEnableCollision(true);
+
+		m_speed = Speed;
+		m_max_HP = MaxHP;
+		m_current_HP = MaxHP;
+		m_weapon = Weapon;
+		m_shooting_delay = Delay;
+	}
 }
 
 void AEnemyDragon::BeginPlay()
 {
 	Super::BeginPlay();
 	UE_LOG(LogTemp,Log,TEXT("Spawn EnemyDragon"));
+
 }
 
 //Getter
@@ -68,7 +88,7 @@ const int32 AEnemyDragon::GetAttackPower() const
 }
 
 //Setter
-void AEnemyDragon::AddCurrentHP(const int8 HP)
+void AEnemyDragon::AddCurrentHP(const int32 HP)
 {
 	m_current_HP += HP;
 }
@@ -97,6 +117,16 @@ void AEnemyDragon::EventUpdate()
 	{
 		m_actions = m_next_actions;
 	}
+}
+
+const EFuselageKind AEnemyDragon::GetWeapon() const
+{
+	return m_weapon;
+}
+
+const int32 AEnemyDragon::GetMaxHP() const
+{
+	return m_max_HP;
 }
 
 void AEnemyDragon::NotifyActorBeginOverlap(AActor* Actor)
@@ -130,20 +160,5 @@ void AEnemyDragon::Tick(float Delta)
 	{
 		m_actions.Push(EVariousAction::Shooting);
 		GetWorldTimerManager().SetTimer(m_shooting_timer, m_shooting_delay, false);
-	}
-}
-
-
-
-void AEnemyDragon::ShootingGun()
-{
-	switch (m_weapon)
-	{
-	case EFuselageKind::FireShoot:
-		GetWorld()->SpawnActor<AFireShoot>(
-			GetActorLocation() + FVector{ -60.0f,0.0f,0.0f }, FRotator::ZeroRotator);
-		break;
-	default:
-		break;
 	}
 }

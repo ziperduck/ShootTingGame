@@ -34,8 +34,10 @@ public:
 
 	virtual const int32 GetAttackPower() const { return 0; };
 
+	virtual const int32 GetMaxHP() const { return 0; };
+
 	//Setter
-	virtual void AddCurrentHP(const int8 HP){}
+	virtual void AddCurrentHP(const int32 HP){}
 
 	//Event
 	virtual void EventUpdate(){}

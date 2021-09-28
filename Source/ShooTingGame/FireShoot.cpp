@@ -2,7 +2,8 @@
 
 
 #include "FireShoot.h"
-#include "Movement.h"
+#include "Action.h"
+#include "ActionInstance.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
@@ -56,11 +57,16 @@ const int32 AFireShoot::GetAttackPower() const
 	return m_attack_power;
 }
 
+const int32 AFireShoot::GetMaxHP() const
+{
+	return m_max_HP;
+}
+
 
 
  //Setter
 
-void AFireShoot::AddCurrentHP(const int8 HP)
+void AFireShoot::AddCurrentHP(const int32 HP)
 {
 	m_current_HP += HP;
 }

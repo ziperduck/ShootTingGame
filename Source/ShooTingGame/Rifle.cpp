@@ -2,7 +2,8 @@
 
 
 #include "Rifle.h"
-#include "Movement.h"
+#include "Action.h"
+#include "ActionInstance.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
@@ -56,11 +57,16 @@ const int32 ARifle::GetAttackPower() const
 	return m_attack_power;
 }
 
+const int32 ARifle::GetMaxHP() const
+{
+	return m_max_HP;
+}
+
 
 
  //Setter
 
-void ARifle::AddCurrentHP(const int8 HP)
+void ARifle::AddCurrentHP(const int32 HP)
 {
 	m_current_HP += HP;
 }

@@ -2,14 +2,16 @@
 
 
 #include "MeteoricStone.h"
-#include "Movement.h"
+#include "Action.h"
+#include "ActionInstance.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
 AMeteoricStone::AMeteoricStone()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+
 
 	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetNotifyRigidBodyCollision(true);
@@ -17,10 +19,38 @@ AMeteoricStone::AMeteoricStone()
 	Sphere->InitSphereRadius(40.0f);
 	RootComponent = Sphere;
 
-	m_speed = 2.0f;
-	m_max_HP = 3;
-	m_current_HP = m_max_HP;
-	m_struck_damage = 0;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
+	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
+	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
+		WeaponMesh->SetupAttachment(RootComponent);
+		WeaponMesh->SetStaticMesh(MeshAsset.Object);
+		WeaponMesh->SetRelativeScale3D(FVector{ 0.4f,0.4f,0.4f });
+	}
+
+	mb_initialize = false;
+
+	SetActorTickEnabled(false);
+	SetActorEnableCollision(false);
+
+}
+
+void AMeteoricStone::Initialize_Implementation(const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay)
+{
+	if (!mb_initialize)
+	{
+		mb_initialize = true;
+
+		UE_LOG(LogTemp, Log, TEXT("Initialize"));
+
+		SetActorTickEnabled(true);
+		SetActorEnableCollision(true);
+
+		m_speed = Speed;
+		m_max_HP = MaxHP;
+		m_current_HP = MaxHP;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -49,7 +79,7 @@ void AMeteoricStone::NotifyActorBeginOverlap(AActor* Actor)
 	{
 	case EFuselageKind::PlayerFuselage:
 	case EFuselageKind::Rifle:
-		m_actions.push(EVariousAction::Struck);
+		m_actions.Push(EVariousAction::Struck);
 		m_struck_damage = OverlapTarget->GetAttackPower();
 		break;
 	default:
@@ -79,7 +109,12 @@ const int32 AMeteoricStone::GetAttackPower() const
 	return 1;
 }
 
-void AMeteoricStone::AddCurrentHP(const int8 HP)
+const int32 AMeteoricStone::GetMaxHP() const
+{
+	return m_max_HP;
+}
+
+void AMeteoricStone::AddCurrentHP(const int32 HP)
 {
 	m_current_HP += HP;
 }
@@ -91,19 +126,25 @@ void AMeteoricStone::MoveLocation(const FVector& MoveLocation)
 
 void AMeteoricStone::EventUpdate()
 {
-	while (m_actions.size() > 0)
+	while (m_actions.GetAllocatedSize() > 0)
 	{
-		IAction* Action = ChangeAction(m_actions.front());
+		IAction* Action = ChangeAction(m_actions.Pop());
 		Action->Execute(this);
-		m_actions.pop();
 	}
 	if (m_current_HP < 1)
 	{
+		//분해되는 건 그냥 운석을 두개 생성하자
+		ChangeAction(EVariousAction::Shooting)->Execute(this);
 		ChangeAction(EVariousAction::Death)->Execute(this);
 	}
 	else
 	{
-		m_actions.push(EVariousAction::SouthMove);
+		m_actions.Push(EVariousAction::SouthMove);
 	}
+}
+
+const EFuselageKind AMeteoricStone::GetWeapon()const
+{
+	return m_weapon;
 }
 

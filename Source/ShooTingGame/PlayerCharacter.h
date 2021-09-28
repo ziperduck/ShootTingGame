@@ -22,6 +22,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 public:
+
+	void Initialize_Implementation(
+		const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay) override;
+
 	virtual void Tick(float Delta) override;
 
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
@@ -35,9 +39,11 @@ public:
 	virtual const int32 GetStruckDamage() const override;
 
 	virtual const int32 GetAttackPower() const override;
-	
+
+	virtual const int32 GetMaxHP() const override;
+
 	//Setter
-	virtual void AddCurrentHP(const int8 HP) override;
+	virtual void AddCurrentHP(const int32 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 	
@@ -57,13 +63,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void ReleaseAttack(float Direction);
 
-	virtual void ShootingGun() override;
+	virtual const EFuselageKind GetWeapon() const override;
 
 private:
 
 	//외형 및 언리얼에서 제공해주는 기능들
 
-	USceneComponent* m_characterScene;
+	//USceneComponent* m_characterScene;
 
 	FTimerHandle m_shooting_timer;
 
@@ -71,13 +77,15 @@ private:
 
 	//캐릭터에 관한 필요한 정보들
 
-	EFuselageKind m_kind;
+	const EFuselageKind m_kind = EFuselageKind::PlayerFuselage;
 
 	float m_speed;
 
-	int8 m_max_HP;
+	int32 m_max_HP;
 
-	int8 m_current_HP;
+	int32 m_current_HP;
+
+	bool mb_initialize;
 
 	std::queue<EVariousAction> m_actions;
 
