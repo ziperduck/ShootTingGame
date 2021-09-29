@@ -27,15 +27,22 @@ public:
 
 	virtual const int32 GetMaxHP() const override;
 
+	const int32 GetAttackTerm() const;
+
+	TMap<AActor*, int32> GetAttackTargetCount() const;
+
 	//Setter
 	virtual void AddCurrentHP(const int32 HP) override;
 
 	void MoveLocation(const FVector& MoveLocation) ;
 
+
 	//Event
 	virtual void EventUpdate() override;
 
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
+
+	virtual void NotifyActorEndOverlap(AActor* Actor) override;
 
 private:
 	const EFuselageKind m_kind = EFuselageKind::LASERBEAM_WEAPON;
@@ -52,5 +59,5 @@ private:
 
 	int32 m_attack_term;
 
-	int32 m_term_count;
+	TMap<AActor*, int32> m_term_count;
 };

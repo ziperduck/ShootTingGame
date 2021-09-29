@@ -73,6 +73,7 @@ const int32 AEnemyDragon::GetAttackPower() const
 void AEnemyDragon::AddCurrentHP(const int32 HP)
 {
 	m_current_HP += HP;
+	UE_LOG(LogTemp, Log, TEXT("AEnemyDragon CurrentHP = %d"), m_current_HP);
 }
 
 void AEnemyDragon::MoveLocation(const FVector& MoveLocation) {

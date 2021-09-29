@@ -116,7 +116,7 @@ void AMeteoricStone::EventUpdate()
 	}
 	else
 	{
-		m_actions.Push(EVariousAction::GUIDANCE_MOVE);
+		m_actions.Push(EVariousAction::SOUTH_MOVE);
 	}
 }
 

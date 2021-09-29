@@ -141,6 +141,7 @@ void Attack::Execute(AActor* Target) {
 	IFuselage* TargetFuselage = Cast<IFuselage>(Target);
 	checkf(TargetFuselage != nullptr, TEXT("Fuselage is nullptr"));
 
+	//타격이 가능한 대상을 선별한다.
 	std::set<EFuselageKind> Wanted;
 	switch (TargetFuselage->GetKind())
 	{
@@ -149,13 +150,34 @@ void Attack::Execute(AActor* Target) {
 		Wanted.insert(EFuselageKind::FIRESHOOT_WEAPON);
 	}
 	case EFuselageKind::RIFLE_WEAPON:
-	case EFuselageKind::LASERBEAM_WEAPON:
 	{
 		Wanted.insert(EFuselageKind::ENEMY_FUSELAGE);
 		Wanted.insert(EFuselageKind::METEORICSTONE_FUSELAGE);
 		Wanted.insert(EFuselageKind::MISSILEDRAGON_FUSELAGE);
-	}
 		break;
+	}
+	case EFuselageKind::LASERBEAM_WEAPON:
+	{
+		UE_LOG(LogTemp, Log, TEXT("LaserBeam Attack"));
+
+		ALaserBeam* LaserBeam = Cast<ALaserBeam>(TargetFuselage);
+		checkf(LaserBeam != nullptr, TEXT("LaserBeam is nullptr"));
+
+		const int32 AttackTerm = LaserBeam->GetAttackTerm();
+		TMap<AActor*, int32> LaserAttackCount = LaserBeam->GetAttackTargetCount();
+		for (auto i : LaserAttackCount)
+		{
+			if (i.Value == AttackTerm)
+			{
+				IFuselage* OverlapFuselage = Cast<IFuselage>(i.Key);
+				checkf(OverlapFuselage != nullptr, TEXT("OverlapFuselage is nullptr"));
+
+				UE_LOG(LogTemp, Log, TEXT("LaserBeam Count Over %d"),OverlapFuselage->GetMaxHP());
+				OverlapFuselage->AddCurrentHP(-LaserBeam->GetAttackPower());
+			}
+		}
+		return;
+	}
 	case EFuselageKind::ENEMY_FUSELAGE:
 	case EFuselageKind::METEORICSTONE_FUSELAGE:
 	case EFuselageKind::MISSILEDRAGON_FUSELAGE:
@@ -172,16 +194,16 @@ void Attack::Execute(AActor* Target) {
 		break;
 	}
 
+
 	TSet<AActor*> OverlapActors;
 	Target->GetOverlappingActors(OverlapActors);
 
-	UE_LOG(LogTemp, Log, TEXT("OverlapActors Size %d"), OverlapActors.GetAllocatedSize());
-
-	//레이저 빔같은경우 관통데미지를 주기때문에 overlap된 모든 적들을 찾는다.
+	//그외
 	for (auto i : OverlapActors)
 	{
 		IFuselage* OverlapFuselage = Cast<IFuselage>(i);
 		checkf(OverlapFuselage != nullptr, TEXT("OverlapFuselage is nullptr"));
+
 
 		for (auto k : Wanted)
 		{
