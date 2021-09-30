@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "WeaponStruct.h"
 #include "Fuselage.h"
 #include "EnumPack.h"
 #include "CoreMinimal.h"
@@ -23,30 +24,28 @@ public:
 
 	virtual const float GetSpeed() const override;
 
+	//공격력은 1로 고정한다.
 	virtual const int32 GetAttackPower() const override;
 
-	virtual const int32 GetMaxHP() const override;
-
-	//Setter
-	virtual void AddCurrentHP(const int32 HP) override;
-
-	void MoveLocation(const FVector& MoveLocation);
 
 	//Event
+
+	//공격력은 1로 고정한다.
+	void WeaponInitalize(const FWeaponStruct& Weapon);
+
+	//공격을 받으면 체력이 없기때문에 그냥 죽는다.
+	virtual void AttackFuselage(const int32 HP) override;
+
+	virtual void MoveLocation(const FVector& MoveLocation) override;
+
 	virtual void EventUpdate() override;
 
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
 
 private:
-	const EFuselageKind m_kind = EFuselageKind::FIRESHOOT_WEAPON;
-
-	uint16 m_damage;
+	const EFuselageKind m_kind = EFuselageKind::ENEMY_WEAPON;
 
 	float m_speed;
-
-	int32 m_max_HP;
-
-	int32 m_current_HP;
 
 	int32 m_attack_power;
 

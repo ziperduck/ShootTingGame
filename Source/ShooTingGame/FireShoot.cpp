@@ -22,12 +22,7 @@ AFireShoot::AFireShoot() {
 		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
 	}
 
-	m_speed = 4.0f;
-	m_damage = 3;
-	m_max_HP = 1;
-	m_current_HP = m_max_HP;
 	m_attack_power = 1;
-
 }
 
 //Getter
@@ -46,18 +41,18 @@ const int32 AFireShoot::GetAttackPower() const
 	return m_attack_power;
 }
 
-const int32 AFireShoot::GetMaxHP() const
+//Setter
+
+void AFireShoot::WeaponInitalize(const FWeaponStruct& Weapon)
 {
-	return m_max_HP;
+	m_attack_power = 1;
+	m_speed = Weapon.m_speed;
 }
 
-
-
- //Setter
-
-void AFireShoot::AddCurrentHP(const int32 HP)
+void AFireShoot::AttackFuselage(const int32 HP)
 {
-	m_current_HP += HP;
+	UE_LOG(LogTemp, Log, TEXT("AFireShoot Death"));
+	m_actions.push(EVariousAction::DEATH);
 }
 
 void AFireShoot::MoveLocation(const FVector& MoveLocation) {
@@ -77,36 +72,13 @@ void AFireShoot::EventUpdate()
 		m_actions.pop();
 	}
 
-	//플레이어가 쏘는 경우 남쪽으로 적은 북쪽으로 쏜다.
-	switch (GetKind())
-	{
-	case EFuselageKind::RIFLE_WEAPON:
-		m_actions.push(EVariousAction::NORTH_MOVE);
-		break;
-	case EFuselageKind::FIRESHOOT_WEAPON:
-		m_actions.push(EVariousAction::SOUTH_MOVE);
-		break;
-	default:
-		break;
-	}
+	m_actions.push(EVariousAction::SOUTH_MOVE);
 }
 
 void AFireShoot::NotifyActorBeginOverlap(AActor* Actor)
 {
-	m_actions.push(EVariousAction::ATTACK);
-	return;
 	UE_LOG(LogTemp, Log, TEXT("Overlap AFireShoot"));
-	if (Actor == nullptr)
-		return;
-	IFuselage* OverlapTarget = Cast<IFuselage>(Actor);
-	checkf(OverlapTarget != nullptr, TEXT("Overlap Target is nullptr"));
-
-	if (OverlapTarget->GetKind() == EFuselageKind::PLAYER_FUSELAGE)
-	{
-		UE_LOG(LogTemp, Log, TEXT("FireShoot Collision Player"));
-		m_actions.push(EVariousAction::DEATH);
-	}
-
+	m_actions.push(EVariousAction::ATTACK);
 }
 
 void AFireShoot::Tick(float Delta)

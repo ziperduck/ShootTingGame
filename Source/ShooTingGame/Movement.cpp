@@ -94,6 +94,16 @@ void Guidance::Execute(AActor* Target) {
 	Fuselage->MoveLocation(MoveLocation);
 }
 
+void AttachPlayer::Execute(AActor* Target)
+{
+	UE_LOG(LogTemp, Log, TEXT("NorthMove Excute"));
+	checkf(Target != nullptr, TEXT("Target is nullptr"));
+
+	Target->K2_AttachRootComponentToActor(Target->GetWorld()->GetFirstPlayerController()->GetPawn());
+
+}
+
+
 void Shooting::Execute(AActor* Target) {
 	UE_LOG(LogTemp, Log, TEXT("Shooting Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
@@ -104,29 +114,47 @@ void Shooting::Execute(AActor* Target) {
 	IAirframe* Airframe = Cast<IAirframe>(Target);
 	checkf(Airframe != nullptr, TEXT("Airframe is nullptr"));
 
+	const FWeaponStruct WeaponStruct = Airframe->GetWeapon();
 	//GetWeapon으로 무기를 만들자.
 	
-	switch (Airframe->GetWeapon())
+	switch (WeaponStruct.m_weapon)
+
 	{
-	case EFuselageKind::RIFLE_WEAPON:
-		TargetWorld->SpawnActor<ARifle>(TargetLocation, FRotator::ZeroRotator);
-		break;
-	case EFuselageKind::FIRESHOOT_WEAPON:
-		TargetWorld->SpawnActor<AFireShoot>(TargetLocation, FRotator::ZeroRotator);
-		break;
-	case EFuselageKind::METEORICSTONE_FUSELAGE: 
+	case EVariousWeapon::RIFLE_WEAPON:
 	{
-		AMeteoricStone* MeteoricStone = Cast<AMeteoricStone>(Airframe);
-		checkf(MeteoricStone != nullptr, TEXT("MeteoricStone is not casting"));
-		if (MeteoricStone->GetMaxHP() > 1)
+		ARifle* Rifle = TargetWorld->SpawnActor<ARifle>(TargetLocation, FRotator::ZeroRotator);
+		Rifle->WeaponInitalize(WeaponStruct);
+		Rifle->SetLifeSpan(4.0f);
+		break;
+	}
+		break;
+	case EVariousWeapon::LASERBEAM_WEAPON:
+	{
+		ALaserBeam* LaserBeam = TargetWorld->SpawnActor<ALaserBeam>();
+		LaserBeam->WeaponInitalize(WeaponStruct);
+		LaserBeam->SetLifeSpan(4.0f);
+		break;
+	}
+		break;
+	case EVariousWeapon::METEORICSTONE_WEAPON:
+	{
+		if (Airframe->GetMaxHP() > 1)
 		{
-			TargetWorld->SpawnActor<AMeteoricStone>(TargetLocation, FRotator::ZeroRotator)
-				->Initialize_Implementation(MeteoricStone->GetSpeed(), MeteoricStone->GetMaxHP() - 1
-					, EFuselageKind::METEORICSTONE_FUSELAGE, 1.0f);
+			AMeteoricStone* MeteoricActor
+				= TargetWorld->SpawnActor<AMeteoricStone>(TargetLocation, FRotator::ZeroRotator);
+			MeteoricActor->SetLifeSpan(3.0f);
+			MeteoricActor->Initialize_Implementation(
+				WeaponStruct.m_speed, Airframe->GetMaxHP() - 1, WeaponStruct);
 		}
 	}
-	case EFuselageKind::LASERBEAM_WEAPON:
-		TargetWorld->SpawnActor<ALaserBeam>(TargetLocation, FRotator::ZeroRotator);
+		break;
+	case EVariousWeapon::FIRESHOOT_WEAPON:
+	{
+		AFireShoot* FireShoot = TargetWorld->SpawnActor<AFireShoot>(TargetLocation, FRotator::ZeroRotator);
+		FireShoot->WeaponInitalize(WeaponStruct);
+		FireShoot->SetLifeSpan(4.0f);
+		break;
+	}
 		break;
 	default:
 		break;
@@ -147,49 +175,22 @@ void Attack::Execute(AActor* Target) {
 	{
 	case EFuselageKind::PLAYER_FUSELAGE:
 	{
-		Wanted.insert(EFuselageKind::FIRESHOOT_WEAPON);
+		Wanted.insert(EFuselageKind::ENEMY_WEAPON);
 	}
-	case EFuselageKind::RIFLE_WEAPON:
+	case EFuselageKind::PLAYER_WEAPON:
 	{
 		Wanted.insert(EFuselageKind::ENEMY_FUSELAGE);
-		Wanted.insert(EFuselageKind::METEORICSTONE_FUSELAGE);
-		Wanted.insert(EFuselageKind::MISSILEDRAGON_FUSELAGE);
 		break;
-	}
-	case EFuselageKind::LASERBEAM_WEAPON:
-	{
-		UE_LOG(LogTemp, Log, TEXT("LaserBeam Attack"));
-
-		ALaserBeam* LaserBeam = Cast<ALaserBeam>(TargetFuselage);
-		checkf(LaserBeam != nullptr, TEXT("LaserBeam is nullptr"));
-
-		const int32 AttackTerm = LaserBeam->GetAttackTerm();
-		TMap<AActor*, int32> LaserAttackCount = LaserBeam->GetAttackTargetCount();
-		for (auto i : LaserAttackCount)
-		{
-			if (i.Value == AttackTerm)
-			{
-				IFuselage* OverlapFuselage = Cast<IFuselage>(i.Key);
-				checkf(OverlapFuselage != nullptr, TEXT("OverlapFuselage is nullptr"));
-
-				UE_LOG(LogTemp, Log, TEXT("LaserBeam Count Over %d"),OverlapFuselage->GetMaxHP());
-				OverlapFuselage->AddCurrentHP(-LaserBeam->GetAttackPower());
-			}
-		}
-		return;
 	}
 	case EFuselageKind::ENEMY_FUSELAGE:
-	case EFuselageKind::METEORICSTONE_FUSELAGE:
-	case EFuselageKind::MISSILEDRAGON_FUSELAGE:
 	{
-		Wanted.insert(EFuselageKind::RIFLE_WEAPON);
-		Wanted.insert(EFuselageKind::LASERBEAM_WEAPON);
+		Wanted.insert(EFuselageKind::PLAYER_WEAPON);
 	}
-	case EFuselageKind::FIRESHOOT_WEAPON:
+	case EFuselageKind::ENEMY_WEAPON:
 	{
 		Wanted.insert(EFuselageKind::PLAYER_FUSELAGE);
-	}
 		break;
+	}
 	default:
 		break;
 	}
@@ -209,7 +210,7 @@ void Attack::Execute(AActor* Target) {
 		{
 			if (OverlapFuselage->GetKind() == k)
 			{
-				OverlapFuselage->AddCurrentHP(-TargetFuselage->GetAttackPower());
+				OverlapFuselage->AttackFuselage(-TargetFuselage->GetAttackPower());
 				break;
 			}
 		}
@@ -221,17 +222,12 @@ void Death::Execute(AActor* Target) {
 	UE_LOG(LogTemp, Log, TEXT("Death Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
-	UWorld* TargetWorld = Target->GetWorld();
 	Target->SetActorEnableCollision(false);
+
+	UWorld* TargetWorld = Target->GetWorld();
 
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
-	if (Fuselage->GetKind() == EFuselageKind::PLAYER_FUSELAGE)
-	{
-		return;
-	}
-	
 	TargetWorld->DestroyActor(Target);
-
 }

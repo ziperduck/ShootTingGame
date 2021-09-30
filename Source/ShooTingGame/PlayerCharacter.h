@@ -24,7 +24,7 @@ protected:
 public:
 
 	void Initialize_Implementation(
-		const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay) override;
+		const float Speed, const int32 MaxHP, FWeaponStruct Weapon) override;
 
 	virtual void Tick(float Delta) override;
 
@@ -41,7 +41,7 @@ public:
 	virtual const int32 GetMaxHP() const override;
 
 	//Setter
-	virtual void AddCurrentHP(const int32 HP) override;
+	virtual void AttackFuselage(const int32 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 	
@@ -61,7 +61,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void ReleaseAttack(float Direction);
 
-	virtual const EFuselageKind GetWeapon() const override;
+	virtual const FWeaponStruct GetWeapon() const override;
 
 private:
 
@@ -87,17 +87,11 @@ private:
 
 	std::queue<EVariousAction> m_actions;
 
-	//플레이어가 주는 데미지 무기데미지가 아니라 직접 충돌시 주는 데미지
-	const int32 m_attack_power = 1;
-
 
 	//플레이어의 무기에 관한 변수들
-
-	EFuselageKind m_weapon;
+	FWeaponStruct m_weapon;
 
 	bool mb_press;
 
 	bool m_can_shooting;
-
-	float m_shooting_delay;
 };

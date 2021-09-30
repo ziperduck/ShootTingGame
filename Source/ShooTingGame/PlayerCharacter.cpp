@@ -40,7 +40,7 @@ void APlayerCharacter::BeginPlay()
 }
 
 void APlayerCharacter::Initialize_Implementation(
-	const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay)
+	const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
 {
 	if (!mb_initialize)
 	{
@@ -56,7 +56,6 @@ void APlayerCharacter::Initialize_Implementation(
 		m_current_HP = MaxHP;
 
 		m_weapon = Weapon;
-		m_shooting_delay = Delay;
 	}
 }
 
@@ -73,7 +72,7 @@ const float APlayerCharacter::GetSpeed() const
 
 const int32 APlayerCharacter::GetAttackPower() const
 {
-	return m_attack_power;
+	return 1;
 }
 
 const int32 APlayerCharacter::GetMaxHP() const
@@ -82,7 +81,7 @@ const int32 APlayerCharacter::GetMaxHP() const
 }
 
 //Setter
-void APlayerCharacter::AddCurrentHP(const int32 HP)
+void APlayerCharacter::AttackFuselage(const int32 HP)
 {
 	m_current_HP += HP;
 }
@@ -106,6 +105,13 @@ void APlayerCharacter::EventUpdate()
 		Action->Execute(this);
 		m_actions.pop();
 	}
+	if (mb_press && m_can_shooting)
+	{
+		m_can_shooting = false;
+		m_actions.push(EVariousAction::SHOOTING);
+		GetWorldTimerManager().SetTimer(
+			m_shooting_timer, [&] {m_can_shooting = true; }, m_weapon.m_shooting_delay, false);
+	}
 }
 
 
@@ -115,13 +121,6 @@ void APlayerCharacter::Tick(float Delta)
 
 	EventUpdate();
 
-	if (mb_press && m_can_shooting)
-	{
-		m_can_shooting = false;
-		m_actions.push(EVariousAction::SHOOTING);
-		GetWorldTimerManager().SetTimer(
-			m_shooting_timer, [&] {m_can_shooting = true; }, m_shooting_delay, false);
-	}
 }
 
 void APlayerCharacter::MoveX(float Direction)
@@ -173,7 +172,7 @@ void APlayerCharacter::ReleaseAttack(float Direction)
 	mb_press = false;
 }
 
-const EFuselageKind APlayerCharacter::GetWeapon()const
+const FWeaponStruct APlayerCharacter::GetWeapon()const
 {
 	return m_weapon;
 }
@@ -182,5 +181,4 @@ void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
 {
 	UE_LOG(LogTemp, Log, TEXT("Overlap Player Character"));
 	m_actions.push(EVariousAction::ATTACK);
-	return;
 }

@@ -26,7 +26,7 @@ AEnemyDragon::AEnemyDragon()
 }
 
 void AEnemyDragon::Initialize_Implementation(
-	const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay)
+	const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
 {
 	if (!mb_initialize)
 	{
@@ -41,7 +41,6 @@ void AEnemyDragon::Initialize_Implementation(
 		m_max_HP = MaxHP;
 		m_current_HP = MaxHP;
 		m_weapon = Weapon;
-		m_shooting_delay = Delay;
 	}
 }
 
@@ -66,11 +65,11 @@ const float AEnemyDragon::GetSpeed() const
 
 const int32 AEnemyDragon::GetAttackPower() const
 {
-	return m_attack_power;
+	return 1;
 }
 
 //Setter
-void AEnemyDragon::AddCurrentHP(const int32 HP)
+void AEnemyDragon::AttackFuselage(const int32 HP)
 {
 	m_current_HP += HP;
 	UE_LOG(LogTemp, Log, TEXT("AEnemyDragon CurrentHP = %d"), m_current_HP);
@@ -98,12 +97,17 @@ void AEnemyDragon::EventUpdate()
 	}
 	else
 	{
-		return;
 		m_actions = m_next_actions;
+	}
+
+	if (!GetWorldTimerManager().IsTimerActive(m_shooting_timer))
+	{
+		m_actions.Push(EVariousAction::SHOOTING);
+		GetWorldTimerManager().SetTimer(m_shooting_timer, m_weapon.m_shooting_delay, false);
 	}
 }
 
-const EFuselageKind AEnemyDragon::GetWeapon() const
+const FWeaponStruct AEnemyDragon::GetWeapon() const
 {
 	return m_weapon;
 }
@@ -126,9 +130,4 @@ void AEnemyDragon::Tick(float Delta)
 	Super::Tick(Delta);
 
 	EventUpdate();
-	if (!GetWorldTimerManager().IsTimerActive(m_shooting_timer))
-	{
-		m_actions.Push(EVariousAction::SHOOTING);
-		GetWorldTimerManager().SetTimer(m_shooting_timer, m_shooting_delay, false);
-	}
 }

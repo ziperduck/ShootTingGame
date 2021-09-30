@@ -22,7 +22,7 @@ public:
 	AMeteoricStone();
 
 	void Initialize_Implementation(
-		const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay) override;
+		const float Speed, const int32 MaxHP, FWeaponStruct Weapon) override;
 
 	virtual void Tick(float Delta) override;
 
@@ -38,7 +38,7 @@ public:
 	virtual const int32 GetMaxHP() const override;
 
 	//Setter
-	virtual void AddCurrentHP(const int32 HP) override;
+	virtual void AttackFuselage(const int32 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 
@@ -46,12 +46,10 @@ public:
 	//Event
 	virtual void EventUpdate() override;
 
-	virtual const EFuselageKind GetWeapon() const override;
+	virtual const FWeaponStruct GetWeapon() const override;
 private:
 
-	const EFuselageKind m_kind = EFuselageKind::METEORICSTONE_FUSELAGE;
-
-	float m_speed;
+	const EFuselageKind m_kind = EFuselageKind::ENEMY_FUSELAGE;
 
 	int32 m_max_HP;
 
@@ -63,6 +61,6 @@ private:
 
 	TArray<EVariousAction> m_next_actions;
 
-	const EFuselageKind m_weapon = EFuselageKind::METEORICSTONE_FUSELAGE;
+	FWeaponStruct m_weapon;
 
 };

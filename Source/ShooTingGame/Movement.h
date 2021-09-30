@@ -47,6 +47,14 @@ public:
 
 };
 
+class AttachPlayer : public IAction
+{
+public:
+	
+	virtual void Execute(AActor* Target) override;
+
+};
+
 
 class Shooting : public IAction
 {

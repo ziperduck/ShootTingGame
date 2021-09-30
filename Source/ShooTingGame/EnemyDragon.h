@@ -25,7 +25,7 @@ public:
 	AEnemyDragon();
 
 	void Initialize_Implementation(
-		const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay) override;
+		const float Speed, const int32 MaxHP, FWeaponStruct Weapon) override;
 
 	virtual void Tick(float Delta) override;
 
@@ -38,16 +38,16 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
-	virtual const EFuselageKind GetWeapon() const override;
+	virtual const FWeaponStruct GetWeapon() const override;
 
 	virtual const int32 GetMaxHP() const override;
 
-	//Setter
-	virtual void AddCurrentHP(const int32 HP) override;
+	//Event
+
+	virtual void AttackFuselage(const int32 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 
-	//Event
 	virtual void EventUpdate() override;
 
 private:
@@ -73,13 +73,6 @@ private:
 	
 	TArray<EVariousAction> m_actions;
 
-	//캐필터가 충돌시 주는 피해
-	const int32 m_attack_power = 1;
-
-
 	//플레이어의 무기에 관한 변수들
-
-	EFuselageKind m_weapon;
-
-	float m_shooting_delay;
+	FWeaponStruct m_weapon;
 };

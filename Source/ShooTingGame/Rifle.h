@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "WeaponStruct.h"
 #include "Fuselage.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -24,28 +25,24 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
-	virtual const int32 GetMaxHP() const override;
-
-	//Setter
-	virtual void AddCurrentHP(const int32 HP) override;
-
-	void MoveLocation(const FVector& MoveLocation) ;
+	void WeaponInitalize(const FWeaponStruct& Weapon);
 
 	//Event
+
+	//공격을 받으면 체력이 없기때문에 그냥 죽는다.
+	virtual void AttackFuselage(const int32 HP) override;
+
+	virtual void MoveLocation(const FVector& MoveLocation) override;
+
 	virtual void EventUpdate() override;
 
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
 
 private:
-	const EFuselageKind m_kind = EFuselageKind::RIFLE_WEAPON;
 
-	uint16 m_damage;
+	const EFuselageKind m_kind = EFuselageKind::PLAYER_WEAPON;
 
 	float m_speed;
-
-	int32 m_max_HP;
-
-	int32 m_current_HP;
 
 	int32 m_attack_power;
 

@@ -27,7 +27,7 @@ AMissileDragon::AMissileDragon()
 
 }
 
-void AMissileDragon::Initialize_Implementation(const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay)
+void AMissileDragon::Initialize_Implementation(const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
 {
 	if (!mb_initialize)
 	{
@@ -41,6 +41,8 @@ void AMissileDragon::Initialize_Implementation(const float Speed, const int32 Ma
 		m_speed = Speed;
 		m_max_HP = MaxHP;
 		m_current_HP = MaxHP;
+
+		m_weapon = Weapon;
 	}
 }
 
@@ -88,7 +90,7 @@ const int32 AMissileDragon::GetMaxHP() const
 	return m_max_HP;
 }
 
-void AMissileDragon::AddCurrentHP(const int32 HP)
+void AMissileDragon::AttackFuselage(const int32 HP)
 {
 	m_current_HP += HP;
 }
@@ -116,7 +118,7 @@ void AMissileDragon::EventUpdate()
 	}
 }
 
-const EFuselageKind AMissileDragon::GetWeapon()const
+const FWeaponStruct AMissileDragon::GetWeapon()const
 {
 	return m_weapon;
 }

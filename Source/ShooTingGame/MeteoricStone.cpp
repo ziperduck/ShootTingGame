@@ -32,7 +32,7 @@ AMeteoricStone::AMeteoricStone()
 
 }
 
-void AMeteoricStone::Initialize_Implementation(const float Speed, const int32 MaxHP, EFuselageKind Weapon, const float Delay)
+void AMeteoricStone::Initialize_Implementation(const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
 {
 	if (!mb_initialize)
 	{
@@ -43,9 +43,10 @@ void AMeteoricStone::Initialize_Implementation(const float Speed, const int32 Ma
 		SetActorTickEnabled(true);
 		SetActorEnableCollision(true);
 
-		m_speed = Speed;
 		m_max_HP = MaxHP;
 		m_current_HP = MaxHP;
+
+		m_weapon = Weapon;
 	}
 }
 
@@ -78,7 +79,7 @@ const EFuselageKind AMeteoricStone::GetKind() const
 
 const float AMeteoricStone::GetSpeed() const
 {
-	return m_speed;
+	return m_weapon.m_speed;
 }
 
 const int32 AMeteoricStone::GetAttackPower() const
@@ -91,7 +92,7 @@ const int32 AMeteoricStone::GetMaxHP() const
 	return m_max_HP;
 }
 
-void AMeteoricStone::AddCurrentHP(const int32 HP)
+void AMeteoricStone::AttackFuselage(const int32 HP)
 {
 	m_current_HP += HP;
 }
@@ -120,7 +121,7 @@ void AMeteoricStone::EventUpdate()
 	}
 }
 
-const EFuselageKind AMeteoricStone::GetWeapon()const
+const FWeaponStruct AMeteoricStone::GetWeapon()const
 {
 	return m_weapon;
 }

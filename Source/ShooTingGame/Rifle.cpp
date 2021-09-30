@@ -22,12 +22,6 @@ ARifle::ARifle() {
 		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
 	}
 
-	m_speed = 4.0f;
-	m_damage = 3;
-	m_max_HP = 1;
-	m_current_HP = m_max_HP;
-	m_attack_power = 1;
-
 }
 
 //Getter
@@ -46,24 +40,24 @@ const int32 ARifle::GetAttackPower() const
 	return m_attack_power;
 }
 
-const int32 ARifle::GetMaxHP() const
-{
-	return m_max_HP;
-}
-
-
 
  //Setter
-
-void ARifle::AddCurrentHP(const int32 HP)
+void ARifle::AttackFuselage(const int32 HP)
 {
-	m_current_HP += HP;
+	m_actions.push(EVariousAction::DEATH);
 }
 
 void ARifle::MoveLocation(const FVector& MoveLocation) {
 
 	SetActorLocation(GetActorLocation() + MoveLocation);
 }
+
+void ARifle::WeaponInitalize(const FWeaponStruct& Weapon)
+{
+	m_attack_power = Weapon.m_attack_power;
+	m_speed = Weapon.m_speed;
+}
+
 
 //Event
 void ARifle::EventUpdate()
@@ -78,14 +72,7 @@ void ARifle::EventUpdate()
 		Action->Execute(this);
 		m_actions.pop();
 	}
-	if (m_current_HP < 1)
-	{
-		ChangeAction(EVariousAction::DEATH)->Execute(this);
-	}
-	else
-	{
-		m_actions.push(EVariousAction::NORTH_MOVE);
-	}
+	m_actions.push(EVariousAction::NORTH_MOVE);
 
 }
 

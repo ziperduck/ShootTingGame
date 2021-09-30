@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "WeaponStruct.h"
 #include "CoreMinimal.h"
 #include "Fuselage.h"
 #include "EnumPack.h"
@@ -16,6 +17,10 @@ class SHOOTINGGAME_API ALaserBeam : public AActor, public IFuselage
 public:	
 	// Sets default values for this actor's properties
 	ALaserBeam();
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 	virtual void Tick(float Delta) override;
 
 	//Getter
@@ -25,39 +30,27 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
-	virtual const int32 GetMaxHP() const override;
-
 	const int32 GetAttackTerm() const;
 
-	TMap<AActor*, int32> GetAttackTargetCount() const;
-
-	//Setter
-	virtual void AddCurrentHP(const int32 HP) override;
-
-	void MoveLocation(const FVector& MoveLocation) ;
-
+	void WeaponInitalize(const FWeaponStruct& Weapon);
 
 	//Event
+
+	//laser는 피격을 받아도 아무런 데미지를 받지 않는다
+	virtual void AttackFuselage(const int32 HP) override;
+
+	virtual void MoveLocation(const FVector& MoveLocation) override;
+
 	virtual void EventUpdate() override;
 
-	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
-
-	virtual void NotifyActorEndOverlap(AActor* Actor) override;
-
 private:
-	const EFuselageKind m_kind = EFuselageKind::LASERBEAM_WEAPON;
+	const EFuselageKind m_kind = EFuselageKind::PLAYER_WEAPON;
 
 	float m_speed;
-
-	int32 m_max_HP;
-
-	int32 m_current_HP;
 
 	std::queue<EVariousAction> m_actions;
 
 	int32 m_attack_power;
 
 	int32 m_attack_term;
-
-	TMap<AActor*, int32> m_term_count;
 };

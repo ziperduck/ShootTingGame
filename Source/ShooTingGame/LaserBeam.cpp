@@ -29,11 +29,24 @@ ALaserBeam::ALaserBeam() {
 	}
 
 	m_speed = 0.0f;
-	m_max_HP = 100;
-	m_current_HP = m_max_HP;
 	m_attack_power = 1;
 	m_attack_term = 60;
 
+	SetTickableWhenPaused(false);
+}
+
+void ALaserBeam::BeginPlay()
+{
+	Super::BeginPlay();
+	m_actions.push(EVariousAction::ATTACHPLAYER_MOVE);
+}
+
+void ALaserBeam::WeaponInitalize(const FWeaponStruct& Weapon)
+{
+	m_attack_power = Weapon.m_attack_power;
+	m_speed = Weapon.m_speed;
+	SetActorTickInterval(Weapon.m_shooting_delay);
+	SetTickableWhenPaused(true);
 }
 
 //Getter
@@ -51,29 +64,16 @@ const int32 ALaserBeam::GetAttackPower() const
 {
 	return m_attack_power;
 }
-
-const int32 ALaserBeam::GetMaxHP() const
-{
-	return m_max_HP;
-}
-
 const int32 ALaserBeam::GetAttackTerm() const
 {
 	return m_attack_term;
 }
 
-TMap<AActor*, int32> ALaserBeam::GetAttackTargetCount() const
-{
-	return m_term_count;
-}
-
-
 
 //Setter
 
-void ALaserBeam::AddCurrentHP(const int32 HP)
+void ALaserBeam::AttackFuselage(const int32 HP)
 {
-	m_current_HP += HP;
 }
 
 void ALaserBeam::MoveLocation(const FVector& MoveLocation) 
@@ -84,8 +84,6 @@ void ALaserBeam::MoveLocation(const FVector& MoveLocation)
 //Event
 void ALaserBeam::EventUpdate()
 {
-	m_actions.push(EVariousAction::ATTACK);
-
 	while (m_actions.size() > 0)
 	{
 		IAction* Action = ChangeAction(m_actions.front());
@@ -95,32 +93,7 @@ void ALaserBeam::EventUpdate()
 		m_actions.pop();
 	}
 
-
-}
-
-void ALaserBeam::NotifyActorBeginOverlap(AActor* Actor)
-{
-	UE_LOG(LogTemp, Log, TEXT("Overlap begin ALaserBeam"));
-
-	IFuselage* Fuselage = Cast<IFuselage>(Actor);
-	checkf(Fuselage != nullptr, TEXT("Overlap Actor not Descendants of Fuselage"));
-
-	switch (Fuselage->GetKind())
-	{
-	case EFuselageKind::ENEMY_FUSELAGE:
-	case EFuselageKind::METEORICSTONE_FUSELAGE:
-	case EFuselageKind::MISSILEDRAGON_FUSELAGE:
-		m_term_count.Add(MakeTuple(Actor, m_attack_term));
-		break;
-	default:
-		break;
-	}
-}
-
-void ALaserBeam::NotifyActorEndOverlap(AActor* Actor)
-{
-	UE_LOG(LogTemp, Log, TEXT("Overlap end ALaserBeam"));
-	m_term_count.Remove(Actor);
+	m_actions.push(EVariousAction::ATTACK);
 }
 
 void ALaserBeam::Tick(float Delta)
@@ -128,18 +101,4 @@ void ALaserBeam::Tick(float Delta)
 	Super::Tick(Delta);
 	EventUpdate();
 
-	for (auto& i : m_term_count)
-	{
-		if (i.Key == nullptr)
-		{
-			UE_LOG(LogTemp, Log, TEXT("m_term_count Key Remove"));
-			m_term_count.Remove(i.Key);
-		}
-		else if (i.Value > m_attack_term)
-		{
-			i.Value = 0;
-		}
-		++i.Value;
-		UE_LOG(LogTemp, Log, TEXT("Term Count %d"), i.Value);
-	}
 }

@@ -39,6 +39,11 @@ IAction* ChangeAction(const EVariousAction& Action)
 		static IAction* Event = new Guidance();
 		return Event;
 	}
+	case EVariousAction::ATTACHPLAYER_MOVE:
+	{
+		static IAction* Event = new AttachPlayer();
+		return Event;
+	}
 	case EVariousAction::ATTACK:
 	{
 		static IAction* Event = new Attack();
