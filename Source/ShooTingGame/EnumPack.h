@@ -15,6 +15,7 @@ enum class EFuselageKind : uint8
 	PLAYER_WEAPON UMETA(DisplayName = "PLAYER_WEAPON"),
 	ENEMY_FUSELAGE UMETA(DisplayName = "ENEMY_FUSELAGE"),
 	ENEMY_WEAPON UMETA(DisplayName = "ENEMY_WEAPON"),
+	ITEM_FUSELAGE UMETA(DisplayName = "ITEM_FUSELAGE"),
 };
 
 UENUM(BlueprintType, Category = "Fuselage")
@@ -41,4 +42,6 @@ enum class EVariousAction : uint8
 	DEATH UMETA(DisplayName = "DEATH"),
 	ATTACK UMETA(DisplayName = "ATTACK"),
 	BOOM_ATTACK UMETA(DisplayName = "BOOM_ATTACK"),
+	HEALING UMETA(DisplayName = "HEALING"),
+	WEAPON_UPGRADE UMETA(DisplayName = "WEAPON_UPGRADE"),
 };

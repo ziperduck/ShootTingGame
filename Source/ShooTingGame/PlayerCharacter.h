@@ -41,10 +41,7 @@ public:
 	virtual const int32 GetMaxHP() const override;
 
 	//Setter
-	virtual void AttackFuselage(const int32 HP) override;
-
-	virtual void MoveLocation(const FVector& MoveLocation) override;
-	
+	void UpgradeWeapon();
 
 	//Event
 	virtual void EventUpdate() override;
@@ -60,6 +57,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void ReleaseAttack(float Direction);
+
+	virtual void AttackFuselage(const int32 HP) override;
+
+	virtual void MoveLocation(const FVector& MoveLocation) override;
 
 	virtual const FWeaponStruct GetWeapon() const override;
 
@@ -87,11 +88,12 @@ private:
 
 	std::queue<EVariousAction> m_actions;
 
-
 	//플레이어의 무기에 관한 변수들
 	FWeaponStruct m_weapon;
 
 	bool mb_press;
 
-	bool m_can_shooting;
+	int32 m_press_time;
+
+	bool m_available_shooting;
 };

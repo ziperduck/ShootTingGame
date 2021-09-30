@@ -71,7 +71,7 @@ void AMeteoricStone::Tick(float DeltaTime)
 void AMeteoricStone::NotifyActorBeginOverlap(AActor* Actor)
 {
 	UE_LOG(LogTemp, Log, TEXT("Meteoric Overlap"));
-	m_actions.Push(EVariousAction::ATTACK);
+	m_actions.Enqueue(EVariousAction::ATTACK);
 	return;
 }
 
@@ -107,10 +107,11 @@ void AMeteoricStone::MoveLocation(const FVector& MoveLocation)
 
 void AMeteoricStone::EventUpdate()
 {
-	while (m_actions.GetAllocatedSize() > 0)
+	while (!m_actions.IsEmpty())
 	{
-		IAction* Action = ChangeAction(m_actions.Pop());
+		IAction* Action = ChangeAction(*m_actions.Peek());
 		Action->Execute(this);
+		m_actions.Pop();
 	}
 	if (m_current_HP < 1)
 	{
@@ -120,7 +121,7 @@ void AMeteoricStone::EventUpdate()
 	}
 	else
 	{
-		m_actions.Push(EVariousAction::SOUTH_MOVE);
+		m_actions.Enqueue(EVariousAction::SOUTH_MOVE);
 	}
 }
 

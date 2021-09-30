@@ -80,6 +80,23 @@ public:
 
 };
 
+//힐링은 attck Power를 AttackFuselage에 +로 전달한다.
+class Healing : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};
+
+class WeaponUpgrad : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};
+
 class Death : public IAction
 {
 public:

@@ -8,6 +8,8 @@
 #include "FireShoot.h"
 #include "MeteoricStone.h"
 #include "LaserBeam.h"
+#include "PlayerCharacter.h"
+#include "WeaponKit.h"
 #include <set>
 #include <Engine/Classes/Kismet/GameplayStatics.h>
 #include "CoreMinimal.h"
@@ -115,7 +117,7 @@ void Shooting::Execute(AActor* Target) {
 	IAirframe* Airframe = Cast<IAirframe>(Target);
 	checkf(Airframe != nullptr, TEXT("Airframe is nullptr"));
 
-	const FWeaponStruct WeaponStruct = Airframe->GetWeapon();
+	FWeaponStruct WeaponStruct = Airframe->GetWeapon();
 	//GetWeapon으로 무기를 만들자.
 	
 	switch (WeaponStruct.m_weapon)
@@ -123,17 +125,59 @@ void Shooting::Execute(AActor* Target) {
 	{
 	case EVariousWeapon::RIFLE_WEAPON:
 	{
-		ARifle* Rifle = TargetWorld->SpawnActor<ARifle>(TargetLocation, FRotator::ZeroRotator);
-		Rifle->WeaponInitalize(WeaponStruct);
-		Rifle->SetLifeSpan(4.0f);
+		TArray<FVector> SpawnLocations;
+		switch (WeaponStruct.m_weapon_level)
+		{
+		case 1:
+			SpawnLocations.Add(TargetLocation);
+			break;
+		case 2:
+			SpawnLocations.Add(TargetLocation);
+			SpawnLocations.Add(TargetLocation - FVector{ 0.0f,40.0f,0.0f});
+			SpawnLocations.Add(TargetLocation + FVector{ 0.0f,40.0f,0.0f });
+			break;
+		case 3:
+			SpawnLocations.Add(TargetLocation);
+			SpawnLocations.Add(TargetLocation - FVector{ 0.0f,40.0f,0.0f });
+			SpawnLocations.Add(TargetLocation + FVector{ 0.0f,40.0f,0.0f });
+			SpawnLocations.Add(TargetLocation - FVector{ 0.0f,80.0f,0.0f });
+			SpawnLocations.Add(TargetLocation + FVector{ 0.0f,80.0f,0.0f });
+			break;
+		default:
+			break;
+		}
+		for (auto i : SpawnLocations)
+		{
+			ARifle* Rifle = TargetWorld->SpawnActor<ARifle>(i, FRotator::ZeroRotator);
+			Rifle->WeaponInitalize(WeaponStruct);
+			Rifle->SetLifeSpan(WeaponStruct.m_lifespan);
+		}
 		break;
 	}
 		break;
 	case EVariousWeapon::LASERBEAM_WEAPON:
 	{
-		ALaserBeam* LaserBeam = TargetWorld->SpawnActor<ALaserBeam>();
+		FTransform LaserScale{ FQuat{},FVector::ZeroVector, FVector::OneVector };
+		switch (WeaponStruct.m_weapon_level)
+		{
+		case 1:
+			LaserScale.SetScale3D(FVector::OneVector);
+			LaserScale.SetScale3D(FVector{ 1.0f,5.0f,1.0f });
+			break;
+		case 2:
+			LaserScale.SetScale3D(FVector{ 1.0f,15.0f,1.0f });
+			WeaponStruct.m_attack_power = 2;
+			break;
+		case 3:
+			LaserScale.SetScale3D(FVector{1.0f,25.0f,1.0f });
+			WeaponStruct.m_attack_power = 3;
+			break;
+		default:
+			break;
+		}
+		ALaserBeam* LaserBeam = TargetWorld->SpawnActor<ALaserBeam>(ALaserBeam::StaticClass(), LaserScale);
 		LaserBeam->WeaponInitalize(WeaponStruct);
-		LaserBeam->SetLifeSpan(4.0f);
+		LaserBeam->SetLifeSpan(WeaponStruct.m_lifespan);
 		break;
 	}
 		break;
@@ -143,7 +187,7 @@ void Shooting::Execute(AActor* Target) {
 		{
 			AMeteoricStone* MeteoricActor
 				= TargetWorld->SpawnActor<AMeteoricStone>(TargetLocation, FRotator::ZeroRotator);
-			MeteoricActor->SetLifeSpan(3.0f);
+			MeteoricActor->SetLifeSpan(10.0f);
 			MeteoricActor->Initialize_Implementation(
 				WeaponStruct.m_speed, Airframe->GetMaxHP() - 1, WeaponStruct);
 		}
@@ -153,7 +197,7 @@ void Shooting::Execute(AActor* Target) {
 	{
 		AFireShoot* FireShoot = TargetWorld->SpawnActor<AFireShoot>(TargetLocation, FRotator::ZeroRotator);
 		FireShoot->WeaponInitalize(WeaponStruct);
-		FireShoot->SetLifeSpan(4.0f);
+		FireShoot->SetLifeSpan(WeaponStruct.m_lifespan);
 		break;
 	}
 		break;
@@ -200,14 +244,16 @@ void Attack::Execute(AActor* Target) {
 	TSet<AActor*> OverlapActors;
 	Target->GetOverlappingActors(OverlapActors);
 
+	UE_LOG(LogTemp, Log, TEXT("Healing Player Search Size %d"), OverlapActors.GetAllocatedSize());
+
 	//그외
-	for (auto i : OverlapActors)
+	for (auto& i : OverlapActors)
 	{
 		IFuselage* OverlapFuselage = Cast<IFuselage>(i);
 		checkf(OverlapFuselage != nullptr, TEXT("OverlapFuselage is nullptr"));
 
 
-		for (auto k : Wanted)
+		for (auto& k : Wanted)
 		{
 			if (OverlapFuselage->GetKind() == k)
 			{
@@ -239,7 +285,7 @@ void BoomAttack::Execute(AActor* Target) {
 		TargetWorld, AActor::StaticClass(), TEXT("Airframe"), AllFuselageActor);
 
 	//그외
-	for (auto i : AllFuselageActor)
+	for (auto& i : AllFuselageActor)
 	{
 		IFuselage* OverlapFuselage = Cast<IFuselage>(i);
 		checkf(OverlapFuselage != nullptr, TEXT("OverlapFuselage is nullptr"));
@@ -248,6 +294,59 @@ void BoomAttack::Execute(AActor* Target) {
 		{
 			UE_LOG(LogTemp, Log, TEXT("i"));
 			OverlapFuselage->AttackFuselage(-TargetAirframe->GetWeapon().m_attack_power);
+		}
+	}
+}
+
+void Healing::Execute(AActor* Target) {
+	UE_LOG(LogTemp, Log, TEXT("Healing Excute"));
+	checkf(Target != nullptr, TEXT("Target is nullptr"));
+
+	IFuselage* Fuselage = Cast<IFuselage>(Target);
+	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
+
+
+	TSet<AActor*> OverlapActors;
+	Target->GetOverlappingActors(OverlapActors);
+
+	UE_LOG(LogTemp, Log, TEXT("Healing Player Search Size %d"), OverlapActors.Num());
+	
+	//그외
+	for (auto& i : OverlapActors)
+	{
+		APlayerCharacter* OverlapFuselage = Cast<APlayerCharacter>(i);
+		if (OverlapFuselage != nullptr)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Healing Heal"));
+			OverlapFuselage->AttackFuselage(Fuselage->GetAttackPower());
+			break;
+		}
+	}
+
+}
+
+void WeaponUpgrad::Execute(AActor* Target)
+{
+	UE_LOG(LogTemp, Log, TEXT("WeaponChange Excute"));
+	checkf(Target != nullptr, TEXT("Target is nullptr"));
+
+	AWeaponKit* WeaponKit = Cast<AWeaponKit>(Target);
+	checkf(WeaponKit != nullptr, TEXT("Item is nullptr"));
+
+	TSet<AActor*> OverlapActors;
+	WeaponKit->GetOverlappingActors(OverlapActors);
+
+	UE_LOG(LogTemp, Log, TEXT("Healing Player Search Size %d"), OverlapActors.Num());
+
+	//그외
+	for (auto& i : OverlapActors)
+	{
+		APlayerCharacter* OverlapFuselage = Cast<APlayerCharacter>(i);
+		if (OverlapFuselage != nullptr)
+		{
+			UE_LOG(LogTemp, Log, TEXT("WeaponChange"));
+			OverlapFuselage->UpgradeWeapon();
+			break;
 		}
 	}
 }
@@ -265,3 +364,4 @@ void Death::Execute(AActor* Target) {
 
 	TargetWorld->DestroyActor(Target);
 }
+

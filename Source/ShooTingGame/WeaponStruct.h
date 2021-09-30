@@ -14,6 +14,10 @@ struct SHOOTINGGAME_API FWeaponStruct
 public:
 	GENERATED_USTRUCT_BODY()
 
+	int32 m_weapon_level = 1;
+
+	int32 m_lifespan = 0;
+
 	UPROPERTY(BlueprintReadWrite)
 	float m_speed;
 

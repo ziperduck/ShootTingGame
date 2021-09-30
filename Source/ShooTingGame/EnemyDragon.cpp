@@ -43,7 +43,10 @@ void AEnemyDragon::Initialize_Implementation(
 		m_speed = Speed;
 		m_max_HP = MaxHP;
 		m_current_HP = MaxHP;
+
 		m_weapon = Weapon;
+		m_weapon.m_weapon = EVariousWeapon::FIRESHOOT_WEAPON;
+		m_weapon.m_lifespan = 5.0f;
 	}
 }
 
@@ -87,25 +90,22 @@ void AEnemyDragon::MoveLocation(const FVector& MoveLocation) {
 void AEnemyDragon::EventUpdate()
 {
 
-	while (m_actions.GetAllocatedSize() > 0)
+	while (!m_actions.IsEmpty())
 	{
-		IAction* Action = ChangeAction(m_actions.Pop());
+		IAction* Action = ChangeAction(*m_actions.Peek());
 		checkf(Action != nullptr, TEXT("Player animation No have Interface"));
 		Action->Execute(this);
+		m_actions.Pop();
 	}
 	if (m_current_HP < 1)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Enemy Dragon Death"));
 		ChangeAction(EVariousAction::DEATH)->Execute(this);
 	}
-	else
-	{
-		m_actions = m_next_actions;
-	}
 
 	if (!GetWorldTimerManager().IsTimerActive(m_shooting_timer))
 	{
-		m_actions.Push(EVariousAction::SHOOTING);
+		m_actions.Enqueue(EVariousAction::SHOOTING);
 		GetWorldTimerManager().SetTimer(m_shooting_timer, m_weapon.m_shooting_delay, false);
 	}
 }
@@ -123,7 +123,7 @@ const int32 AEnemyDragon::GetMaxHP() const
 void AEnemyDragon::NotifyActorBeginOverlap(AActor* Actor)
 {
 	UE_LOG(LogTemp, Log, TEXT("Overlap AEnemyDragon"));
-	m_actions.Push(EVariousAction::ATTACK);
+	m_actions.Enqueue(EVariousAction::ATTACK);
 	return;
 }
 

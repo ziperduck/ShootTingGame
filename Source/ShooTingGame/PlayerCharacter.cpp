@@ -27,7 +27,7 @@ APlayerCharacter::APlayerCharacter() {
 	SetActorEnableCollision(false);
 
 	mb_press = false;
-	m_can_shooting = true;
+	m_available_shooting = true;
 }
 
 // Called when the game starts or when spawned
@@ -59,6 +59,21 @@ void APlayerCharacter::Initialize_Implementation(
 		m_current_HP = MaxHP;
 
 		m_weapon = Weapon;
+		switch (m_weapon.m_weapon)
+		{
+		case EVariousWeapon::RIFLE_WEAPON:
+			UE_LOG(LogTemp, Log, TEXT("RIFLE_WEAPON"));
+			m_weapon.m_lifespan = 5;
+			break;
+		case EVariousWeapon::LASERBEAM_WEAPON:
+			UE_LOG(LogTemp, Log, TEXT("RIFLE_WEAPON"));
+			m_weapon.m_lifespan = 0.;
+			break;
+		default:
+			break;
+		}
+
+		m_press_time = 0;
 	}
 }
 
@@ -81,6 +96,22 @@ const int32 APlayerCharacter::GetAttackPower() const
 const int32 APlayerCharacter::GetMaxHP() const
 {
 	return m_max_HP;
+}
+
+void APlayerCharacter::UpgradeWeapon()
+{
+	switch (m_weapon.m_weapon)
+	{
+	case EVariousWeapon::RIFLE_WEAPON:
+		++m_weapon.m_weapon_level;
+		break;
+	case EVariousWeapon::LASERBEAM_WEAPON:
+		++m_weapon.m_weapon_level;
+		break;
+	default:
+		UE_LOG(LogTemp, Log, TEXT("is not player weapon"));
+		break;
+	}
 }
 
 //Setter
@@ -109,12 +140,30 @@ void APlayerCharacter::EventUpdate()
 		Action->Execute(this);
 		m_actions.pop();
 	}
-	if (mb_press && m_can_shooting)
+
+	if (mb_press)
 	{
-		m_can_shooting = false;
-		m_actions.push(EVariousAction::SHOOTING);
-		GetWorldTimerManager().SetTimer(
-			m_shooting_timer, [&] {m_can_shooting = true; }, m_weapon.m_shooting_delay, false);
+		switch (m_weapon.m_weapon)
+		{
+		case EVariousWeapon::RIFLE_WEAPON:
+			if (m_available_shooting)
+			{
+				m_available_shooting = false;
+				m_actions.push(EVariousAction::SHOOTING);
+				GetWorldTimerManager().SetTimer(
+					m_shooting_timer, [&] {m_available_shooting = true; }, m_weapon.m_shooting_delay, false);
+			}
+			break;
+		case EVariousWeapon::LASERBEAM_WEAPON:
+			if (m_available_shooting)
+			{
+				++m_press_time;
+				UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Count %d"), m_press_time);
+			}
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -167,13 +216,32 @@ void APlayerCharacter::MoveY(float Direction)
 */
 void APlayerCharacter::PressAttack(float Direction)
 {
+	UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Press"));
 	mb_press = true;
 }
 
 
 void APlayerCharacter::ReleaseAttack(float Direction)
 {
+
+	UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Release"));
+	if (m_weapon.m_weapon == EVariousWeapon::LASERBEAM_WEAPON && m_available_shooting)
+	{
+		m_available_shooting = false;
+		m_press_time /= 120;
+		m_press_time += 1;
+		if (m_press_time > 5)
+		{
+			m_press_time = 5;
+		}
+		m_weapon.m_lifespan = m_press_time;
+		UE_LOG(LogTemp, Log, TEXT("Release time%d"), m_press_time);
+		m_actions.push(EVariousAction::SHOOTING);
+		GetWorldTimerManager().SetTimer(
+			m_shooting_timer, [&] {m_available_shooting = true; }, m_weapon.m_shooting_delay + m_weapon.m_lifespan, false);
+	}
 	mb_press = false;
+	m_press_time = 0;
 }
 
 const FWeaponStruct APlayerCharacter::GetWeapon()const

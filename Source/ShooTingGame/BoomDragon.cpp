@@ -78,10 +78,10 @@ void ABoomDragon::NotifyActorBeginOverlap(AActor* Actor)
 	{
 		GetWorldTimerManager().SetTimer(m_boom_timer_handle
 			, [&] {
-			m_actions.Push(EVariousAction::BOOM_ATTACK);
-			m_actions.Push(EVariousAction::DEATH); }, 2.0f, false);
+			m_actions.Enqueue(EVariousAction::BOOM_ATTACK);
+			m_actions.Enqueue(EVariousAction::DEATH); }, 2.0f, false);
 	}
-	m_actions.Push(EVariousAction::ATTACK);
+	m_actions.Enqueue(EVariousAction::ATTACK);
 
 	return;
 }
@@ -124,17 +124,18 @@ void ABoomDragon::MoveLocation(const FVector& MoveLocation)
 
 void ABoomDragon::EventUpdate()
 {
-	while (m_actions.GetAllocatedSize() > 0)
+	while (!m_actions.IsEmpty())
 	{
-		IAction* Action = ChangeAction(m_actions.Pop());
+		IAction* Action = ChangeAction(*m_actions.Peek());
 		Action->Execute(this);
+		m_actions.Pop();
 	}
 	if (m_current_HP < 1)
 	{
 		ChangeAction(EVariousAction::DEATH)->Execute(this);
 	}
-	else
+	else if(!GetWorldTimerManager().IsTimerActive(m_boom_timer_handle))
 	{
-		m_actions.Push(EVariousAction::GUIDANCE_MOVE);
+		m_actions.Enqueue(EVariousAction::GUIDANCE_MOVE);
 	}
 }

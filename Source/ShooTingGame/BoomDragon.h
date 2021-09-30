@@ -63,9 +63,9 @@ private:
 
 	bool mb_initialize;
 
-	TArray<EVariousAction> m_actions;
+	TQueue<EVariousAction> m_actions;
 
-	TArray<EVariousAction> m_next_actions;
+	TQueue<EVariousAction> m_next_actions;
 
 	FWeaponStruct m_weapon;
 

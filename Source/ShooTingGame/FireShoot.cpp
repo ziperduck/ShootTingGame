@@ -5,6 +5,8 @@
 #include "Action.h"
 #include "ActionInstance.h"
 #include <Engine/Classes/Components/SphereComponent.h>
+#include <Engine/Classes/Particles/ParticleSystem.h>
+#include <Engine/Classes/Particles/ParticleSystemComponent.h>
 
 // Sets default values
 AFireShoot::AFireShoot() {
@@ -12,16 +14,27 @@ AFireShoot::AFireShoot() {
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Meshes/Projectile.Projectile"));
 	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
+	WeaponMesh->SetupAttachment(RootComponent);
+	if (MeshAsset.Succeeded())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
-		WeaponMesh->SetupAttachment(RootComponent);
 		WeaponMesh->SetStaticMesh(MeshAsset.Object);
 	
 		WeaponMesh->SetNotifyRigidBodyCollision(true);
 		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
 	}
+	
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/Particles/P_Fire.P_Fire"));
+	UParticleSystemComponent* ParticleComponenet 
+		= CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle Componenet"));
+	ParticleComponenet->SetupAttachment(WeaponMesh);
+	if (ParticleAsset.Succeeded())
+	{
+		ParticleComponenet->SetTemplate(ParticleAsset.Object);
+		ParticleComponenet->bAutoActivate = true;
+		ParticleComponenet->SetAllMassScale(0.5f);
 
+	}
 
 	m_attack_power = 1;
 }

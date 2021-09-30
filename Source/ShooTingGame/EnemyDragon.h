@@ -56,10 +56,6 @@ private:
 
 	FTimerHandle m_shooting_timer;
 
-public:
-	UPROPERTY(BlueprintReadOnly,Category = "Fuselage")
-		TArray<EVariousAction> m_next_actions;
-
 private:
 	const EFuselageKind m_kind = EFuselageKind::ENEMY_FUSELAGE;
 
@@ -71,7 +67,7 @@ private:
 
 	bool mb_initialize;
 	
-	TArray<EVariousAction> m_actions;
+	TQueue<EVariousAction> m_actions;
 
 	//플레이어의 무기에 관한 변수들
 	FWeaponStruct m_weapon;
