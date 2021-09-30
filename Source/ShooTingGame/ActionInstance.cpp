@@ -49,6 +49,11 @@ IAction* ChangeAction(const EVariousAction& Action)
 		static IAction* Event = new Attack();
 		return Event;
 	}
+	case EVariousAction::BOOM_ATTACK:
+	{
+		static IAction* Event = new BoomAttack();
+		return Event;
+	}
 	case EVariousAction::DEATH:
 	{
 		static IAction* Event = new Death();

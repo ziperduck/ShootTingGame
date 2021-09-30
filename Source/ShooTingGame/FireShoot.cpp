@@ -22,6 +22,7 @@ AFireShoot::AFireShoot() {
 		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
 	}
 
+
 	m_attack_power = 1;
 }
 
@@ -45,6 +46,9 @@ const int32 AFireShoot::GetAttackPower() const
 
 void AFireShoot::WeaponInitalize(const FWeaponStruct& Weapon)
 {
+	Tags.Add(TEXT("Fuselage"));
+	Tags.Add(TEXT("Weapon"));
+
 	m_attack_power = 1;
 	m_speed = Weapon.m_speed;
 }

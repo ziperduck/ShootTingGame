@@ -30,6 +30,9 @@ void AEnemyDragon::Initialize_Implementation(
 {
 	if (!mb_initialize)
 	{
+		Tags.Add(TEXT("Fuselage"));
+		Tags.Add(TEXT("Airframe"));
+
 		mb_initialize = true;
 
 		UE_LOG(LogTemp, Log, TEXT("Initialize"));
@@ -72,7 +75,7 @@ const int32 AEnemyDragon::GetAttackPower() const
 void AEnemyDragon::AttackFuselage(const int32 HP)
 {
 	m_current_HP += HP;
-	UE_LOG(LogTemp, Log, TEXT("AEnemyDragon CurrentHP = %d"), m_current_HP);
+	UE_LOG(LogTemp, Log, TEXT("AEnemyDragon Attack %d Now HP = %d"), HP, m_current_HP);
 }
 
 void AEnemyDragon::MoveLocation(const FVector& MoveLocation) {

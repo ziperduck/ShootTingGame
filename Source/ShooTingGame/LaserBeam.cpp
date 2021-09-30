@@ -8,6 +8,7 @@
 // Sets default values
 ALaserBeam::ALaserBeam() {
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	UBoxComponent* BoxComponenet = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponenet->SetupAttachment(RootComponent);
@@ -28,11 +29,9 @@ ALaserBeam::ALaserBeam() {
 
 	}
 
-	m_speed = 0.0f;
-	m_attack_power = 1;
-	m_attack_term = 60;
+	m_attack_term = 1;
 
-	SetTickableWhenPaused(false);
+	SetActorTickEnabled(false);
 }
 
 void ALaserBeam::BeginPlay()
@@ -43,10 +42,14 @@ void ALaserBeam::BeginPlay()
 
 void ALaserBeam::WeaponInitalize(const FWeaponStruct& Weapon)
 {
+	Tags.Add(TEXT("Fuselage"));
+	Tags.Add(TEXT("Weapon"));
+
 	m_attack_power = Weapon.m_attack_power;
 	m_speed = Weapon.m_speed;
+	m_attack_term = Weapon.m_shooting_delay;
 	SetActorTickInterval(Weapon.m_shooting_delay);
-	SetTickableWhenPaused(true);
+	SetActorTickEnabled(true);
 }
 
 //Getter
@@ -84,6 +87,9 @@ void ALaserBeam::MoveLocation(const FVector& MoveLocation)
 //Event
 void ALaserBeam::EventUpdate()
 {
+
+	m_actions.push(EVariousAction::ATTACK);
+
 	while (m_actions.size() > 0)
 	{
 		IAction* Action = ChangeAction(m_actions.front());
@@ -92,8 +98,6 @@ void ALaserBeam::EventUpdate()
 		Action->Execute(this);
 		m_actions.pop();
 	}
-
-	m_actions.push(EVariousAction::ATTACK);
 }
 
 void ALaserBeam::Tick(float Delta)

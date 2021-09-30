@@ -54,6 +54,10 @@ void ARifle::MoveLocation(const FVector& MoveLocation) {
 
 void ARifle::WeaponInitalize(const FWeaponStruct& Weapon)
 {
+
+	Tags.Add(TEXT("Fuselage"));
+	Tags.Add(TEXT("Airframe"));
+
 	m_attack_power = Weapon.m_attack_power;
 	m_speed = Weapon.m_speed;
 }

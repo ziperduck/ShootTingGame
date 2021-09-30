@@ -44,6 +44,9 @@ void APlayerCharacter::Initialize_Implementation(
 {
 	if (!mb_initialize)
 	{
+		Tags.Add(TEXT("Fuselage"));
+		Tags.Add(TEXT("Airframe"));
+
 		mb_initialize = true;
 
 		UE_LOG(LogTemp, Log, TEXT("Initialize"));
@@ -84,6 +87,7 @@ const int32 APlayerCharacter::GetMaxHP() const
 void APlayerCharacter::AttackFuselage(const int32 HP)
 {
 	m_current_HP += HP;
+	UE_LOG(LogTemp, Log, TEXT("Player Attack %d Now HP %d "), HP, m_current_HP);
 }
 
 void APlayerCharacter::MoveLocation(const FVector& MoveLocation) {

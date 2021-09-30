@@ -9,6 +9,7 @@
 #include "MeteoricStone.h"
 #include "LaserBeam.h"
 #include <set>
+#include <Engine/Classes/Kismet/GameplayStatics.h>
 #include "CoreMinimal.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
@@ -215,6 +216,39 @@ void Attack::Execute(AActor* Target) {
 			}
 		}
 
+	}
+}
+
+void BoomAttack::Execute(AActor* Target) {
+	UE_LOG(LogTemp, Log, TEXT("BoomAttack Excute"));
+	checkf(Target != nullptr, TEXT("Target is nullptr"));
+
+	const UWorld* TargetWorld = Target->GetWorld();
+
+	IAirframe* TargetAirframe = Cast<IAirframe>(Target);
+	checkf(TargetAirframe != nullptr, TEXT("Fuselage is nullptr"));
+
+	if (TargetAirframe->GetWeapon().m_weapon != EVariousWeapon::BOOM_WEAPON)
+	{
+		UE_LOG(LogTemp, Log, TEXT("TargetAirframe Weapon is not Boom"));
+		return;
+	}
+
+	TArray<AActor*> AllFuselageActor;
+	UGameplayStatics::GetAllActorsOfClassWithTag(
+		TargetWorld, AActor::StaticClass(), TEXT("Airframe"), AllFuselageActor);
+
+	//그외
+	for (auto i : AllFuselageActor)
+	{
+		IFuselage* OverlapFuselage = Cast<IFuselage>(i);
+		checkf(OverlapFuselage != nullptr, TEXT("OverlapFuselage is nullptr"));
+	
+		if (Target != i && Target->GetDistanceTo(i) < 200.0f)
+		{
+			UE_LOG(LogTemp, Log, TEXT("i"));
+			OverlapFuselage->AttackFuselage(-TargetAirframe->GetWeapon().m_attack_power);
+		}
 	}
 }
 

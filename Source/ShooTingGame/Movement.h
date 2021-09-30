@@ -72,6 +72,14 @@ public:
 
 };
 
+class BoomAttack : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};
+
 class Death : public IAction
 {
 public:

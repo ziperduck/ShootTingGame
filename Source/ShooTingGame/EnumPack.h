@@ -24,6 +24,7 @@ enum class EVariousWeapon : uint8
 	LASERBEAM_WEAPON  UMETA(DisplayName = "LASERBEAM_WEAPON"),
 	METEORICSTONE_WEAPON  UMETA(DisplayName = "METEORICSTONE_WEAPON"),
 	MISSILEDRAGON_WEAPON  UMETA(DisplayName = "MISSILEDRAGON_WEAPON"),
+	BOOM_WEAPON  UMETA(DisplayName = "BOOM_WEAPON"),
 	FIRESHOOT_WEAPON UMETA(DisplayName = "FIRESHOOT_WEAPON"),
 };
 
@@ -39,4 +40,5 @@ enum class EVariousAction : uint8
 	SHOOTING UMETA(DisplayName = "SHOOTING"),
 	DEATH UMETA(DisplayName = "DEATH"),
 	ATTACK UMETA(DisplayName = "ATTACK"),
+	BOOM_ATTACK UMETA(DisplayName = "BOOM_ATTACK"),
 };

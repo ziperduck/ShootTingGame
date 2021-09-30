@@ -1,18 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MeteoricStone.h"
-#include "Action.h"
+#include "BoomDragon.h"
 #include "ActionInstance.h"
-#include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
-AMeteoricStone::AMeteoricStone()
+ABoomDragon::ABoomDragon()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/Boom.Boom"));
 	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
 	{
@@ -27,18 +25,18 @@ AMeteoricStone::AMeteoricStone()
 
 	mb_initialize = false;
 
+	Tags.Add(TEXT("Fuselage"));
+	Tags.Add(TEXT("Airframe"));
+
 	SetActorTickEnabled(false);
 	SetActorEnableCollision(false);
 
 }
 
-void AMeteoricStone::Initialize_Implementation(const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
+void ABoomDragon::Initialize_Implementation(const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
 {
 	if (!mb_initialize)
 	{
-		Tags.Add(TEXT("Fuselage"));
-		Tags.Add(TEXT("Airframe"));
-
 		mb_initialize = true;
 
 		UE_LOG(LogTemp, Log, TEXT("Initialize"));
@@ -54,58 +52,77 @@ void AMeteoricStone::Initialize_Implementation(const float Speed, const int32 Ma
 }
 
 // Called when the game starts or when spawned
-void AMeteoricStone::BeginPlay()
+void ABoomDragon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
-void AMeteoricStone::Tick(float DeltaTime)
+void ABoomDragon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	EventUpdate();
 }
 
-void AMeteoricStone::NotifyActorBeginOverlap(AActor* Actor)
+void ABoomDragon::NotifyActorBeginOverlap(AActor* Actor)
 {
-	UE_LOG(LogTemp, Log, TEXT("Meteoric Overlap"));
+	UE_LOG(LogTemp, Log, TEXT("ABoomDragon Overlap"));
+
+	IFuselage* Fuselage = Cast<IFuselage>(Actor);
+	checkf(Fuselage != nullptr, TEXT("ABoomDragon overlap actor is not Fuselage"));
+
+	if (!GetWorldTimerManager().IsTimerActive(m_boom_timer_handle)
+		&& Fuselage->GetKind() == EFuselageKind::PLAYER_FUSELAGE)
+	{
+		GetWorldTimerManager().SetTimer(m_boom_timer_handle
+			, [&] {
+			m_actions.Push(EVariousAction::BOOM_ATTACK);
+			m_actions.Push(EVariousAction::DEATH); }, 2.0f, false);
+	}
 	m_actions.Push(EVariousAction::ATTACK);
+
 	return;
 }
 
-const EFuselageKind AMeteoricStone::GetKind() const
+const EFuselageKind ABoomDragon::GetKind() const
 {
 	return m_kind;
 }
 
-const float AMeteoricStone::GetSpeed() const
+const float ABoomDragon::GetSpeed() const
 {
 	return m_weapon.m_speed;
 }
 
-const int32 AMeteoricStone::GetAttackPower() const
+const int32 ABoomDragon::GetAttackPower() const
 {
 	return 1;
 }
 
-const int32 AMeteoricStone::GetMaxHP() const
+const int32 ABoomDragon::GetMaxHP() const
 {
 	return m_max_HP;
 }
 
-void AMeteoricStone::AttackFuselage(const int32 HP)
+const FWeaponStruct ABoomDragon::GetWeapon()const
+{
+	return m_weapon;
+}
+
+
+void ABoomDragon::AttackFuselage(const int32 HP)
 {
 	m_current_HP += HP;
 }
 
-void AMeteoricStone::MoveLocation(const FVector& MoveLocation)
+void ABoomDragon::MoveLocation(const FVector& MoveLocation)
 {
 	SetActorLocation(GetActorLocation() + MoveLocation);
 }
 
-void AMeteoricStone::EventUpdate()
+void ABoomDragon::EventUpdate()
 {
 	while (m_actions.GetAllocatedSize() > 0)
 	{
@@ -114,18 +131,10 @@ void AMeteoricStone::EventUpdate()
 	}
 	if (m_current_HP < 1)
 	{
-		//분해되는 건 그냥 운석을 두개 생성하자
-		ChangeAction(EVariousAction::SHOOTING)->Execute(this);
 		ChangeAction(EVariousAction::DEATH)->Execute(this);
 	}
 	else
 	{
-		m_actions.Push(EVariousAction::SOUTH_MOVE);
+		m_actions.Push(EVariousAction::GUIDANCE_MOVE);
 	}
 }
-
-const FWeaponStruct AMeteoricStone::GetWeapon()const
-{
-	return m_weapon;
-}
-

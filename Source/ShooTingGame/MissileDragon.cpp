@@ -22,6 +22,7 @@ AMissileDragon::AMissileDragon()
 
 	mb_initialize = false;
 
+
 	SetActorTickEnabled(false);
 	SetActorEnableCollision(false);
 
@@ -31,6 +32,9 @@ void AMissileDragon::Initialize_Implementation(const float Speed, const int32 Ma
 {
 	if (!mb_initialize)
 	{
+		Tags.Add(TEXT("Fuselage"));
+		Tags.Add(TEXT("Airframe"));
+
 		mb_initialize = true;
 
 		UE_LOG(LogTemp, Log, TEXT("Initialize"));
