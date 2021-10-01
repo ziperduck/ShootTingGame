@@ -65,7 +65,6 @@ public:
 	virtual const FWeaponStruct GetWeapon() const override;
 
 private:
-
 	//외형 및 언리얼에서 제공해주는 기능들
 
 	//USceneComponent* m_characterScene;

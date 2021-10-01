@@ -97,6 +97,24 @@ public:
 
 };
 
+class DropItem : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};
+
+//분열하여 두갈래로 나가는 액션
+class FuselageDivide : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};
+
+
 class Death : public IAction
 {
 public:

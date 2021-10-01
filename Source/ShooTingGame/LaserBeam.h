@@ -18,6 +18,9 @@ public:
 	// Sets default values for this actor's properties
 	ALaserBeam();
 
+	UFUNCTION(BlueprintCallable)
+		void WeaponInitalize(const int32 Power);
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -29,10 +32,6 @@ public:
 	virtual const float GetSpeed() const override;
 
 	virtual const int32 GetAttackPower() const override;
-
-	const int32 GetAttackTerm() const;
-
-	void WeaponInitalize(const FWeaponStruct& Weapon);
 
 	//Event
 
@@ -46,11 +45,9 @@ public:
 private:
 	const EFuselageKind m_kind = EFuselageKind::PLAYER_WEAPON;
 
-	float m_speed;
+	bool mb_initialize;
 
 	std::queue<EVariousAction> m_actions;
 
 	int32 m_attack_power;
-
-	int32 m_attack_term;
 };

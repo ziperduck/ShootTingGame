@@ -44,4 +44,6 @@ enum class EVariousAction : uint8
 	BOOM_ATTACK UMETA(DisplayName = "BOOM_ATTACK"),
 	HEALING UMETA(DisplayName = "HEALING"),
 	WEAPON_UPGRADE UMETA(DisplayName = "WEAPON_UPGRADE"),
+	DROP_ITEM UMETA(DisplayName = "DROP_ITEM"),
+	FUSELAGE_DIVIDE UMETA(DisplayName = "FUSELAGE_DIVIDE"),
 };

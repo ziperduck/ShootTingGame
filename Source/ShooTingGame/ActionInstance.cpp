@@ -64,6 +64,16 @@ IAction* ChangeAction(const EVariousAction& Action)
 		static IAction* Event = new WeaponUpgrad();
 		return Event;
 	}
+	case EVariousAction::DROP_ITEM:
+	{
+		static IAction* Event = new DropItem();
+		return Event;
+	}
+	case EVariousAction::FUSELAGE_DIVIDE:
+	{
+		static IAction* Event = new FuselageDivide();
+		return Event;
+	}
 	case EVariousAction::DEATH:
 	{
 		static IAction* Event = new Death();

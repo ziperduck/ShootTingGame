@@ -100,7 +100,7 @@ void AEnemyDragon::EventUpdate()
 	if (m_current_HP < 1)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Enemy Dragon Death"));
-		ChangeAction(EVariousAction::DEATH)->Execute(this);
+		m_actions.Enqueue(EVariousAction::DEATH);
 	}
 
 	if (!GetWorldTimerManager().IsTimerActive(m_shooting_timer))

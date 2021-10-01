@@ -14,42 +14,31 @@ ALaserBeam::ALaserBeam() {
 	BoxComponenet->SetupAttachment(RootComponent);
 	BoxComponenet->SetNotifyRigidBodyCollision(true);
 	BoxComponenet->SetCollisionProfileName(TEXT("OverlapAll"));
-	BoxComponenet->SetRelativeScale3D(FVector{20.0f,0.5f,0.5f});
+	BoxComponenet->SetWorldScale3D(FVector{20.0f,0.5f,0.5f});
 	BoxComponenet->SetRelativeLocation(FVector{ 700.0f,0.0f,0.0f });
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Meshes/Projectile.Projectile"));
-	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
-		WeaponMesh->SetupAttachment(BoxComponenet);
-		WeaponMesh->SetStaticMesh(MeshAsset.Object);
-		WeaponMesh->SetRelativeScale3D(FVector{ 3.0f,1.0f,1.0f });
-		WeaponMesh->SetNotifyRigidBodyCollision(false);
-
-	}
-
-	m_attack_term = 1;
-
+	mb_initialize = false;
 	SetActorTickEnabled(false);
 }
 
 void ALaserBeam::BeginPlay()
 {
 	Super::BeginPlay();
-	m_actions.push(EVariousAction::ATTACHPLAYER_MOVE);
 }
 
-void ALaserBeam::WeaponInitalize(const FWeaponStruct& Weapon)
+void ALaserBeam::WeaponInitalize(const int32 Power)
 {
-	Tags.Add(TEXT("Fuselage"));
-	Tags.Add(TEXT("Weapon"));
+	if (!mb_initialize)
+	{
+		Tags.Add(TEXT("Fuselage"));
+		Tags.Add(TEXT("Weapon"));
 
-	m_attack_power = Weapon.m_attack_power;
-	m_speed = Weapon.m_speed;
-	m_attack_term = Weapon.m_shooting_delay;
-	SetActorTickInterval(Weapon.m_shooting_delay);
-	SetActorTickEnabled(true);
+		m_attack_power = Power;
+		SetActorTickInterval(1.0f);
+		SetActorTickEnabled(true);
+
+		m_actions.push(EVariousAction::ATTACHPLAYER_MOVE);
+	}
 }
 
 //Getter
@@ -60,16 +49,12 @@ const EFuselageKind ALaserBeam::GetKind() const
 
 const float ALaserBeam::GetSpeed() const
 {
-	return m_speed;
+	return 0;
 }
 
 const int32 ALaserBeam::GetAttackPower() const
 {
 	return m_attack_power;
-}
-const int32 ALaserBeam::GetAttackTerm() const
-{
-	return m_attack_term;
 }
 
 
