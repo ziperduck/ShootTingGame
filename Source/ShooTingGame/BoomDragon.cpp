@@ -10,30 +10,14 @@ ABoomDragon::ABoomDragon()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/Boom.Boom"));
-	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
-		WeaponMesh->SetupAttachment(RootComponent);
-		WeaponMesh->SetStaticMesh(MeshAsset.Object);
-		WeaponMesh->SetRelativeScale3D(FVector{ 0.4f,0.4f,0.4f });
-
-		WeaponMesh->SetNotifyRigidBodyCollision(true);
-		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
-	}
-
 	mb_initialize = false;
-
-	Tags.Add(TEXT("Fuselage"));
-	Tags.Add(TEXT("Airframe"));
 
 	SetActorTickEnabled(false);
 	SetActorEnableCollision(false);
 
 }
 
-void ABoomDragon::Initialize_Implementation(const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
+void ABoomDragon::FuselageInitialize(const float Speed, const int32 MaxHP, const float BoomDelay)
 {
 	if (!mb_initialize)
 	{
@@ -41,13 +25,18 @@ void ABoomDragon::Initialize_Implementation(const float Speed, const int32 MaxHP
 
 		UE_LOG(LogTemp, Log, TEXT("Initialize"));
 
+		Tags.Add(TEXT("Fuselage"));
+		Tags.Add(TEXT("Airframe"));
+
 		SetActorTickEnabled(true);
 		SetActorEnableCollision(true);
+
+		m_speed = Speed;
 
 		m_max_HP = MaxHP;
 		m_current_HP = MaxHP;
 
-		m_weapon = Weapon;
+		m_boom_delay = BoomDelay;
 	}
 }
 
@@ -73,13 +62,11 @@ void ABoomDragon::NotifyActorBeginOverlap(AActor* Actor)
 	IFuselage* Fuselage = Cast<IFuselage>(Actor);
 	checkf(Fuselage != nullptr, TEXT("ABoomDragon overlap actor is not Fuselage"));
 
-	if (!GetWorldTimerManager().IsTimerActive(m_boom_timer_handle)
-		&& Fuselage->GetKind() == EFuselageKind::PLAYER_FUSELAGE)
+	if (!GetWorldTimerManager().IsTimerActive(m_boom_timer_handle)&& Fuselage->GetKind() == EFuselageKind::PLAYER_FUSELAGE)
 	{
 		GetWorldTimerManager().SetTimer(m_boom_timer_handle
-			, [&] {
-			m_actions.Enqueue(EVariousAction::BOOM_ATTACK);
-			m_actions.Enqueue(EVariousAction::DEATH); }, 2.0f, false);
+			, [&] {	m_actions.Enqueue(EVariousAction::BOOM_ATTACK);
+			m_actions.Enqueue(EVariousAction::DEATH); }, m_boom_delay, false);
 	}
 	m_actions.Enqueue(EVariousAction::ATTACK);
 
@@ -93,7 +80,7 @@ const EFuselageKind ABoomDragon::GetKind() const
 
 const float ABoomDragon::GetSpeed() const
 {
-	return m_weapon.m_speed;
+	return m_speed;
 }
 
 const int32 ABoomDragon::GetAttackPower() const
@@ -101,16 +88,15 @@ const int32 ABoomDragon::GetAttackPower() const
 	return 1;
 }
 
-const int32 ABoomDragon::GetMaxHP() const
+void ABoomDragon::SetSpeed(const float Speed)
 {
-	return m_max_HP;
+	m_speed = Speed;
 }
 
-const FWeaponStruct ABoomDragon::GetWeapon()const
+void ABoomDragon::SetAttackPower(const int32 Power)
 {
-	return m_weapon;
+	m_attack_power = Power;
 }
-
 
 void ABoomDragon::AttackFuselage(const int32 HP)
 {

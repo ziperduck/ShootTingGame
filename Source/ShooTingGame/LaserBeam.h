@@ -32,7 +32,12 @@ public:
 	virtual const float GetSpeed() const override;
 
 	virtual const int32 GetAttackPower() const override;
+	//Setter
 
+	virtual void SetSpeed(const float Speed) override;
+
+	virtual void SetAttackPower(const int32 Power) override;
+	
 	//Event
 
 	//laser는 피격을 받아도 아무런 데미지를 받지 않는다

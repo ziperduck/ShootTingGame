@@ -13,22 +13,14 @@ AMissileDragon::AMissileDragon()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-
-	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->SetNotifyRigidBodyCollision(true);
-	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
-	Sphere->InitSphereRadius(40.0f);
-	RootComponent = Sphere;
-
 	mb_initialize = false;
-
 
 	SetActorTickEnabled(false);
 	SetActorEnableCollision(false);
 
 }
 
-void AMissileDragon::Initialize_Implementation(const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
+void AMissileDragon::FuselageInitialize(const float Speed, const int32 MaxHP)
 {
 	if (!mb_initialize)
 	{
@@ -45,8 +37,6 @@ void AMissileDragon::Initialize_Implementation(const float Speed, const int32 Ma
 		m_speed = Speed;
 		m_max_HP = MaxHP;
 		m_current_HP = MaxHP;
-
-		m_weapon = Weapon;
 	}
 }
 
@@ -90,9 +80,14 @@ const int32 AMissileDragon::GetAttackPower() const
 	return 1;
 }
 
-const int32 AMissileDragon::GetMaxHP() const
+void AMissileDragon::SetSpeed(const float Speed)
 {
-	return m_max_HP;
+	m_speed = Speed;
+}
+
+void AMissileDragon::SetAttackPower(const int32 Power)
+{
+	m_attack_power = Power;
 }
 
 void AMissileDragon::AttackFuselage(const int32 HP)
@@ -122,11 +117,6 @@ void AMissileDragon::EventUpdate()
 	{
 		m_actions.Enqueue(EVariousAction::GUIDANCE_MOVE);
 	}
-}
-
-const FWeaponStruct AMissileDragon::GetWeapon()const
-{
-	return m_weapon;
 }
 
 

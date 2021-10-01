@@ -11,13 +11,6 @@ AEnemyDragon::AEnemyDragon()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-
-	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->SetNotifyRigidBodyCollision(true);
-	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
-	Sphere->InitSphereRadius(40.0f);
-	RootComponent = Sphere;
-
 	mb_initialize = false;
 
 	SetActorTickEnabled(false);
@@ -25,8 +18,8 @@ AEnemyDragon::AEnemyDragon()
 
 }
 
-void AEnemyDragon::Initialize_Implementation(
-	const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
+void AEnemyDragon::FuselageInitialize(
+	const float Speed, const int32 MaxHP, const EVariousWeapon Weapon, const float ShootingDelay)
 {
 	if (!mb_initialize)
 	{
@@ -44,9 +37,9 @@ void AEnemyDragon::Initialize_Implementation(
 		m_max_HP = MaxHP;
 		m_current_HP = MaxHP;
 
-		m_weapon = Weapon;
-		m_weapon.m_weapon = EVariousWeapon::FIRESHOOT_WEAPON;
-		m_weapon.m_lifespan = 5.0f;
+		m_weapon_kind = Weapon;
+		m_shooting_delay = ShootingDelay;
+
 	}
 }
 
@@ -106,18 +99,33 @@ void AEnemyDragon::EventUpdate()
 	if (!GetWorldTimerManager().IsTimerActive(m_shooting_timer))
 	{
 		m_actions.Enqueue(EVariousAction::SHOOTING);
-		GetWorldTimerManager().SetTimer(m_shooting_timer, m_weapon.m_shooting_delay, false);
+		GetWorldTimerManager().SetTimer(m_shooting_timer, m_shooting_delay, false);
 	}
 }
 
-const FWeaponStruct AEnemyDragon::GetWeapon() const
+const int32 AEnemyDragon::GetWeaponLevel() const
 {
-	return m_weapon;
+	return 1;
 }
 
-const int32 AEnemyDragon::GetMaxHP() const
+const float AEnemyDragon::GetWeaponLiflespan() const
 {
-	return m_max_HP;
+	return 10.0f;
+}
+
+const EVariousWeapon AEnemyDragon::GetWeaponKind() const
+{
+	return m_weapon_kind;
+}
+
+void AEnemyDragon::SetSpeed(const float Speed)
+{
+	m_speed = Speed;
+}
+
+void AEnemyDragon::SetAttackPower(const int32 Power)
+{
+	m_attack_power = Power;
 }
 
 void AEnemyDragon::NotifyActorBeginOverlap(AActor* Actor)

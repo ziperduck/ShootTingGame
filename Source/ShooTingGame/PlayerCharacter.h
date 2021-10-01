@@ -23,13 +23,18 @@ protected:
 	virtual void BeginPlay() override;
 public:
 
-	void Initialize_Implementation(
-		const float Speed, const int32 MaxHP, FWeaponStruct Weapon) override;
+	UFUNCTION(BlueprintCallable)
+		void FuselageInitialize(const float Speed, const int32 MaxHP,const EVariousWeapon Weapon,const float ShootingDelay);
 
 	virtual void Tick(float Delta) override;
 
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
 
+	virtual const int32 GetWeaponLevel() const override;
+
+	virtual const float GetWeaponLiflespan() const override;
+
+	virtual const EVariousWeapon GetWeaponKind() const override;
 
 	//Getter
 	virtual const EFuselageKind GetKind() const override;
@@ -38,9 +43,12 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
-	virtual const int32 GetMaxHP() const override;
-
 	//Setter
+
+	virtual void SetSpeed(const float Speed) override;
+
+	virtual void SetAttackPower(const int32 Power) override;
+
 	void UpgradeWeapon();
 
 	//Event
@@ -62,9 +70,9 @@ public:
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 
-	virtual const FWeaponStruct GetWeapon() const override;
 
 private:
+	UClass* TestSpawnActor;
 	//외형 및 언리얼에서 제공해주는 기능들
 
 	//USceneComponent* m_characterScene;
@@ -85,12 +93,21 @@ private:
 
 	bool mb_initialize;
 
+	int32 m_attack_power;
+
+
 	std::queue<EVariousAction> m_actions;
 
 	//플레이어의 무기에 관한 변수들
-	FWeaponStruct m_weapon;
+	EVariousWeapon m_weapon_kind;
+
+	float m_shooting_delay;
 
 	bool mb_press;
+
+	int32 m_weapon_level;
+
+	float m_weapon_lifespan;
 
 	int32 m_press_time;
 

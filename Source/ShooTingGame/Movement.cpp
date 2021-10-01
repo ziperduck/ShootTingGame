@@ -120,46 +120,46 @@ void Shooting::Execute(AActor* Target) {
 	IAirframe* Airframe = Cast<IAirframe>(Target);
 	checkf(Airframe != nullptr, TEXT("Airframe is nullptr"));
 
-	FWeaponStruct WeaponStruct = Airframe->GetWeapon();
-	//GetWeapon으로 무기를 만들자.
-	
 	UClass* WeaponClass = nullptr;
+	//GetWeapon으로 무기를 만들자.
 
 	TArray<FTransform> WeaponTransform;
-	switch (WeaponStruct.m_weapon)
+	int32 WeaponPower = 1;
 
+	switch (Airframe->GetWeaponKind())
 	{
 	case EVariousWeapon::RIFLE_WEAPON:
 	{
-		switch (WeaponStruct.m_weapon_level)
+		switch (Airframe->GetWeaponLevel())
 		{
 		case 1:
-			WeaponTransform.Add(FTransform{ FQuat(), TargetLocation, FVector::OneVector });
+			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation, FVector::OneVector });
 			break;
 		case 2:
-			WeaponTransform.Add(FTransform{ FQuat(), TargetLocation, FVector::OneVector });
-			WeaponTransform.Add(FTransform{ FQuat(), TargetLocation - FVector{ 0.0f,40.0f,0.0f}, FVector::OneVector });
-			WeaponTransform.Add(FTransform{ FQuat(), TargetLocation + FVector{ 0.0f,40.0f,0.0f }, FVector::OneVector });
-			WeaponStruct.m_attack_power = 2;
+			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation, FVector::OneVector });
+			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation - FVector{ 0.0f,40.0f,0.0f}, FVector::OneVector });
+			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation + FVector{ 0.0f,40.0f,0.0f }, FVector::OneVector });
 			break;
 		case 3:
-			WeaponTransform.Add(FTransform{ FQuat(), TargetLocation, FVector::OneVector });
-			WeaponTransform.Add(FTransform{ FQuat(), TargetLocation - FVector{ 0.0f,40.0f,0.0f}, FVector::OneVector });
-			WeaponTransform.Add(FTransform{ FQuat(), TargetLocation + FVector{ 0.0f,40.0f,0.0f }, FVector::OneVector });
-			WeaponTransform.Add(FTransform{ FQuat(), TargetLocation - FVector{ 0.0f,80.0f,0.0f}, FVector::OneVector });
-			WeaponTransform.Add(FTransform{ FQuat(), TargetLocation + FVector{ 0.0f,80.0f,0.0f }, FVector::OneVector });
+			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation, FVector::OneVector });
+			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation - FVector{ 0.0f,40.0f,0.0f}, FVector::OneVector });
+			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation + FVector{ 0.0f,40.0f,0.0f }, FVector::OneVector });
+			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation - FVector{ 0.0f,80.0f,0.0f}, FVector::OneVector });
+			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation + FVector{ 0.0f,80.0f,0.0f }, FVector::OneVector });
+			WeaponPower = 2;
 			break;
 		default:
 			break;
 		}
-		WeaponClass = Cast<UClass>(StaticLoadObject(UObject::StaticClass()
-			, NULL, TEXT("Class'/Game/Blueprint/BP_Rifle.BP_Rifle_C'")));
+		UE_LOG(LogTemp, Log, TEXT("RIFLE_WEAPON"));
+		WeaponClass = Cast<UClass>(StaticLoadClass(UObject::StaticClass(), NULL,
+			TEXT("Class'/Game/Blueprint/BP_Rifle.BP_Rifle_C'")));
 		break;
 	}
 	case EVariousWeapon::LASERBEAM_WEAPON:
 	{
 		WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f},FVector::ZeroVector, FVector::OneVector });
-		switch (WeaponStruct.m_weapon_level)
+		switch (Airframe->GetWeaponLevel())
 		{
 		case 1:
 			WeaponTransform[0].SetScale3D(FVector::OneVector);
@@ -167,24 +167,27 @@ void Shooting::Execute(AActor* Target) {
 			break;
 		case 2:
 			WeaponTransform[0].SetScale3D(FVector{ 1.0f,15.0f,1.0f });
-			WeaponStruct.m_attack_power = 2;
+			WeaponPower = 2;
 			break;
 		case 3:
 			WeaponTransform[0].SetScale3D(FVector{ 1.0f,25.0f,1.0f });
-			WeaponStruct.m_attack_power = 3;
+			WeaponPower = 3;
 			break;
 		default:
 			break;
 		}
-		WeaponClass = Cast<UClass>(StaticLoadObject(UObject::StaticClass()
-				, NULL, TEXT("Class'/Game/Blueprint/BP_LaserBeam.BP_LaserBeam_C'")));
+
+		UE_LOG(LogTemp, Log, TEXT("RIFLE_WEAPON"));
+		WeaponClass = Cast<UClass>(StaticLoadClass(UObject::StaticClass(), NULL,
+			TEXT("Class'/Game/Blueprint/BP_LaserBeam.BP_LaserBeam_C'")));
 		break;
 	}
+
 	case EVariousWeapon::FIRESHOOT_WEAPON:
 	{
 		WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f},TargetLocation, FVector::OneVector });
-		WeaponClass = Cast<UClass>(StaticLoadObject(UObject::StaticClass()
-			, NULL, TEXT("Class'/Game/Blueprint/BP_FireShoot.BP_FireShoot_C'")));
+		WeaponClass = Cast<UClass>(StaticLoadClass(UObject::StaticClass(), NULL,
+			TEXT("Class'/Game/Blueprint/BP_FireShoot.BP_FireShoot_C'")));
 		break;
 	}
 	default:
@@ -192,16 +195,25 @@ void Shooting::Execute(AActor* Target) {
 	}
 
 
-	if (WeaponClass != nullptr)
+	if (WeaponClass == nullptr)
 	{
-		for (auto i : WeaponTransform)
-		{
-			UE_LOG(LogTemp, Log, TEXT("Weapon Spawn"));
-			AActor* LaserBeam = TargetWorld->SpawnActor<AActor>(WeaponClass, i);
-			LaserBeam->SetLifeSpan(WeaponStruct.m_lifespan);
-		}
+		UE_LOG(LogTemp, Log, TEXT("Airframe GetWeapon nullptr"));
+		return;
 	}
-	
+
+	for (const auto i : WeaponTransform)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Weapon Spawn"));
+		AActor* LaserBeam = TargetWorld->SpawnActor<AActor>(WeaponClass, i);
+		if (LaserBeam == nullptr)
+		{
+			UE_LOG(LogTemp, Log, TEXT("LaserBeam nullptr"));
+			return;
+		}
+		LaserBeam->SetLifeSpan(Airframe->GetWeaponLiflespan());
+		Cast<IFuselage>(LaserBeam)->SetAttackPower(WeaponPower);
+	}
+
 }
 
 void Attack::Execute(AActor* Target) {
@@ -268,18 +280,12 @@ void BoomAttack::Execute(AActor* Target) {
 
 	const UWorld* TargetWorld = Target->GetWorld();
 
-	IAirframe* TargetAirframe = Cast<IAirframe>(Target);
+	IFuselage* TargetAirframe = Cast<IFuselage>(Target);
 	checkf(TargetAirframe != nullptr, TEXT("Fuselage is nullptr"));
-
-	if (TargetAirframe->GetWeapon().m_weapon != EVariousWeapon::BOOM_WEAPON)
-	{
-		UE_LOG(LogTemp, Log, TEXT("TargetAirframe Weapon is not Boom"));
-		return;
-	}
 
 	TArray<AActor*> AllFuselageActor;
 	UGameplayStatics::GetAllActorsOfClassWithTag(
-		TargetWorld, AActor::StaticClass(), TEXT("Airframe"), AllFuselageActor);
+		TargetWorld, AActor::StaticClass(), TEXT("Fuselage"), AllFuselageActor);
 
 	//그외
 	for (auto& i : AllFuselageActor)
@@ -290,7 +296,7 @@ void BoomAttack::Execute(AActor* Target) {
 		if (Target != i && Target->GetDistanceTo(i) < 200.0f)
 		{
 			UE_LOG(LogTemp, Log, TEXT("i"));
-			OverlapFuselage->AttackFuselage(-TargetAirframe->GetWeapon().m_attack_power);
+			OverlapFuselage->AttackFuselage(-TargetAirframe->GetAttackPower());
 		}
 	}
 }
@@ -393,45 +399,45 @@ void DropItem::Execute(AActor* Target)
 void FuselageDivide::Execute(AActor* Target)
 {
 
-	UE_LOG(LogTemp, Log, TEXT("Shooting Excute"));
+	UE_LOG(LogTemp, Log, TEXT("FuselageDivide Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	UWorld* TargetWorld = Target->GetWorld();
-	FTransform TargetLocation = Target->GetActorTransform();
+
+	FVector TargetLocation = Target->GetActorLocation();
+	FVector TargetScale = Target->GetActorScale3D();
 
 	UClass* TargetClass = Target->GetClass();
 
-	IAirframe* TargetAirframe = Cast<IAirframe>(Target);
+	IFuselage* TargetAirframe = Cast<IFuselage>(Target);
 	checkf(TargetAirframe != nullptr, TEXT("Airframe is nullptr"));
 
-	//분열
-	if (TargetAirframe->GetMaxHP() > 1)
-	{
-		TargetLocation.SetScale3D(TargetLocation.GetScale3D() * 0.5);
-		TargetLocation.SetRotation(FQuat{0.0f,0.0f, 0.0f,0.0f});
+	UE_LOG(LogTemp, Log, TEXT("TargetScale Scale X = %f"), TargetScale.X);
 
-		//오른쪽 ariframe
-		AActor* LeftMeteoricActor = TargetWorld->SpawnActor<AActor>(TargetClass,TargetLocation);
-		LeftMeteoricActor->SetLifeSpan(10.0f);
-		if (LeftMeteoricActor == nullptr)
+	//분열
+	if (TargetScale.X > 0.5f)
+	{
+		TargetScale *= 0.5f;
+
+		TArray<FVector> SpawnLocation;
+		SpawnLocation.Add(TargetLocation - FVector{ 0.0f,100.0f,0.0f });
+		SpawnLocation.Add(TargetLocation + FVector{ 0.0f,100.0f,0.0f });
+
+		for (const auto i : SpawnLocation)
 		{
-			UE_LOG(LogTemp, Log, TEXT("LeftMeteoricActor nullptr"));
-			return;
+			AActor* DiVideACtor = TargetWorld->SpawnActor<AActor>(TargetClass, i, FRotator::ZeroRotator);
+			checkf(DiVideACtor != nullptr, TEXT("DiVideACtor  is nullptr"));
+			DiVideACtor->SetLifeSpan(10.0f);
+			DiVideACtor->SetActorScale3D(TargetScale);
+
+			//나눠지면 빠라지고 체력이 하나 달아있다.
+			IFuselage* DiVideFuselage = Cast<IFuselage>(DiVideACtor);
+			checkf(DiVideFuselage != nullptr, TEXT("Fuselage  is nullptr"));
+			DiVideFuselage->SetSpeed(DiVideFuselage->GetSpeed() *2.0f);
+			DiVideFuselage->AttackFuselage(-1);
 		}
 
-		IAirframe* DiVideAirframe = Cast<IAirframe>(LeftMeteoricActor);
-		checkf(DiVideAirframe != nullptr, TEXT("LeftAirframe is not airframe"));
-		DiVideAirframe->Initialize_Implementation(
-			TargetAirframe->GetWeapon().m_speed, TargetAirframe->GetMaxHP() - 1, TargetAirframe->GetWeapon());
-
-		//왼쪽 ariframe
-		AActor* RightMeteoricActor	= TargetWorld->SpawnActor<AActor>(TargetClass, TargetLocation);
-		RightMeteoricActor->SetLifeSpan(10.0f);
-
-		DiVideAirframe = Cast<IAirframe>(RightMeteoricActor);
-		checkf(DiVideAirframe != nullptr, TEXT("RightAirframe is not airframe"));
-		DiVideAirframe->Initialize_Implementation(
-			TargetAirframe->GetWeapon().m_speed, TargetAirframe->GetMaxHP() - 1, TargetAirframe->GetWeapon());
+		
 	}
 
 

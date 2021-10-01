@@ -25,11 +25,12 @@ class SHOOTINGGAME_API IAirframe
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = Airframe)
-		void Initialize(const float Speed, const int32 MaxHP, FWeaponStruct Weapon);
-	
 	//airgrame을 dragon이나 character에 상속시키고 action값에서 불러와서 shooting을 만들자
-	virtual const FWeaponStruct GetWeapon() const { return FWeaponStruct(); }
+	
+	virtual const int32 GetWeaponLevel() const { return 0; };
 
-	virtual const int32 GetMaxHP() const { return 0; };
+	virtual const float GetWeaponLiflespan() const { return 0; };
+
+	virtual const EVariousWeapon GetWeaponKind() const { return EVariousWeapon::RIFLE_WEAPON; };
+
 };

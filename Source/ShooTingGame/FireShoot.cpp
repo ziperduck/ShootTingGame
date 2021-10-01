@@ -11,32 +11,32 @@
 // Sets default values
 AFireShoot::AFireShoot() {
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Meshes/Projectile.Projectile"));
-	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	WeaponMesh->SetupAttachment(RootComponent);
-	if (MeshAsset.Succeeded())
+	mb_initialize = false;
+
+	SetActorTickEnabled(false);
+	SetActorEnableCollision(false);
+}
+
+void AFireShoot::FuselageInitialize(const float Speed)
+{
+	if (!mb_initialize)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
-		WeaponMesh->SetStaticMesh(MeshAsset.Object);
-	
-		WeaponMesh->SetNotifyRigidBodyCollision(true);
-		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
-	}
-	
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/Particles/P_Fire.P_Fire"));
-	UParticleSystemComponent* ParticleComponenet 
-		= CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle Componenet"));
-	ParticleComponenet->SetupAttachment(WeaponMesh);
-	if (ParticleAsset.Succeeded())
-	{
-		ParticleComponenet->SetTemplate(ParticleAsset.Object);
-		ParticleComponenet->bAutoActivate = true;
-		ParticleComponenet->SetAllMassScale(0.5f);
+		Tags.Add(TEXT("Fuselage"));
+		Tags.Add(TEXT("Weapon"));
 
-	}
+		mb_initialize = true;
 
-	m_attack_power = 1;
+		UE_LOG(LogTemp, Log, TEXT("Initialize"));
+
+		SetActorTickEnabled(true);
+		SetActorEnableCollision(true);
+
+		m_speed = Speed;
+
+		m_attack_power = 1;
+	}
 }
 
 //Getter
@@ -55,16 +55,18 @@ const int32 AFireShoot::GetAttackPower() const
 	return m_attack_power;
 }
 
-//Setter
-
-void AFireShoot::WeaponInitalize(const FWeaponStruct& Weapon)
+void AFireShoot::SetSpeed(const float Speed)
 {
-	Tags.Add(TEXT("Fuselage"));
-	Tags.Add(TEXT("Weapon"));
+	m_speed = Speed;
 
-	m_attack_power = 1;
-	m_speed = Weapon.m_speed;
 }
+
+void AFireShoot::SetAttackPower(const int32 Power)
+{
+	m_attack_power = Power;
+}
+
+//Setter
 
 void AFireShoot::AttackFuselage(const int32 HP)
 {

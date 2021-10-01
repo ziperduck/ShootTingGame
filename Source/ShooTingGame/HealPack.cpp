@@ -10,24 +10,27 @@
 AHealPack::AHealPack()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->SetNotifyRigidBodyCollision(true);
-	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
-	Sphere->InitSphereRadius(40.0f);
-	RootComponent = Sphere;
+	mb_initialize = false;
 
-	m_speed = 2.0f;
-	m_heal_power = 1.0f;
+	SetActorTickEnabled(false);
+	SetActorEnableCollision(false);
 }
 
-void AHealPack::HealPackInitalize(const float Spped, const int32 HealPower)
+void AHealPack::HealPackInitalize(const float Speed, const int32 HealPower)
 {
-	Tags.Add(TEXT("Fuselage"));
-	Tags.Add(TEXT("Item"));
+	if (!mb_initialize)
+	{
+		Tags.Add(TEXT("Fuselage"));
+		Tags.Add(TEXT("Item"));
 
-	m_heal_power = HealPower;
-	m_speed = Spped;
+		m_attack_power = HealPower;
+		m_speed = Speed;
+
+		SetActorTickEnabled(true);
+		SetActorEnableCollision(true);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -72,7 +75,17 @@ const float AHealPack::GetSpeed() const
 
 const int32 AHealPack::GetAttackPower() const
 {
-	return 1;
+	return m_attack_power;
+}
+
+void AHealPack::SetSpeed(const float Speed)
+{
+	m_speed = Speed;
+}
+
+void AHealPack::SetAttackPower(const int32 Power)
+{
+	m_attack_power = Power;
 }
 
 void AHealPack::AttackFuselage(const int32 HP)

@@ -14,13 +14,6 @@ APlayerCharacter::APlayerCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-
-	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->SetNotifyRigidBodyCollision(true);
-	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
-	Sphere->InitSphereRadius(40.0f);
-	RootComponent = Sphere;
-
 	mb_initialize = false;
 
 	SetActorTickEnabled(false);
@@ -39,8 +32,8 @@ void APlayerCharacter::BeginPlay()
 
 }
 
-void APlayerCharacter::Initialize_Implementation(
-	const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
+void APlayerCharacter::FuselageInitialize(
+	const float Speed, const int32 MaxHP, const EVariousWeapon Weapon, const float ShootingDelay)
 {
 	if (!mb_initialize)
 	{
@@ -57,21 +50,24 @@ void APlayerCharacter::Initialize_Implementation(
 		m_speed = Speed;
 		m_max_HP = MaxHP;
 		m_current_HP = MaxHP;
+		
+		m_weapon_kind = Weapon;
 
-		m_weapon = Weapon;
-		switch (m_weapon.m_weapon)
+		switch (m_weapon_kind)
 		{
 		case EVariousWeapon::RIFLE_WEAPON:
-			UE_LOG(LogTemp, Log, TEXT("RIFLE_WEAPON"));
-			m_weapon.m_lifespan = 5;
+			m_weapon_lifespan = 5.0f;
 			break;
 		case EVariousWeapon::LASERBEAM_WEAPON:
-			UE_LOG(LogTemp, Log, TEXT("RIFLE_WEAPON"));
-			m_weapon.m_lifespan = 0.;
+			m_weapon_lifespan = 0.0f;
 			break;
 		default:
+			checkNoEntry();
 			break;
 		}
+		m_shooting_delay = ShootingDelay;
+
+		m_weapon_level = 1;
 
 		m_press_time = 0;
 	}
@@ -93,25 +89,19 @@ const int32 APlayerCharacter::GetAttackPower() const
 	return 1;
 }
 
-const int32 APlayerCharacter::GetMaxHP() const
+void APlayerCharacter::SetSpeed(const float Speed)
 {
-	return m_max_HP;
+	m_speed = Speed;
+}
+
+void APlayerCharacter::SetAttackPower(const int32 Power)
+{
+	m_attack_power = Power;
 }
 
 void APlayerCharacter::UpgradeWeapon()
 {
-	switch (m_weapon.m_weapon)
-	{
-	case EVariousWeapon::RIFLE_WEAPON:
-		++m_weapon.m_weapon_level;
-		break;
-	case EVariousWeapon::LASERBEAM_WEAPON:
-		++m_weapon.m_weapon_level;
-		break;
-	default:
-		UE_LOG(LogTemp, Log, TEXT("is not player weapon"));
-		break;
-	}
+	++m_weapon_level;
 }
 
 //Setter
@@ -124,6 +114,16 @@ void APlayerCharacter::AttackFuselage(const int32 HP)
 void APlayerCharacter::MoveLocation(const FVector& MoveLocation) {
 	
 	SetActorLocation(GetActorLocation() + MoveLocation);
+}
+
+const int32 APlayerCharacter::GetWeaponLevel() const
+{
+	return m_weapon_level;
+}
+
+const float APlayerCharacter::GetWeaponLiflespan() const
+{
+	return m_weapon_lifespan;
 }
 
 //Event
@@ -143,7 +143,7 @@ void APlayerCharacter::EventUpdate()
 
 	if (mb_press)
 	{
-		switch (m_weapon.m_weapon)
+		switch (m_weapon_kind)
 		{
 		case EVariousWeapon::RIFLE_WEAPON:
 			if (m_available_shooting)
@@ -151,7 +151,7 @@ void APlayerCharacter::EventUpdate()
 				m_available_shooting = false;
 				m_actions.push(EVariousAction::SHOOTING);
 				GetWorldTimerManager().SetTimer(
-					m_shooting_timer, [&] {m_available_shooting = true; }, m_weapon.m_shooting_delay, false);
+					m_shooting_timer, [&] {m_available_shooting = true; }, m_shooting_delay, false);
 			}
 			break;
 		case EVariousWeapon::LASERBEAM_WEAPON:
@@ -224,7 +224,7 @@ void APlayerCharacter::ReleaseAttack(float Direction)
 {
 
 	UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Release"));
-	if (m_weapon.m_weapon == EVariousWeapon::LASERBEAM_WEAPON && m_available_shooting)
+	if (m_weapon_kind == EVariousWeapon::LASERBEAM_WEAPON && m_available_shooting)
 	{
 		m_available_shooting = false;
 		m_press_time /= 120;
@@ -233,19 +233,20 @@ void APlayerCharacter::ReleaseAttack(float Direction)
 		{
 			m_press_time = 5;
 		}
-		m_weapon.m_lifespan = m_press_time;
+		m_weapon_lifespan = m_press_time;
 		UE_LOG(LogTemp, Log, TEXT("Release time%d"), m_press_time);
 		m_actions.push(EVariousAction::SHOOTING);
 		GetWorldTimerManager().SetTimer(
-			m_shooting_timer, [&] {m_available_shooting = true; }, m_weapon.m_shooting_delay + m_weapon.m_lifespan, false);
+			m_shooting_timer, [&] {m_available_shooting = true; }, m_shooting_delay + m_weapon_lifespan, false);
 	}
 	mb_press = false;
 	m_press_time = 0;
 }
 
-const FWeaponStruct APlayerCharacter::GetWeapon()const
+
+const EVariousWeapon APlayerCharacter::GetWeaponKind() const
 {
-	return m_weapon;
+	return m_weapon_kind;
 }
 
 void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)

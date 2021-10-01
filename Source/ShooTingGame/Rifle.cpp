@@ -9,19 +9,32 @@
 // Sets default values
 ARifle::ARifle() {
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Meshes/Projectile.Projectile"));
-	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
+	mb_initialize = false;
+
+	SetActorTickEnabled(false);
+	SetActorEnableCollision(false);
+}
+
+void ARifle::FuselageInitialize(const int32 AttackPower, const float Speed)
+{
+	if (!mb_initialize)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
-		WeaponMesh->SetupAttachment(RootComponent);
-		WeaponMesh->SetStaticMesh(MeshAsset.Object);
+		mb_initialize = true;
 
-		WeaponMesh->SetNotifyRigidBodyCollision(true);
-		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
+
+		UE_LOG(LogTemp, Log, TEXT("ARifle Initialize"));
+
+		m_attack_power = AttackPower;
+		m_speed = Speed;
+
+		Tags.Add(TEXT("Fuselage"));
+		Tags.Add(TEXT("Weapon"));
+
+		SetActorTickEnabled(true);
+		SetActorEnableCollision(true);
 	}
-
 }
 
 //Getter
@@ -40,6 +53,16 @@ const int32 ARifle::GetAttackPower() const
 	return m_attack_power;
 }
 
+void ARifle::SetSpeed(const float Speed)
+{
+	m_speed = Speed;
+}
+
+void ARifle::SetAttackPower(const int32 Power)
+{
+	m_attack_power = Power;
+}
+
 
  //Setter
 void ARifle::AttackFuselage(const int32 HP)
@@ -50,16 +73,6 @@ void ARifle::AttackFuselage(const int32 HP)
 void ARifle::MoveLocation(const FVector& MoveLocation) {
 
 	SetActorLocation(GetActorLocation() + MoveLocation);
-}
-
-void ARifle::WeaponInitalize(const FWeaponStruct& Weapon)
-{
-
-	Tags.Add(TEXT("Fuselage"));
-	Tags.Add(TEXT("Airframe"));
-
-	m_attack_power = Weapon.m_attack_power;
-	m_speed = Weapon.m_speed;
 }
 
 
@@ -76,6 +89,7 @@ void ARifle::EventUpdate()
 		Action->Execute(this);
 		m_actions.pop();
 	}
+
 	m_actions.push(EVariousAction::NORTH_MOVE);
 
 }

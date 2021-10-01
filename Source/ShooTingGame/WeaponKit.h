@@ -41,6 +41,12 @@ public:
 	virtual const int32 GetAttackPower() const override;
 
 	//Setter
+
+	virtual void SetSpeed(const float Speed) override;
+
+	virtual void SetAttackPower(const int32 Power) override;
+
+	//Setter
 	virtual void AttackFuselage(const int32 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;

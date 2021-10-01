@@ -9,7 +9,7 @@
 #include "MeteoricStone.generated.h"
 
 UCLASS()
-class SHOOTINGGAME_API AMeteoricStone : public AActor, public IFuselage, public IAirframe
+class SHOOTINGGAME_API AMeteoricStone : public AActor, public IFuselage
 {
 	GENERATED_BODY()
 	
@@ -21,8 +21,8 @@ public:
 	// Sets default values for this actor's properties
 	AMeteoricStone();
 
-	void Initialize_Implementation(
-		const float Speed, const int32 MaxHP, FWeaponStruct Weapon) override;
+	UFUNCTION(BlueprintCallable)
+		void FuselageInitialize(const float Speed, const int32 MaxHP);
 
 	virtual void Tick(float Delta) override;
 
@@ -35,9 +35,12 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
-	virtual const int32 GetMaxHP() const override;
-
 	//Setter
+
+	virtual void SetSpeed(const float Speed) override;
+
+	virtual void SetAttackPower(const int32 Power) override;
+
 	virtual void AttackFuselage(const int32 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
@@ -45,8 +48,6 @@ public:
 
 	//Event
 	virtual void EventUpdate() override;
-
-	virtual const FWeaponStruct GetWeapon() const override;
 private:
 
 	const EFuselageKind m_kind = EFuselageKind::ENEMY_FUSELAGE;
@@ -55,12 +56,13 @@ private:
 
 	int32 m_current_HP;
 
+	int32 m_attack_power;
+
+	float m_speed;
+
 	bool mb_initialize;
 
 	TQueue<EVariousAction> m_actions;
 
 	TQueue<EVariousAction> m_next_actions;
-
-	FWeaponStruct m_weapon;
-
 };

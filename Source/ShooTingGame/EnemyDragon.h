@@ -24,8 +24,8 @@ public:
 
 	AEnemyDragon();
 
-	void Initialize_Implementation(
-		const float Speed, const int32 MaxHP, FWeaponStruct Weapon) override;
+	UFUNCTION(BlueprintCallable, Category = "Fuselage")
+	void FuselageInitialize(const float Speed, const int32 MaxHP,const EVariousWeapon Weapon, const float ShootingDelay);
 
 	virtual void Tick(float Delta) override;
 
@@ -38,9 +38,17 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
-	virtual const FWeaponStruct GetWeapon() const override;
+	virtual const int32 GetWeaponLevel() const override;
 
-	virtual const int32 GetMaxHP() const override;
+	virtual const float GetWeaponLiflespan() const override;
+
+	virtual const EVariousWeapon GetWeaponKind() const override;
+
+	//Setter
+
+	virtual void SetSpeed(const float Speed) override;
+
+	virtual void SetAttackPower(const int32 Power) override;
 
 	//Event
 
@@ -67,8 +75,13 @@ private:
 
 	bool mb_initialize;
 	
+	int32 m_attack_power;
+
 	TQueue<EVariousAction> m_actions;
 
 	//플레이어의 무기에 관한 변수들
-	FWeaponStruct m_weapon;
+	EVariousWeapon m_weapon_kind;
+
+	float m_shooting_delay;
+
 };

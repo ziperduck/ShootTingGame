@@ -41,6 +41,11 @@ public:
 	virtual const int32 GetAttackPower() const override;
 
 	//Setter
+
+	virtual void SetSpeed(const float Speed) override;
+
+	virtual void SetAttackPower(const int32 Power) override;
+
 	virtual void AttackFuselage(const int32 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
@@ -57,7 +62,9 @@ private:
 
 	int32 m_current_HP;
 
-	int32 m_heal_power;
+	int32 m_attack_power;
+
+	bool mb_initialize;
 
 	TQueue<EVariousAction> m_actions;
 };

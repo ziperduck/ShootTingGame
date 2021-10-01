@@ -10,15 +10,10 @@ ALaserBeam::ALaserBeam() {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	UBoxComponent* BoxComponenet = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	BoxComponenet->SetupAttachment(RootComponent);
-	BoxComponenet->SetNotifyRigidBodyCollision(true);
-	BoxComponenet->SetCollisionProfileName(TEXT("OverlapAll"));
-	BoxComponenet->SetWorldScale3D(FVector{20.0f,0.5f,0.5f});
-	BoxComponenet->SetRelativeLocation(FVector{ 700.0f,0.0f,0.0f });
-
 	mb_initialize = false;
+
 	SetActorTickEnabled(false);
+	SetActorEnableCollision(false);
 }
 
 void ALaserBeam::BeginPlay()
@@ -34,8 +29,10 @@ void ALaserBeam::WeaponInitalize(const int32 Power)
 		Tags.Add(TEXT("Weapon"));
 
 		m_attack_power = Power;
+
 		SetActorTickInterval(1.0f);
 		SetActorTickEnabled(true);
+		SetActorEnableCollision(true);
 
 		m_actions.push(EVariousAction::ATTACHPLAYER_MOVE);
 	}
@@ -55,6 +52,15 @@ const float ALaserBeam::GetSpeed() const
 const int32 ALaserBeam::GetAttackPower() const
 {
 	return m_attack_power;
+}
+
+void ALaserBeam::SetSpeed(const float Speed)
+{
+}
+
+void ALaserBeam::SetAttackPower(const int32 Power)
+{
+	m_attack_power = Power;
 }
 
 

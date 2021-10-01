@@ -4,26 +4,13 @@
 #include "MeteoricStone.h"
 #include "Action.h"
 #include "ActionInstance.h"
-#include <Engine/Classes/Components/SphereComponent.h>
+#include <Engine/Classes/Components/BoxComponent.h>
 
 // Sets default values
 AMeteoricStone::AMeteoricStone()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
-
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/PhysicMash/PuzzleCube.PuzzleCube"));
-	UStaticMeshComponent* WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	if (MeshAsset.Succeeded() && MeshAsset.Object != nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Mesh Aseet %s"), *MeshAsset.GetReferencerName());
-		WeaponMesh->SetupAttachment(RootComponent);
-		WeaponMesh->SetStaticMesh(MeshAsset.Object);
-		WeaponMesh->SetRelativeScale3D(FVector{ 0.4f,0.4f,0.4f });
-
-		WeaponMesh->SetNotifyRigidBodyCollision(true);
-		WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
-	}
 
 	mb_initialize = false;
 
@@ -32,7 +19,7 @@ AMeteoricStone::AMeteoricStone()
 
 }
 
-void AMeteoricStone::Initialize_Implementation(const float Speed, const int32 MaxHP, FWeaponStruct Weapon)
+void AMeteoricStone::FuselageInitialize(const float Speed, const int32 MaxHP)
 {
 	if (!mb_initialize)
 	{
@@ -46,10 +33,9 @@ void AMeteoricStone::Initialize_Implementation(const float Speed, const int32 Ma
 		SetActorTickEnabled(true);
 		SetActorEnableCollision(true);
 
+		m_speed = Speed;
 		m_max_HP = MaxHP;
 		m_current_HP = MaxHP;
-
-		m_weapon = Weapon;
 	}
 }
 
@@ -82,7 +68,7 @@ const EFuselageKind AMeteoricStone::GetKind() const
 
 const float AMeteoricStone::GetSpeed() const
 {
-	return m_weapon.m_speed;
+	return m_speed;
 }
 
 const int32 AMeteoricStone::GetAttackPower() const
@@ -90,9 +76,14 @@ const int32 AMeteoricStone::GetAttackPower() const
 	return 1;
 }
 
-const int32 AMeteoricStone::GetMaxHP() const
+void AMeteoricStone::SetSpeed(const float Speed)
 {
-	return m_max_HP;
+	m_speed = Speed;
+}
+
+void AMeteoricStone::SetAttackPower(const int32 Power)
+{
+	m_attack_power = Power;
 }
 
 void AMeteoricStone::AttackFuselage(const int32 HP)
@@ -123,10 +114,5 @@ void AMeteoricStone::EventUpdate()
 	{
 		m_actions.Enqueue(EVariousAction::SOUTH_MOVE);
 	}
-}
-
-const FWeaponStruct AMeteoricStone::GetWeapon()const
-{
-	return m_weapon;
 }
 

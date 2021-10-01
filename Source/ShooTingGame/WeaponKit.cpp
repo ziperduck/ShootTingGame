@@ -12,14 +12,6 @@ AWeaponKit::AWeaponKit()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	USphereComponent* Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->SetNotifyRigidBodyCollision(true);
-	Sphere->SetCollisionProfileName(TEXT("OverlapAll"));
-	Sphere->InitSphereRadius(40.0f);
-	RootComponent = Sphere;
-
-	m_speed = 2.0f;
-
 	SetActorTickEnabled(false);
 	SetActorEnableCollision(false);
 
@@ -84,6 +76,15 @@ const float AWeaponKit::GetSpeed() const
 const int32 AWeaponKit::GetAttackPower() const
 {
 	return 0;
+}
+
+void AWeaponKit::SetSpeed(const float Speed)
+{
+	m_speed = Speed;
+}
+
+void AWeaponKit::SetAttackPower(const int32 Power)
+{
 }
 
 void AWeaponKit::AttackFuselage(const int32 HP)

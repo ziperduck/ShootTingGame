@@ -18,6 +18,9 @@ public:
 
 	virtual void Tick(float Delta) override;
 
+	UFUNCTION(BlueprintCallable)
+	void FuselageInitialize(const int32 AttackPower,const float Speed);
+
 	//Getter
 	virtual const EFuselageKind GetKind() const override;
 
@@ -25,7 +28,11 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
-	void WeaponInitalize(const FWeaponStruct& Weapon);
+	//Setter
+
+	virtual void SetSpeed(const float Speed) override;
+
+	virtual void SetAttackPower(const int32 Power) override;
 
 	//Event
 
@@ -45,6 +52,8 @@ private:
 	float m_speed;
 
 	int32 m_attack_power;
+
+	bool mb_initialize;
 
 	std::queue<EVariousAction> m_actions;
 };

@@ -19,6 +19,11 @@ public:
 
 	virtual void Tick(float Delta) override;
 
+
+	UFUNCTION(BlueprintCallable)
+		void FuselageInitialize(const float Speed);
+
+
 	//Getter
 	virtual const EFuselageKind GetKind() const override;
 
@@ -27,11 +32,14 @@ public:
 	//공격력은 1로 고정한다.
 	virtual const int32 GetAttackPower() const override;
 
+	//Setter
+
+	virtual void SetSpeed(const float Speed) override;
+
+	virtual void SetAttackPower(const int32 Power) override;
+
 
 	//Event
-
-	//공격력은 1로 고정한다.
-	void WeaponInitalize(const FWeaponStruct& Weapon);
 
 	//공격을 받으면 체력이 없기때문에 그냥 죽는다.
 	virtual void AttackFuselage(const int32 HP) override;
@@ -48,6 +56,8 @@ private:
 	float m_speed;
 
 	int32 m_attack_power;
+
+	bool mb_initialize;
 
 	std::queue<EVariousAction> m_actions;
 };

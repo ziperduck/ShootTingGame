@@ -33,6 +33,11 @@ public:
 	virtual const int32 GetAttackPower() const { return 0; };
 
 	//Setter
+
+	virtual void SetSpeed(const float Speed) { };
+
+	virtual void SetAttackPower(const int32 Power) { };
+
 	virtual void AttackFuselage(const int32 HP){}
 
 	//Event

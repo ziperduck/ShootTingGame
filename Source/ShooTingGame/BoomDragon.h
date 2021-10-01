@@ -10,7 +10,7 @@
 #include "BoomDragon.generated.h"
 
 UCLASS()
-class SHOOTINGGAME_API ABoomDragon : public AActor, public IFuselage,public IAirframe
+class SHOOTINGGAME_API ABoomDragon : public AActor, public IFuselage
 {
 	GENERATED_BODY()
 	
@@ -23,8 +23,8 @@ public:
 	// Sets default values for this actor's properties
 	ABoomDragon();
 
-	void Initialize_Implementation(
-		const float Speed, const int32 MaxHP, FWeaponStruct Weapon) override;
+	UFUNCTION(BlueprintCallable, Category = "Fuselage")
+	void FuselageInitialize(const float Speed, const int32 MaxHP,const float BoomDelay);
 
 	virtual void Tick(float Delta) override;
 
@@ -37,18 +37,18 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
-	virtual const int32 GetMaxHP() const override;
-
 	//Setter
+
+	virtual void SetSpeed(const float Speed) override;
+
+	virtual void SetAttackPower(const int32 Power) override;
+
 	virtual void AttackFuselage(const int32 HP) override;
 
 	virtual void MoveLocation(const FVector& MoveLocation) override;
 
-
 	//Event
 	virtual void EventUpdate() override;
-
-	virtual const FWeaponStruct GetWeapon() const override;
 protected:
 
 	FTimerHandle m_boom_timer_handle;
@@ -63,10 +63,13 @@ private:
 
 	bool mb_initialize;
 
+	float m_speed;
+
 	TQueue<EVariousAction> m_actions;
 
 	TQueue<EVariousAction> m_next_actions;
 
-	FWeaponStruct m_weapon;
+	float m_boom_delay;
 
+	int32 m_attack_power;
 };
