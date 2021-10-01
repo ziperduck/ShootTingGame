@@ -54,6 +54,11 @@ IAction* ChangeAction(const EVariousAction& Action)
 		static IAction* Event = new BoomAttack();
 		return Event;
 	}
+	case EVariousAction::SPECIAL_BOOM:
+	{
+		static IAction* Event = new SpecialBoom();
+		return Event;
+	}
 	case EVariousAction::HEALING:
 	{
 		static IAction* Event = new Healing();

@@ -80,6 +80,14 @@ public:
 
 };
 
+class SpecialBoom : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};
+
 //힐링은 attck Power를 AttackFuselage에 +로 전달한다.
 class Healing : public IAction
 {

@@ -61,10 +61,13 @@ public:
 	void MoveY(float Direction);
 
 	UFUNCTION(BlueprintCallable)
-		void PressAttack(float Direction);
+		void PressAttack();
 
 	UFUNCTION(BlueprintCallable)
-		void ReleaseAttack(float Direction);
+		void ReleaseAttack();
+
+	UFUNCTION(BlueprintCallable)
+		void PressSpecialBoom();
 
 	virtual void AttackFuselage(const int32 HP) override;
 
@@ -79,6 +82,7 @@ private:
 
 	FTimerHandle m_shooting_timer;
 
+	FTimerHandle m_invincibility_timer;
 private:
 
 	//캐릭터에 관한 필요한 정보들

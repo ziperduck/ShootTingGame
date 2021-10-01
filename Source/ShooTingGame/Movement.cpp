@@ -163,14 +163,14 @@ void Shooting::Execute(AActor* Target) {
 		{
 		case 1:
 			WeaponTransform[0].SetScale3D(FVector::OneVector);
-			WeaponTransform[0].SetScale3D(FVector{ 1.0f,5.0f,1.0f });
+			WeaponTransform[0].SetScale3D(FVector{ 1.0f,1.0f,1.0f });
 			break;
 		case 2:
-			WeaponTransform[0].SetScale3D(FVector{ 1.0f,15.0f,1.0f });
+			WeaponTransform[0].SetScale3D(FVector{ 1.0f,2.0f,1.0f });
 			WeaponPower = 2;
 			break;
 		case 3:
-			WeaponTransform[0].SetScale3D(FVector{ 1.0f,25.0f,1.0f });
+			WeaponTransform[0].SetScale3D(FVector{ 1.0f,5.0f,1.0f });
 			WeaponPower = 3;
 			break;
 		default:
@@ -204,14 +204,16 @@ void Shooting::Execute(AActor* Target) {
 	for (const auto i : WeaponTransform)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Weapon Spawn"));
-		AActor* LaserBeam = TargetWorld->SpawnActor<AActor>(WeaponClass, i);
-		if (LaserBeam == nullptr)
-		{
-			UE_LOG(LogTemp, Log, TEXT("LaserBeam nullptr"));
-			return;
-		}
-		LaserBeam->SetLifeSpan(Airframe->GetWeaponLiflespan());
-		Cast<IFuselage>(LaserBeam)->SetAttackPower(WeaponPower);
+
+		AActor* WeaponActor = TargetWorld->SpawnActor<AActor>(WeaponClass, i.GetLocation(),FRotator::ZeroRotator);
+		WeaponActor->SetActorScale3D(i.GetScale3D());
+
+		checkf(WeaponActor != nullptr, TEXT("LaserBeam "));
+		WeaponActor->SetLifeSpan(Airframe->GetWeaponLiflespan());
+
+		IFuselage* WeaponFuselage = Cast<IFuselage>(WeaponActor);
+		checkf(WeaponFuselage != nullptr, TEXT("LaserBeam "));
+		WeaponFuselage->SetAttackPower(WeaponPower);
 	}
 
 }
@@ -300,6 +302,40 @@ void BoomAttack::Execute(AActor* Target) {
 		}
 	}
 }
+
+void SpecialBoom::Execute(AActor* Target)
+{
+	UE_LOG(LogTemp, Log, TEXT("BoomAttack Excute"));
+	checkf(Target != nullptr, TEXT("Target is nullptr"));
+
+	const UWorld* TargetWorld = Target->GetWorld();
+
+	IFuselage* TargetAirframe = Cast<IFuselage>(Target);
+	checkf(TargetAirframe != nullptr, TEXT("Fuselage is nullptr"));
+
+	TArray<AActor*> AllFuselageActor;
+	UGameplayStatics::GetAllActorsOfClassWithTag(
+		TargetWorld, AActor::StaticClass(), TEXT("Fuselage"), AllFuselageActor);
+
+	//그외
+	for (auto& i : AllFuselageActor)
+	{
+		IFuselage* OverlapFuselage = Cast<IFuselage>(i);
+		checkf(OverlapFuselage != nullptr, TEXT("OverlapFuselage is nullptr"));
+
+		switch (OverlapFuselage->GetKind())
+		{
+		case EFuselageKind::PLAYER_FUSELAGE:
+			break;
+		case EFuselageKind::ITEM_FUSELAGE:
+			break;
+		default:
+			OverlapFuselage->AttackFuselage(-99);
+			break;
+		}
+	}
+}
+
 
 void Healing::Execute(AActor* Target) {
 	UE_LOG(LogTemp, Log, TEXT("Healing Excute"));

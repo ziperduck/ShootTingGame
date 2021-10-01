@@ -104,10 +104,27 @@ void APlayerCharacter::UpgradeWeapon()
 	++m_weapon_level;
 }
 
+void APlayerCharacter::PressSpecialBoom()
+{
+	m_actions.push(EVariousAction::SPECIAL_BOOM);
+}
+
 //Setter
 void APlayerCharacter::AttackFuselage(const int32 HP)
 {
-	m_current_HP += HP;
+	if (HP >= 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("HP HEAL"));
+		m_current_HP += HP;
+	}
+	else if (!GetWorldTimerManager().IsTimerActive(m_invincibility_timer))
+	{
+		UE_LOG(LogTemp, Log, TEXT("HP HI"));
+		m_current_HP += HP;
+		GetWorldTimerManager().SetTimer(m_invincibility_timer, []() {
+			UE_LOG(LogTemp, Log, TEXT("You not Invincible HP"));}, 3.0f, false);
+	} 
+
 	UE_LOG(LogTemp, Log, TEXT("Player Attack %d Now HP %d "), HP, m_current_HP);
 }
 
@@ -213,14 +230,14 @@ void APlayerCharacter::MoveY(float Direction)
 /*
 * 
 */
-void APlayerCharacter::PressAttack(float Direction)
+void APlayerCharacter::PressAttack()
 {
 	UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Press"));
 	mb_press = true;
 }
 
 
-void APlayerCharacter::ReleaseAttack(float Direction)
+void APlayerCharacter::ReleaseAttack()
 {
 
 	UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Release"));
