@@ -40,7 +40,11 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
+	virtual const TArray<EVariousAction> GetNextActions() override;
+
 	//Setter
+
+	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override;
 
 	virtual void SetSpeed(const float Speed) override;
 
@@ -67,4 +71,6 @@ private:
 	bool mb_initialize;
 
 	TQueue<EVariousAction> m_actions;
+
+	TArray<EVariousAction> m_next_actions;
 };

@@ -4,6 +4,7 @@
 #include "WeaponKit.h"
 #include "Action.h"
 #include "ActionInstance.h"
+#include "GameInformation.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 
 // Sets default values
@@ -78,6 +79,16 @@ const int32 AWeaponKit::GetAttackPower() const
 	return 0;
 }
 
+const TArray<EVariousAction> AWeaponKit::GetNextActions()
+{
+	return m_next_actions;
+}
+
+void AWeaponKit::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
+{
+	m_next_actions = NextActions;
+}
+
 void AWeaponKit::SetSpeed(const float Speed)
 {
 	m_speed = Speed;
@@ -105,8 +116,10 @@ void AWeaponKit::EventUpdate()
 		Action->Execute(this);
 		m_actions.Pop();
 	}
-
-	m_actions.Enqueue(EVariousAction::SOUTH_MOVE);
+	for (const auto& i : m_next_actions)
+	{
+		m_actions.Enqueue(i);
+	}
 
 }
 

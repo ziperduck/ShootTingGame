@@ -12,7 +12,7 @@
 #include "WeaponKit.h"
 #include "HealPack.h"
 #include "WeaponKit.h"
-
+#include "GameInformation.h"
 #include <set>
 #include <Engine/Classes/Kismet/GameplayStatics.h>
 #include "CoreMinimal.h"
@@ -98,6 +98,40 @@ void Guidance::Execute(AActor* Target) {
 	MoveLocation *= Speed;
 
 	Fuselage->MoveLocation(MoveLocation);
+}
+
+void BounceMove::Execute(AActor* Target) {
+
+	UE_LOG(LogTemp, Log, TEXT("BounceMove Excute"));
+	checkf(Target != nullptr, TEXT("Target is nullptr"));
+	
+	const FVector TargetLocation = Target->GetActorLocation();
+
+	IFuselage* Fuselage = Cast<IFuselage>(Target);
+	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
+
+	TArray<EVariousAction> ChangeAction = Fuselage->GetNextActions();
+
+	const auto& GameInstance = GameInformation::GetInstance();
+	
+	if (TargetLocation.X > GameInstance->GetMapHeightMaxLocation())
+	{
+		ChangeAction[ChangeAction.Find(EVariousAction::NORTH_MOVE)] = EVariousAction::SOUTH_MOVE;
+	}
+	else if(TargetLocation.X < GameInstance->GetMapHeightMinLocation())
+	{
+		ChangeAction[ChangeAction.Find(EVariousAction::SOUTH_MOVE)] = EVariousAction::NORTH_MOVE;
+	}
+	if (TargetLocation.Y > GameInstance->GetMapWidthMaxLocation()) 
+	{
+		ChangeAction[ChangeAction.Find(EVariousAction::EAST_MOVE)] = EVariousAction::WEST_MOVE;
+	}
+	else if(TargetLocation.Y < GameInstance->GetMapWidthMinLocation())
+	{
+		ChangeAction[ChangeAction.Find(EVariousAction::WEST_MOVE)] = EVariousAction::EAST_MOVE;
+	}
+
+	Fuselage->SetNextActions_Implementation(ChangeAction);
 }
 
 void AttachPlayer::Execute(AActor* Target)
@@ -314,8 +348,7 @@ void SpecialBoom::Execute(AActor* Target)
 	checkf(TargetAirframe != nullptr, TEXT("Fuselage is nullptr"));
 
 	TArray<AActor*> AllFuselageActor;
-	UGameplayStatics::GetAllActorsOfClassWithTag(
-		TargetWorld, AActor::StaticClass(), TEXT("Fuselage"), AllFuselageActor);
+	UGameplayStatics::GetAllActorsOfClassWithTag(TargetWorld, AActor::StaticClass(), TEXT("Fuselage"), AllFuselageActor);
 
 	//그외
 	for (auto& i : AllFuselageActor)

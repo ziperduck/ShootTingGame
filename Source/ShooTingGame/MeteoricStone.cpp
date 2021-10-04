@@ -76,6 +76,16 @@ const int32 AMeteoricStone::GetAttackPower() const
 	return 1;
 }
 
+const TArray<EVariousAction> AMeteoricStone::GetNextActions()
+{
+	return m_next_actions;
+}
+
+void AMeteoricStone::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
+{
+	m_next_actions = NextActions;
+}
+
 void AMeteoricStone::SetSpeed(const float Speed)
 {
 	m_speed = Speed;
@@ -112,7 +122,10 @@ void AMeteoricStone::EventUpdate()
 	}
 	else
 	{
-		m_actions.Enqueue(EVariousAction::SOUTH_MOVE);
+		for (const auto& i : m_next_actions)
+		{
+			m_actions.Enqueue(i);
+		}
 	}
 }
 

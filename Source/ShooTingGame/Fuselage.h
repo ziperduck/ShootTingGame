@@ -32,9 +32,15 @@ public:
 
 	virtual const int32 GetAttackPower() const { return 0; };
 
+	virtual const TArray<EVariousAction> GetNextActions() { return TArray<EVariousAction>(); };
+
 	//Setter
 
 	virtual void SetSpeed(const float Speed) { };
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Fuselage")
+		void SetNextActions(const TArray<EVariousAction>& NextActions);
+	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions) {};
 
 	virtual void SetAttackPower(const int32 Power) { };
 

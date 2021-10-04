@@ -21,7 +21,7 @@ public:
 	// Sets default values for this actor's properties
 	AMeteoricStone();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Fuselage")
 		void FuselageInitialize(const float Speed, const int32 MaxHP);
 
 	virtual void Tick(float Delta) override;
@@ -35,7 +35,12 @@ public:
 
 	virtual const int32 GetAttackPower() const override;
 
+	virtual const TArray<EVariousAction> GetNextActions() override;
+
 	//Setter
+
+
+	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override;
 
 	virtual void SetSpeed(const float Speed) override;
 
@@ -64,5 +69,5 @@ private:
 
 	TQueue<EVariousAction> m_actions;
 
-	TQueue<EVariousAction> m_next_actions;
+	TArray<EVariousAction> m_next_actions;
 };

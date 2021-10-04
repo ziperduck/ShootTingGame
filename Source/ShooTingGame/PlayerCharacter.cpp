@@ -3,6 +3,7 @@
 #include "PlayerCharacter.h"
 #include "Action.h"
 #include "ActionInstance.h"
+#include "GameInformation.h"
 #include <Engine/Classes/Camera/CameraComponent.h>
 #include <Engine/Classes/Components/SphereComponent.h>
 
@@ -70,6 +71,7 @@ void APlayerCharacter::FuselageInitialize(
 		m_weapon_level = 1;
 
 		m_press_time = 0;
+
 	}
 }
 
@@ -182,6 +184,11 @@ void APlayerCharacter::EventUpdate()
 			break;
 		}
 	}
+	if (m_current_HP < 1)
+	{
+		m_actions.push(EVariousAction::DEATH);
+	}
+	UE_LOG(LogTemp, Log, TEXT("Player Position (%f,%f)"),GetActorLocation().X, GetActorLocation().Y);
 }
 
 void APlayerCharacter::Tick(float Delta)
@@ -192,36 +199,53 @@ void APlayerCharacter::Tick(float Delta)
 
 }
 
-void APlayerCharacter::MoveX(float Direction)
+void APlayerCharacter::EastWest(float Direction)
 {
 	const int EastOrWeast = Direction;
 	constexpr int East = 1;
 	constexpr int West = -1;
+	
+	GameInformation* Interface = GameInformation::GetInstance();
+
 	switch (EastOrWeast)
 	{
 	case East:
-		m_actions.push(EVariousAction::EAST_MOVE);
+		if (Interface->GetMapWidthMaxLocation() > GetActorLocation().Y + m_speed)
+		{
+			m_actions.push(EVariousAction::EAST_MOVE);
+		}
 		break;
 	case West:
-		m_actions.push(EVariousAction::WEST_MOVE);
+		if (Interface->GetMapWidthMinLocation() < GetActorLocation().Y - m_speed)
+		{
+			m_actions.push(EVariousAction::WEST_MOVE);
+		}
 		break;
 	default:
 		break;
 	}
 }
 
-void APlayerCharacter::MoveY(float Direction)
+void APlayerCharacter::NorthSouth(float Direction)
 {
 	const int NorthOrSouth = Direction;
 	constexpr int North = 1;
 	constexpr int South = -1;
+
+	GameInformation* Interface = GameInformation::GetInstance();
 	switch (NorthOrSouth)
 	{
 	case North:
+		if (Interface->GetMapHeightMaxLocation() > GetActorLocation().X + m_speed)
+		{
 		m_actions.push(EVariousAction::NORTH_MOVE);
+		}
 		break;
 	case South:
+		if (Interface->GetMapHeightMinLocation() < GetActorLocation().X - m_speed)
+		{
 		m_actions.push(EVariousAction::SOUTH_MOVE);
+		}
 		break;
 	default:
 		break;
@@ -264,6 +288,11 @@ void APlayerCharacter::ReleaseAttack()
 const EVariousWeapon APlayerCharacter::GetWeaponKind() const
 {
 	return m_weapon_kind;
+}
+
+const TArray<EVariousAction> APlayerCharacter::GetNextActions()
+{
+	return TArray<EVariousAction>();
 }
 
 void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)

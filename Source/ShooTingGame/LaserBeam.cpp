@@ -34,7 +34,7 @@ void ALaserBeam::WeaponInitalize(const int32 Power)
 		SetActorTickEnabled(true);
 		SetActorEnableCollision(true);
 
-		m_actions.push(EVariousAction::ATTACHPLAYER_MOVE);
+		m_actions.Enqueue(EVariousAction::ATTACHPLAYER_MOVE);
 	}
 }
 
@@ -52,6 +52,15 @@ const float ALaserBeam::GetSpeed() const
 const int32 ALaserBeam::GetAttackPower() const
 {
 	return m_attack_power;
+}
+
+const TArray<EVariousAction> ALaserBeam::GetNextActions()
+{
+	return TArray<EVariousAction>();
+}
+
+void ALaserBeam::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
+{
 }
 
 void ALaserBeam::SetSpeed(const float Speed)
@@ -79,15 +88,15 @@ void ALaserBeam::MoveLocation(const FVector& MoveLocation)
 void ALaserBeam::EventUpdate()
 {
 
-	m_actions.push(EVariousAction::ATTACK);
+	m_actions.Enqueue(EVariousAction::ATTACK);
 
-	while (m_actions.size() > 0)
+	while (!m_actions.IsEmpty())
 	{
-		IAction* Action = ChangeAction(m_actions.front());
+		IAction* Action = ChangeAction(*m_actions.Peek());
 		UE_LOG(LogTemp, Log, TEXT("ALaserBeam EventUpdate"));
 		checkf(Action != nullptr, TEXT("ALaserBeam EventUpdate in Action is nullptr"));
 		Action->Execute(this);
-		m_actions.pop();
+		m_actions.Pop();
 	}
 }
 

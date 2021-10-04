@@ -78,6 +78,16 @@ const int32 AHealPack::GetAttackPower() const
 	return m_attack_power;
 }
 
+const TArray<EVariousAction> AHealPack::GetNextActions()
+{
+	return m_next_actions;
+}
+
+void AHealPack::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
+{
+	m_next_actions = NextActions;
+}
+
 void AHealPack::SetSpeed(const float Speed)
 {
 	m_speed = Speed;
@@ -107,6 +117,9 @@ void AHealPack::EventUpdate()
 		m_actions.Pop();
 	}
 
-	m_actions.Enqueue(EVariousAction::SOUTH_MOVE);
+	for (const auto& i : m_next_actions)
+	{
+		m_actions.Enqueue(i);
+	}
 }
 

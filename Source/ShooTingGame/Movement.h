@@ -47,6 +47,14 @@ public:
 
 };
 
+class BounceMove : public IAction
+{
+public:
+
+	virtual void Execute(AActor* Target) override;
+
+};
+
 class AttachPlayer : public IAction
 {
 public:

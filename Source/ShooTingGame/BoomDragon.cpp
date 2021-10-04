@@ -88,6 +88,16 @@ const int32 ABoomDragon::GetAttackPower() const
 	return 1;
 }
 
+const TArray<EVariousAction> ABoomDragon::GetNextActions()
+{
+	return m_next_actions;
+}
+
+void ABoomDragon::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
+{
+	m_next_actions = NextActions;
+}
+
 void ABoomDragon::SetSpeed(const float Speed)
 {
 	m_speed = Speed;
@@ -122,6 +132,9 @@ void ABoomDragon::EventUpdate()
 	}
 	else if(!GetWorldTimerManager().IsTimerActive(m_boom_timer_handle))
 	{
-		m_actions.Enqueue(EVariousAction::GUIDANCE_MOVE);
+		for (const auto& i : m_next_actions)
+		{
+			m_actions.Enqueue(i);
+		}
 	}
 }

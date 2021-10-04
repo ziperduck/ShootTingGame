@@ -53,6 +53,16 @@ const int32 ARifle::GetAttackPower() const
 	return m_attack_power;
 }
 
+const TArray<EVariousAction> ARifle::GetNextActions()
+{
+	return m_next_actions;
+}
+
+void ARifle::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
+{
+	m_next_actions = NextActions;
+}
+
 void ARifle::SetSpeed(const float Speed)
 {
 	m_speed = Speed;
@@ -67,7 +77,7 @@ void ARifle::SetAttackPower(const int32 Power)
  //Setter
 void ARifle::AttackFuselage(const int32 HP)
 {
-	m_actions.push(EVariousAction::DEATH);
+	m_actions.Enqueue(EVariousAction::DEATH);
 }
 
 void ARifle::MoveLocation(const FVector& MoveLocation) {
@@ -81,23 +91,25 @@ void ARifle::EventUpdate()
 {
 
 
-	while (m_actions.size() > 0)
+	while (m_actions.IsEmpty())
 	{
-		IAction* Action = ChangeAction(m_actions.front());
+		IAction* Action = ChangeAction(*m_actions.Peek());
 		UE_LOG(LogTemp, Log, TEXT("Change Action had Action"));
 		checkf(Action != nullptr, TEXT("ARifle EventUpdate in Action is nullptr"));
 		Action->Execute(this);
-		m_actions.pop();
+		m_actions.Pop();
 	}
 
-	m_actions.push(EVariousAction::NORTH_MOVE);
-
+	for (const auto& i : m_next_actions)
+	{
+		m_actions.Enqueue(i);
+	}
 }
 
 void ARifle::NotifyActorBeginOverlap(AActor* Actor)
 {
 	UE_LOG(LogTemp, Log, TEXT("Overlap ARifle"));
-	m_actions.push(EVariousAction::ATTACK);
+	m_actions.Enqueue(EVariousAction::ATTACK);
 	return;
 }
 

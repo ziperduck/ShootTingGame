@@ -80,6 +80,16 @@ const int32 AMissileDragon::GetAttackPower() const
 	return 1;
 }
 
+const TArray<EVariousAction> AMissileDragon::GetNextActions()
+{
+	return m_next_actions;
+}
+
+void AMissileDragon::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
+{
+	m_next_actions = NextActions;
+}
+
 void AMissileDragon::SetSpeed(const float Speed)
 {
 	m_speed = Speed;
@@ -115,7 +125,10 @@ void AMissileDragon::EventUpdate()
 	}
 	else
 	{
-		m_actions.Enqueue(EVariousAction::GUIDANCE_MOVE);
+		for (const auto& i : m_next_actions)
+		{
+			m_actions.Enqueue(i);
+		}
 	}
 }
 

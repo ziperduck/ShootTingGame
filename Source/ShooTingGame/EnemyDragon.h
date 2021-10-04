@@ -44,7 +44,11 @@ public:
 
 	virtual const EVariousWeapon GetWeaponKind() const override;
 
+	virtual const TArray<EVariousAction> GetNextActions() override;
+
 	//Setter
+
+	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override;
 
 	virtual void SetSpeed(const float Speed) override;
 
@@ -78,6 +82,8 @@ private:
 	int32 m_attack_power;
 
 	TQueue<EVariousAction> m_actions;
+
+	TArray<EVariousAction> m_next_actions;
 
 	//플레이어의 무기에 관한 변수들
 	EVariousWeapon m_weapon_kind;

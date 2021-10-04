@@ -101,6 +101,10 @@ void AEnemyDragon::EventUpdate()
 		m_actions.Enqueue(EVariousAction::SHOOTING);
 		GetWorldTimerManager().SetTimer(m_shooting_timer, m_shooting_delay, false);
 	}
+	for (const auto& i : m_next_actions)
+	{
+		m_actions.Enqueue(i);
+	}
 }
 
 const int32 AEnemyDragon::GetWeaponLevel() const
@@ -116,6 +120,16 @@ const float AEnemyDragon::GetWeaponLiflespan() const
 const EVariousWeapon AEnemyDragon::GetWeaponKind() const
 {
 	return m_weapon_kind;
+}
+
+const TArray<EVariousAction> AEnemyDragon::GetNextActions()
+{
+	return m_next_actions;
+}
+
+void AEnemyDragon::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
+{
+	m_next_actions = NextActions;
 }
 
 void AEnemyDragon::SetSpeed(const float Speed)

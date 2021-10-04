@@ -36,7 +36,12 @@ public:
 
 	virtual const EVariousWeapon GetWeaponKind() const override;
 
+	virtual const TArray<EVariousAction> GetNextActions() override;
+
 	//Getter
+
+	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override{ };
+
 	virtual const EFuselageKind GetKind() const override;
 
 	virtual const float GetSpeed() const override;
@@ -55,10 +60,10 @@ public:
 	virtual void EventUpdate() override;
 	
 	UFUNCTION(BlueprintCallable)
-	void MoveX(float Direction);
+	void EastWest(float Direction);
 
 	UFUNCTION(BlueprintCallable)
-	void MoveY(float Direction);
+	void NorthSouth(float Direction);
 
 	UFUNCTION(BlueprintCallable)
 		void PressAttack();

@@ -55,6 +55,16 @@ const int32 AFireShoot::GetAttackPower() const
 	return m_attack_power;
 }
 
+const TArray<EVariousAction> AFireShoot::GetNextActions()
+{
+	return m_next_actions;
+}
+
+void AFireShoot::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
+{
+	m_next_actions = NextActions;
+}
+
 void AFireShoot::SetSpeed(const float Speed)
 {
 	m_speed = Speed;
@@ -71,7 +81,7 @@ void AFireShoot::SetAttackPower(const int32 Power)
 void AFireShoot::AttackFuselage(const int32 HP)
 {
 	UE_LOG(LogTemp, Log, TEXT("AFireShoot Death"));
-	m_actions.push(EVariousAction::DEATH);
+	m_actions.Enqueue(EVariousAction::DEATH);
 }
 
 void AFireShoot::MoveLocation(const FVector& MoveLocation) {
@@ -82,22 +92,25 @@ void AFireShoot::MoveLocation(const FVector& MoveLocation) {
 //Event
 void AFireShoot::EventUpdate()
 {
-	while (m_actions.size() > 0)
+	while (!m_actions.IsEmpty())
 	{
-		IAction* Action = ChangeAction(m_actions.front());
+		IAction* Action = ChangeAction(*m_actions.Peek());
 		UE_LOG(LogTemp, Log, TEXT("Change Action had Action"));
 		checkf(Action != nullptr, TEXT("AFireShoot EventUpdate in Action is nullptr"));
 		Action->Execute(this);
-		m_actions.pop();
+		m_actions.Pop();
 	}
 
-	m_actions.push(EVariousAction::SOUTH_MOVE);
+	for (const auto& i : m_next_actions)
+	{
+		m_actions.Enqueue(i);
+	}
 }
 
 void AFireShoot::NotifyActorBeginOverlap(AActor* Actor)
 {
 	UE_LOG(LogTemp, Log, TEXT("Overlap AFireShoot"));
-	m_actions.push(EVariousAction::ATTACK);
+	m_actions.Enqueue(EVariousAction::ATTACK);
 }
 
 void AFireShoot::Tick(float Delta)
