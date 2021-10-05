@@ -23,10 +23,17 @@ public:
 	AShooTingGameModeBase();
 
 
-	 virtual void StartPlay() override;
+	UFUNCTION(BlueprintCallable, Category = "ShootingGame_UMG")
+		void ChangeWidget(TSubclassOf<UUserWidget> NewWidget);
 
-	 virtual void Tick(float) override;
+protected:
 
-private:
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ShootingGame_UMG")
+		TSubclassOf<UUserWidget> m_start_widget;
+
+	UPROPERTY()
+		UUserWidget* m_current_widget;
 
 };

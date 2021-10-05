@@ -14,6 +14,7 @@
 #include "WeaponKit.h"
 #include "GameInformation.h"
 #include <set>
+#include <Engine/Classes/GameFramework/GameModeBase.h>
 #include <Engine/Classes/Kismet/GameplayStatics.h>
 #include "CoreMinimal.h"
 #include <Engine/Classes/Components/SphereComponent.h>
@@ -382,10 +383,13 @@ void Healing::Execute(AActor* Target) {
 	Target->GetOverlappingActors(OverlapActors);
 
 	UE_LOG(LogTemp, Log, TEXT("Healing Player Search Size %d"), OverlapActors.Num());
-	
+
 	//그외
 	for (auto& i : OverlapActors)
 	{
+		if (!i->IsA(APlayerCharacter::StaticClass()))
+			continue;
+
 		APlayerCharacter* OverlapFuselage = Cast<APlayerCharacter>(i);
 		if (OverlapFuselage != nullptr)
 		{
@@ -402,6 +406,8 @@ void WeaponUpgrad::Execute(AActor* Target)
 	UE_LOG(LogTemp, Log, TEXT("WeaponChange Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
+	checkf(Target->IsA(AWeaponKit::StaticClass()), TEXT("Item is nullptr"));
+
 	AWeaponKit* WeaponKit = Cast<AWeaponKit>(Target);
 	checkf(WeaponKit != nullptr, TEXT("Item is nullptr"));
 
@@ -413,7 +419,11 @@ void WeaponUpgrad::Execute(AActor* Target)
 	//그외
 	for (auto& i : OverlapActors)
 	{
+		if (!i->IsA(APlayerCharacter::StaticClass()))
+			continue;
+
 		APlayerCharacter* OverlapFuselage = Cast<APlayerCharacter>(i);
+
 		if (OverlapFuselage != nullptr)
 		{
 			UE_LOG(LogTemp, Log, TEXT("WeaponChange"));
@@ -434,6 +444,15 @@ void Death::Execute(AActor* Target) {
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
+	APlayerCharacter* PlayerPawn 
+		= Cast<APlayerCharacter>(TargetWorld->GetAuthGameMode()->DefaultPawnClass.GetDefaultObject());
+	checkf(PlayerPawn != nullptr, TEXT("PlayerPawn is nullptr"));
+
+	if (Fuselage->GetKind() == EFuselageKind::ENEMY_FUSELAGE)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Scroe +100"));
+		PlayerPawn->SetScore(100);
+	}
 	TargetWorld->DestroyActor(Target);
 }
 

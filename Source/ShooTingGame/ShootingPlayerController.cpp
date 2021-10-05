@@ -3,3 +3,8 @@
 
 #include "ShootingPlayerController.h"
 
+void AShootingPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	SetInputMode(FInputModeGameAndUI());
+}

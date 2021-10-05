@@ -1,22 +1,33 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "ShooTingGameModeBase.h"
-#include "Fuselage.h"
-#include "PlayerCharacter.h"
-#include "ShootingPlayerController.h"
+#include <Blueprint/UserWidget.h>
 
 AShooTingGameModeBase::AShooTingGameModeBase() {
 	PrimaryActorTick.bCanEverTick = false;
 	UE_LOG(LogTemp, Log, TEXT("AShooTingGameModeBase"));
-	DefaultPawnClass = APlayerCharacter::StaticClass();
-	PlayerControllerClass = AShootingPlayerController::StaticClass();
 }
 
-void AShooTingGameModeBase::StartPlay() {
-	Super::StartPlay();
+void AShooTingGameModeBase::BeginPlay() {
+	Super::BeginPlay();
 	UE_LOG(LogTemp, Log, TEXT("AShooTingGameModeBase StartPlay"));
+	ChangeWidget(m_start_widget);
 }
 
-void AShooTingGameModeBase::Tick(float DeltaTime){
-	Super::Tick(DeltaTime);
+void AShooTingGameModeBase::ChangeWidget(TSubclassOf<UUserWidget> NewWidget)
+{
+	if (m_current_widget != nullptr)
+	{
+		m_current_widget->RemoveFromViewport();
+		m_current_widget = nullptr;
+	}
+
+	if (NewWidget != nullptr)
+	{
+		m_current_widget = CreateWidget(GetWorld(), NewWidget);
+		if (m_current_widget != nullptr)
+		{
+			m_current_widget->AddToViewport();
+		}
+	}
 }

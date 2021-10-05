@@ -23,8 +23,9 @@ protected:
 	virtual void BeginPlay() override;
 public:
 
-	UFUNCTION(BlueprintCallable)
-		void FuselageInitialize(const float Speed, const int32 MaxHP,const EVariousWeapon Weapon,const float ShootingDelay);
+	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
+		void FuselageInitialize(
+			const float Speed, const int32 MaxHP,const EVariousWeapon Weapon,const float ShootingDelay);
 
 	virtual void Tick(float Delta) override;
 
@@ -38,6 +39,8 @@ public:
 
 	virtual const TArray<EVariousAction> GetNextActions() override;
 
+	void SetScore(const int32 Score);
+
 	//Getter
 
 	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override{ };
@@ -47,6 +50,15 @@ public:
 	virtual const float GetSpeed() const override;
 
 	virtual const int32 GetAttackPower() const override;
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
+	const int32 GetCurrentHP() const;
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
+	const int32 GetSpecialBoomNumber() const;
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
+		const int32 GetScore() const;
 
 	//Setter
 
@@ -59,19 +71,19 @@ public:
 	//Event
 	virtual void EventUpdate() override;
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
 	void EastWest(float Direction);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
 	void NorthSouth(float Direction);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
 		void PressAttack();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
 		void ReleaseAttack();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
 		void PressSpecialBoom();
 
 	virtual void AttackFuselage(const int32 HP) override;
@@ -104,8 +116,9 @@ private:
 
 	int32 m_attack_power;
 
-
 	std::queue<EVariousAction> m_actions;
+
+	int32 m_score;
 
 	//플레이어의 무기에 관한 변수들
 	EVariousWeapon m_weapon_kind;
@@ -121,4 +134,8 @@ private:
 	int32 m_press_time;
 
 	bool m_available_shooting;
+
+	//폭탄 갯수
+	int32 m_special_boom_number;
+
 };

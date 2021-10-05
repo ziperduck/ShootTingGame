@@ -72,6 +72,9 @@ void APlayerCharacter::FuselageInitialize(
 
 		m_press_time = 0;
 
+		m_special_boom_number = 3;
+
+		m_score = 10;
 	}
 }
 
@@ -91,6 +94,21 @@ const int32 APlayerCharacter::GetAttackPower() const
 	return 1;
 }
 
+const int32 APlayerCharacter::GetCurrentHP() const
+{
+	return m_current_HP;
+}
+
+const int32 APlayerCharacter::GetSpecialBoomNumber() const
+{
+	return m_special_boom_number;
+}
+
+const int32 APlayerCharacter::GetScore() const
+{
+	return m_score;
+}
+
 void APlayerCharacter::SetSpeed(const float Speed)
 {
 	m_speed = Speed;
@@ -108,7 +126,11 @@ void APlayerCharacter::UpgradeWeapon()
 
 void APlayerCharacter::PressSpecialBoom()
 {
-	m_actions.push(EVariousAction::SPECIAL_BOOM);
+	if (m_special_boom_number > 0)
+	{
+		m_actions.push(EVariousAction::SPECIAL_BOOM);
+		--m_special_boom_number;
+	}
 }
 
 //Setter
@@ -293,6 +315,11 @@ const EVariousWeapon APlayerCharacter::GetWeaponKind() const
 const TArray<EVariousAction> APlayerCharacter::GetNextActions()
 {
 	return TArray<EVariousAction>();
+}
+
+void APlayerCharacter::SetScore(const int32 Score)
+{
+	m_score += Score;
 }
 
 void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
