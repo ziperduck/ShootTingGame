@@ -5,8 +5,7 @@
 #include "Action.h"
 #include "ActionInstance.h"
 #include <Engine/Classes/Components/SphereComponent.h>
-#include <Engine/Classes/Particles/ParticleSystem.h>
-#include <Engine/Classes/Particles/ParticleSystemComponent.h>
+#include <Engine/Classes/Components/AudioComponent.h>
 
 // Sets default values
 AFireShoot::AFireShoot() {

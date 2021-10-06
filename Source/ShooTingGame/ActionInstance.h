@@ -10,3 +10,5 @@
  * 
  */
 IAction* ChangeAction(const EVariousAction& Action);
+
+IAction* ChangePlayerAction(const EVariousAction& Action);

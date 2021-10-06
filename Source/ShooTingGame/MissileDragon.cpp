@@ -5,13 +5,23 @@
 
 #include "Action.h"
 #include "ActionInstance.h"
-#include <Engine/Classes/Components/SphereComponent.h>
+#include <Engine/Classes/Components/AudioComponent.h>
 
 // Sets default values
 AMissileDragon::AMissileDragon()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
+
+	static ConstructorHelpers::FObjectFinder<USoundWave>
+		DeathAssetSound(TEXT("/Game/Audio/DragonDeathSound.DragonDeathSound"));
+	checkf(DeathAssetSound.Succeeded(), TEXT("BreakAssetSound is no found"));
+	m_death_sound_asset = DeathAssetSound.Object;
+
+	m_death_sound = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	m_death_sound->SetupAttachment(RootComponent);
+	
+	
 
 	mb_initialize = false;
 
@@ -120,8 +130,11 @@ void AMissileDragon::EventUpdate()
 	}
 	if (m_current_HP < 1)
 	{
-		//분해되는 건 그냥 운석을 두개 생성하자
-		ChangeAction(EVariousAction::DEATH)->Execute(this);
+		m_actions.Enqueue(EVariousAction::DEATH);
+
+		m_death_sound->SetSound(m_death_sound_asset);
+		m_death_sound->Play();
+		
 	}
 	else
 	{

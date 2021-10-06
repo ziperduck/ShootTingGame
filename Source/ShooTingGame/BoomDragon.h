@@ -53,7 +53,12 @@ public:
 
 	//Event
 	virtual void EventUpdate() override;
-protected:
+
+private:
+
+	USoundWave* m_death_sound_asset;
+
+	UAudioComponent* m_death_sound;
 
 	FTimerHandle m_boom_timer_handle;
 

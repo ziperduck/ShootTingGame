@@ -97,6 +97,12 @@ private:
 
 	//USceneComponent* m_characterScene;
 
+	UAudioComponent* m_weapon_shoot_audio;
+	
+	USoundBase* RifleSound;
+	
+	USoundBase* LaserGatherSound;
+
 	FTimerHandle m_shooting_timer;
 
 	FTimerHandle m_invincibility_timer;

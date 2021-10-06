@@ -4,12 +4,24 @@
 #include "EnemyDragon.h"
 #include "Action.h"
 #include "ActionInstance.h"
+#include <Engine/Classes/Components/AudioComponent.h>
+
 
 // Sets default values
 AEnemyDragon::AEnemyDragon() 
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
+
+	static ConstructorHelpers::FObjectFinder<USoundWave>
+		DeathAssetSound(TEXT("/Game/Audio/DragonDeathSound.DragonDeathSound"));
+	checkf(DeathAssetSound.Succeeded(), TEXT("BreakAssetSound is no found"));
+	m_death_sound_asset = DeathAssetSound.Object;
+
+	m_death_sound = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	m_death_sound->SetupAttachment(RootComponent);
+	
+	
 
 	mb_initialize = false;
 
@@ -94,16 +106,23 @@ void AEnemyDragon::EventUpdate()
 	{
 		UE_LOG(LogTemp, Log, TEXT("Enemy Dragon Death"));
 		m_actions.Enqueue(EVariousAction::DEATH);
+
+		m_death_sound->SetSound(m_death_sound_asset);
+		m_death_sound->Play();
+		
+	}
+	else
+	{
+		for (const auto& i : m_next_actions)
+		{
+			m_actions.Enqueue(i);
+		}
 	}
 
 	if (!GetWorldTimerManager().IsTimerActive(m_shooting_timer))
 	{
 		m_actions.Enqueue(EVariousAction::SHOOTING);
 		GetWorldTimerManager().SetTimer(m_shooting_timer, m_shooting_delay, false);
-	}
-	for (const auto& i : m_next_actions)
-	{
-		m_actions.Enqueue(i);
 	}
 }
 

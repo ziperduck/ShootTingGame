@@ -55,6 +55,12 @@ public:
 	virtual void EventUpdate() override;
 private:
 
+	USoundBase* m_death_sound_asset;
+
+	UAudioComponent* m_death_sound;
+
+private:
+
 	const EFuselageKind m_kind = EFuselageKind::ENEMY_FUSELAGE;
 
 	int32 m_max_HP;

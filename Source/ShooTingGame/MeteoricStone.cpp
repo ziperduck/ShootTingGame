@@ -5,6 +5,7 @@
 #include "Action.h"
 #include "ActionInstance.h"
 #include <Engine/Classes/Components/BoxComponent.h>
+#include <Engine/Classes/Components/AudioComponent.h>
 
 // Sets default values
 AMeteoricStone::AMeteoricStone()
@@ -13,6 +14,14 @@ AMeteoricStone::AMeteoricStone()
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	mb_initialize = false;
+	
+	static ConstructorHelpers::FObjectFinder<USoundBase> 
+		DeathAssetSound(TEXT("/Game/Audio/BreakRockSound.BreakRockSound"));
+	checkf(DeathAssetSound.Succeeded(), TEXT("BreakAssetSound is no found"));
+	m_death_sound_asset = DeathAssetSound.Object;
+
+	m_death_sound = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	m_death_sound->SetupAttachment(RootComponent);
 
 	SetActorTickEnabled(false);
 	SetActorEnableCollision(false);
@@ -119,6 +128,9 @@ void AMeteoricStone::EventUpdate()
 		//분해되는 건 그냥 운석을 두개 생성하자
 		m_actions.Enqueue(EVariousAction::FUSELAGE_DIVIDE);
 		m_actions.Enqueue(EVariousAction::DEATH);
+
+		m_death_sound->SetSound(m_death_sound_asset);
+		m_death_sound->Play();
 	}
 	else
 	{

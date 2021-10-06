@@ -34,45 +34,52 @@ void EastMove::Execute(AActor* Target) {
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
 	float Speed = Fuselage->GetSpeed();
+	UE_LOG(LogTemp, Log, TEXT("%s NorthMove Speed %f"), *Target->GetName(), Speed);
 	FVector EastVector = CalculationRatioSpeed({ 0.0f,Speed,  0.0f });
 	Fuselage->MoveLocation(EastVector);
 }
 
 void WestMove::Execute(AActor* Target) {
 
-	UE_LOG(LogTemp, Log, TEXT("WestMove Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
+
+	UE_LOG(LogTemp, Log, TEXT("%s WestMove Excute"), *Target->GetName());
 
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
 	float Speed = Fuselage->GetSpeed();
+	UE_LOG(LogTemp, Log, TEXT("%s NorthMove Speed %f"), *Target->GetName(), Speed);
 	FVector WestVector = CalculationRatioSpeed({ 0.0f,-Speed,  0.0f });
 	Fuselage->MoveLocation(WestVector);
 }
 
 void SouthMove::Execute(AActor* Target) {
 
-	UE_LOG(LogTemp, Log, TEXT("SouthMove Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
+
+	UE_LOG(LogTemp, Log, TEXT("%s SouthMove Excute"),*Target->GetName());
 
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
 	float Speed = Fuselage->GetSpeed();
+	UE_LOG(LogTemp, Log, TEXT("%s NorthMove Speed %f"), *Target->GetName(), Speed);
 	FVector SouthVector = CalculationRatioSpeed({ -Speed,0.0f,  0.0f });
 	Fuselage->MoveLocation(SouthVector);
 }
 
 void NorthMove::Execute(AActor* Target) {
 
-	UE_LOG(LogTemp, Log, TEXT("NorthMove Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
+
+	UE_LOG(LogTemp, Log, TEXT("%s NorthMove Excute"), *Target->GetName());
 
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
 	float Speed = Fuselage->GetSpeed();
+	UE_LOG(LogTemp, Log, TEXT("%s NorthMove Speed %f"), *Target->GetName(), Speed);
 	FVector NortVector = CalculationRatioSpeed({ Speed,0.0f,  0.0f });
 	Fuselage->MoveLocation(NortVector);
 }
@@ -236,7 +243,7 @@ void Shooting::Execute(AActor* Target) {
 		return;
 	}
 
-	for (const auto i : WeaponTransform)
+	for (const auto& i : WeaponTransform)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Weapon Spawn"));
 
@@ -444,13 +451,13 @@ void Death::Execute(AActor* Target) {
 	IFuselage* Fuselage = Cast<IFuselage>(Target);
 	checkf(Fuselage != nullptr, TEXT("Fuselage is nullptr"));
 
-	APlayerCharacter* PlayerPawn 
-		= Cast<APlayerCharacter>(TargetWorld->GetAuthGameMode()->DefaultPawnClass.GetDefaultObject());
+	APlayerCharacter* PlayerPawn = Cast<APlayerCharacter>(TargetWorld->GetFirstPlayerController()->GetPawn());
 	checkf(PlayerPawn != nullptr, TEXT("PlayerPawn is nullptr"));
-
+	
 	if (Fuselage->GetKind() == EFuselageKind::ENEMY_FUSELAGE)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Scroe +100"));
+		UE_LOG(LogTemp, Log, TEXT("%s +100 "), *PlayerPawn->GetName());
+
 		PlayerPawn->SetScore(100);
 	}
 	TargetWorld->DestroyActor(Target);
@@ -523,6 +530,7 @@ void FuselageDivide::Execute(AActor* Target)
 			checkf(DiVideFuselage != nullptr, TEXT("Fuselage  is nullptr"));
 			DiVideFuselage->SetSpeed(DiVideFuselage->GetSpeed() *2.0f);
 			DiVideFuselage->AttackFuselage(-1);
+			DiVideFuselage->SetNextActions_Implementation(TargetAirframe->GetNextActions());
 		}
 
 		

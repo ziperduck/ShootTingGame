@@ -6,6 +6,7 @@
 #include "GameInformation.h"
 #include <Engine/Classes/Camera/CameraComponent.h>
 #include <Engine/Classes/Components/SphereComponent.h>
+#include <Engine/Classes/Components/AudioComponent.h>
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() {
@@ -14,6 +15,19 @@ APlayerCharacter::APlayerCharacter() {
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
+
+	static ConstructorHelpers::FObjectFinder<USoundWave>
+		RifleAssetSound(TEXT("/Game/Audio/RifleShootingSound.RifleShootingSound"));
+	checkf(RifleAssetSound.Succeeded(), TEXT("RifleAssetSound is nullptr"));
+	RifleSound = RifleAssetSound.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundWave>
+		LaserGatherAssetSound(TEXT("/Game/Audio/GatherLaserSound.GatherLaserSound"));
+	checkf(LaserGatherAssetSound.Succeeded(), TEXT("LaserGatherAssetSound is nullptr"));
+	LaserGatherSound = LaserGatherAssetSound.Object;
+
+	m_weapon_shoot_audio = CreateDefaultSubobject<UAudioComponent>(TEXT("Weapon Audio"));
+	m_weapon_shoot_audio->SetupAttachment(RootComponent);
 
 	mb_initialize = false;
 
@@ -43,7 +57,7 @@ void APlayerCharacter::FuselageInitialize(
 
 		mb_initialize = true;
 
-		UE_LOG(LogTemp, Log, TEXT("Initialize"));
+		UE_LOG(LogTemp, Log, TEXT("Initialize %s"), *GetName());
 
 		SetActorTickEnabled(true);
 		SetActorEnableCollision(true);
@@ -54,16 +68,28 @@ void APlayerCharacter::FuselageInitialize(
 		
 		m_weapon_kind = Weapon;
 
+
 		switch (m_weapon_kind)
 		{
 		case EVariousWeapon::RIFLE_WEAPON:
+		{
 			m_weapon_lifespan = 5.0f;
+
+			checkf(RifleSound != nullptr, TEXT("Laser Weapon assets not find"));
+
+			m_weapon_shoot_audio->SetSound(RifleSound);
 			break;
+		}
 		case EVariousWeapon::LASERBEAM_WEAPON:
+		{
 			m_weapon_lifespan = 0.0f;
+			checkf(LaserGatherSound != nullptr, TEXT("Laser Weapon assets not find"));
+
+			m_weapon_shoot_audio->SetSound(LaserGatherSound);
 			break;
+		}
 		default:
-			checkNoEntry();
+			checkf(false, TEXT("weapon is no player weapon"));
 			break;
 		}
 		m_shooting_delay = ShootingDelay;
@@ -150,6 +176,17 @@ void APlayerCharacter::AttackFuselage(const int32 HP)
 	} 
 
 	UE_LOG(LogTemp, Log, TEXT("Player Attack %d Now HP %d "), HP, m_current_HP);
+
+	if (m_current_HP < 1)
+	{
+		UE_LOG(LogTemp, Log, TEXT("current Hp is 0"));
+
+		SetActorTickEnabled(false);
+		SetActorEnableCollision(false);
+
+		UnregisterAllComponents();
+
+	}
 }
 
 void APlayerCharacter::MoveLocation(const FVector& MoveLocation) {
@@ -189,6 +226,7 @@ void APlayerCharacter::EventUpdate()
 		case EVariousWeapon::RIFLE_WEAPON:
 			if (m_available_shooting)
 			{
+				m_weapon_shoot_audio->Play();
 				m_available_shooting = false;
 				m_actions.push(EVariousAction::SHOOTING);
 				GetWorldTimerManager().SetTimer(
@@ -200,15 +238,16 @@ void APlayerCharacter::EventUpdate()
 			{
 				++m_press_time;
 				UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Count %d"), m_press_time);
+
+				if (!m_weapon_shoot_audio->IsPlaying())
+				{
+					m_weapon_shoot_audio->Play();
+				}
 			}
 			break;
 		default:
 			break;
 		}
-	}
-	if (m_current_HP < 1)
-	{
-		m_actions.push(EVariousAction::DEATH);
 	}
 	UE_LOG(LogTemp, Log, TEXT("Player Position (%f,%f)"),GetActorLocation().X, GetActorLocation().Y);
 }
@@ -289,6 +328,8 @@ void APlayerCharacter::ReleaseAttack()
 	UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Release"));
 	if (m_weapon_kind == EVariousWeapon::LASERBEAM_WEAPON && m_available_shooting)
 	{
+		m_weapon_shoot_audio->Stop();
+
 		m_available_shooting = false;
 		m_press_time /= 120;
 		m_press_time += 1;
@@ -301,6 +342,7 @@ void APlayerCharacter::ReleaseAttack()
 		m_actions.push(EVariousAction::SHOOTING);
 		GetWorldTimerManager().SetTimer(
 			m_shooting_timer, [&] {m_available_shooting = true; }, m_shooting_delay + m_weapon_lifespan, false);
+
 	}
 	mb_press = false;
 	m_press_time = 0;

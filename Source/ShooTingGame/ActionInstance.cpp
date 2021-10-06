@@ -59,9 +59,14 @@ IAction* ChangeAction(const EVariousAction& Action)
 		static IAction* Event = new BoomAttack();
 		return Event;
 	}
-	case EVariousAction::SPECIAL_BOOM:
+	case EVariousAction::DROP_ITEM:
 	{
-		static IAction* Event = new SpecialBoom();
+		static IAction* Event = new DropItem();
+		return Event;
+	}
+	case EVariousAction::FUSELAGE_DIVIDE:
+	{
+		static IAction* Event = new FuselageDivide();
 		return Event;
 	}
 	case EVariousAction::HEALING:
@@ -74,14 +79,9 @@ IAction* ChangeAction(const EVariousAction& Action)
 		static IAction* Event = new WeaponUpgrad();
 		return Event;
 	}
-	case EVariousAction::DROP_ITEM:
+	case EVariousAction::SPECIAL_BOOM:
 	{
-		static IAction* Event = new DropItem();
-		return Event;
-	}
-	case EVariousAction::FUSELAGE_DIVIDE:
-	{
-		static IAction* Event = new FuselageDivide();
+		static IAction* Event = new SpecialBoom();
 		return Event;
 	}
 	case EVariousAction::DEATH:
@@ -90,7 +90,32 @@ IAction* ChangeAction(const EVariousAction& Action)
 		return Event;
 	}
 	default:
-		checkNoEntry();
 		return nullptr;
 	}
+}
+
+IAction* ChangePlayerAction(const EVariousAction& Action)
+{
+	switch (Action)
+	{
+	case EVariousAction::EAST_MOVE:
+		break;
+	case EVariousAction::WEST_MOVE:
+		break;
+	case EVariousAction::SOUTH_MOVE:
+		break;
+	case EVariousAction::NORTH_MOVE:
+		break;
+	case EVariousAction::SHOOTING:
+		break;
+	case EVariousAction::DEATH:
+		break;
+	case EVariousAction::ATTACK:
+		break;
+	case EVariousAction::SPECIAL_BOOM:
+		break;
+	default:
+		break;
+	}
+	return nullptr;
 }

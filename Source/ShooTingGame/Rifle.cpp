@@ -91,7 +91,7 @@ void ARifle::EventUpdate()
 {
 
 
-	while (m_actions.IsEmpty())
+	while (!m_actions.IsEmpty())
 	{
 		IAction* Action = ChangeAction(*m_actions.Peek());
 		UE_LOG(LogTemp, Log, TEXT("Change Action had Action"));
@@ -102,6 +102,7 @@ void ARifle::EventUpdate()
 
 	for (const auto& i : m_next_actions)
 	{
+		UE_LOG(LogTemp, Log, TEXT("ARifle Next Action"));
 		m_actions.Enqueue(i);
 	}
 }
@@ -110,7 +111,6 @@ void ARifle::NotifyActorBeginOverlap(AActor* Actor)
 {
 	UE_LOG(LogTemp, Log, TEXT("Overlap ARifle"));
 	m_actions.Enqueue(EVariousAction::ATTACK);
-	return;
 }
 
 void ARifle::Tick(float Delta)

@@ -3,12 +3,21 @@
 
 #include "BoomDragon.h"
 #include "ActionInstance.h"
+#include <Engine/Classes/Components/AudioComponent.h>
 
 // Sets default values
 ABoomDragon::ABoomDragon()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
+
+	static ConstructorHelpers::FObjectFinder<USoundWave>
+		DeathAssetSound(TEXT("/Game/Audio/DragonDeathSound.DragonDeathSound"));
+	checkf(DeathAssetSound.Succeeded(), TEXT("BreakAssetSound is no found"));
+	m_death_sound_asset = DeathAssetSound.Object;
+
+	m_death_sound = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	m_death_sound->SetupAttachment(RootComponent);
 
 	mb_initialize = false;
 
@@ -128,7 +137,12 @@ void ABoomDragon::EventUpdate()
 	}
 	if (m_current_HP < 1)
 	{
-		ChangeAction(EVariousAction::DEATH)->Execute(this);
+		UE_LOG(LogTemp, Log, TEXT("ABoomDragon Death"));
+		m_actions.Enqueue(EVariousAction::DEATH);
+
+		m_death_sound->SetSound(m_death_sound_asset);
+		m_death_sound->Play();
+		
 	}
 	else if(!GetWorldTimerManager().IsTimerActive(m_boom_timer_handle))
 	{

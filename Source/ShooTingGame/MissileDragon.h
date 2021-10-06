@@ -54,6 +54,13 @@ public:
 	virtual void EventUpdate() override;
 private:
 
+	USoundWave* m_death_sound_asset;
+
+	UAudioComponent* m_death_sound;
+
+
+private:
+
 	const EFuselageKind m_kind = EFuselageKind::ENEMY_FUSELAGE;
 
 	float m_speed;

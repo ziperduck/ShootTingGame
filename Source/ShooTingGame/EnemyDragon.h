@@ -64,6 +64,10 @@ public:
 
 private:
 
+	USoundWave* m_death_sound_asset;
+
+	UAudioComponent* m_death_sound;
+
 	//USphereComponent* m_character_mesh;
 
 	FTimerHandle m_shooting_timer;
