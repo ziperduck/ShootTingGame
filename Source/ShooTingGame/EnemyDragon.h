@@ -40,7 +40,7 @@ public:
 
 	virtual const int32 GetWeaponLevel() const override;
 
-	virtual const float GetWeaponLiflespan() const override;
+	virtual const float GetWeaponLifespan() const override;
 
 	virtual const EVariousWeapon GetWeaponKind() const override;
 

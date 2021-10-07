@@ -131,10 +131,11 @@ const int32 AEnemyDragon::GetWeaponLevel() const
 	return 1;
 }
 
-const float AEnemyDragon::GetWeaponLiflespan() const
+const float AEnemyDragon::GetWeaponLifespan() const
 {
 	return 10.0f;
 }
+
 
 const EVariousWeapon AEnemyDragon::GetWeaponKind() const
 {

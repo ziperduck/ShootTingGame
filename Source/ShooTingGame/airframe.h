@@ -29,7 +29,7 @@ public:
 	
 	virtual const int32 GetWeaponLevel() const { return 0; };
 
-	virtual const float GetWeaponLiflespan() const { return 0; };
+	virtual const float GetWeaponLifespan() const { return 0; };
 
 	virtual const EVariousWeapon GetWeaponKind() const { return EVariousWeapon::RIFLE_WEAPON; };
 

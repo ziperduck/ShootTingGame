@@ -199,7 +199,7 @@ const int32 APlayerCharacter::GetWeaponLevel() const
 	return m_weapon_level;
 }
 
-const float APlayerCharacter::GetWeaponLiflespan() const
+const float APlayerCharacter::GetWeaponLifespan() const
 {
 	return m_weapon_lifespan;
 }

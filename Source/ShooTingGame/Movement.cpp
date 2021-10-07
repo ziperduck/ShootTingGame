@@ -251,7 +251,7 @@ void Shooting::Execute(AActor* Target) {
 		WeaponActor->SetActorScale3D(i.GetScale3D());
 
 		checkf(WeaponActor != nullptr, TEXT("LaserBeam "));
-		WeaponActor->SetLifeSpan(Airframe->GetWeaponLiflespan());
+		WeaponActor->SetLifeSpan(Airframe->GetWeaponLifespan());
 
 		IFuselage* WeaponFuselage = Cast<IFuselage>(WeaponActor);
 		checkf(WeaponFuselage != nullptr, TEXT("LaserBeam "));
@@ -504,6 +504,8 @@ void FuselageDivide::Execute(AActor* Target)
 
 	UClass* TargetClass = Target->GetClass();
 
+	const float LIFE_SPAN = Target->GetLifeSpan();
+
 	IFuselage* TargetAirframe = Cast<IFuselage>(Target);
 	checkf(TargetAirframe != nullptr, TEXT("Airframe is nullptr"));
 
@@ -522,7 +524,7 @@ void FuselageDivide::Execute(AActor* Target)
 		{
 			AActor* DiVideACtor = TargetWorld->SpawnActor<AActor>(TargetClass, i, FRotator::ZeroRotator);
 			checkf(DiVideACtor != nullptr, TEXT("DiVideACtor  is nullptr"));
-			DiVideACtor->SetLifeSpan(10.0f);
+			DiVideACtor->SetLifeSpan(LIFE_SPAN);
 			DiVideACtor->SetActorScale3D(TargetScale);
 
 			//나눠지면 빠라지고 체력이 하나 달아있다.
