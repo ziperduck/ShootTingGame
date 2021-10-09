@@ -126,8 +126,14 @@ void AMeteoricStone::EventUpdate()
 	if (m_current_HP < 1)
 	{
 		//분해되는 건 그냥 운석을 두개 생성하자
+		for (const auto& i : m_death_actions)
+		{
+			m_actions.Enqueue(i);
+		}
+
 		m_actions.Enqueue(EVariousAction::FUSELAGE_DIVIDE);
 		m_actions.Enqueue(EVariousAction::DEATH);
+
 
 		m_death_sound->SetSound(m_death_sound_asset);
 		m_death_sound->Play();

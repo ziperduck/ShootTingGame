@@ -4,6 +4,7 @@
 
 #include "Fuselage.h"
 #include "Airframe.h"
+#include "DragonSpecies.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MeteoricStone.generated.h"
@@ -38,8 +39,6 @@ public:
 	virtual const TArray<EVariousAction> GetNextActions() override;
 
 	//Setter
-
-
 	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override;
 
 	virtual void SetSpeed(const float Speed) override;
@@ -76,4 +75,6 @@ private:
 	TQueue<EVariousAction> m_actions;
 
 	TArray<EVariousAction> m_next_actions;
+
+	TArray<EVariousAction> m_death_actions;
 };

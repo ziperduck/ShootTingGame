@@ -104,8 +104,14 @@ void AEnemyDragon::EventUpdate()
 	}
 	if (m_current_HP < 1)
 	{
+		for (const auto& i : m_death_actions)
+		{
+			m_actions.Enqueue(i);
+		}
+
 		UE_LOG(LogTemp, Log, TEXT("Enemy Dragon Death"));
 		m_actions.Enqueue(EVariousAction::DEATH);
+
 
 		m_death_sound->SetSound(m_death_sound_asset);
 		m_death_sound->Play();
@@ -145,6 +151,11 @@ const EVariousWeapon AEnemyDragon::GetWeaponKind() const
 const TArray<EVariousAction> AEnemyDragon::GetNextActions()
 {
 	return m_next_actions;
+}
+
+void AEnemyDragon::SetDeathActions_Implementation(const TArray<EVariousAction>& DeathActions)
+{
+	m_death_actions = DeathActions;
 }
 
 void AEnemyDragon::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)

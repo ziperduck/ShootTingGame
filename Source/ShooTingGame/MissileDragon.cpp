@@ -95,6 +95,11 @@ const TArray<EVariousAction> AMissileDragon::GetNextActions()
 	return m_next_actions;
 }
 
+void AMissileDragon::SetDeathActions_Implementation(const TArray<EVariousAction>& DeathActions)
+{
+	m_death_actions = DeathActions;
+}
+
 void AMissileDragon::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
 {
 	m_next_actions = NextActions;
@@ -130,6 +135,11 @@ void AMissileDragon::EventUpdate()
 	}
 	if (m_current_HP < 1)
 	{
+		for (const auto& i : m_death_actions)
+		{
+			m_actions.Enqueue(i);
+		}
+
 		m_actions.Enqueue(EVariousAction::DEATH);
 
 		m_death_sound->SetSound(m_death_sound_asset);

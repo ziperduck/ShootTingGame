@@ -4,13 +4,14 @@
 
 #include "Fuselage.h"
 #include "Airframe.h"
+#include "DragonSpecies.h"
 #include "EnumPack.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MissileDragon.generated.h"
 
 UCLASS()
-class SHOOTINGGAME_API AMissileDragon : public AActor, public IFuselage
+class SHOOTINGGAME_API AMissileDragon : public AActor, public IFuselage, public IDragonSpecies
 {
 	GENERATED_BODY()
 
@@ -39,6 +40,7 @@ public:
 	virtual const TArray<EVariousAction> GetNextActions() override;
 
 	//Setter
+	virtual void SetDeathActions_Implementation(const TArray<EVariousAction>& DeathActions) override;
 
 	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override;
 
@@ -76,4 +78,6 @@ private:
 	TQueue<EVariousAction> m_actions;
 
 	TArray<EVariousAction> m_next_actions;
+
+	TArray<EVariousAction> m_death_actions;
 };

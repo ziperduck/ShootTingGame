@@ -102,6 +102,11 @@ const TArray<EVariousAction> ABoomDragon::GetNextActions()
 	return m_next_actions;
 }
 
+void ABoomDragon::SetDeathActions_Implementation(const TArray<EVariousAction>& DeathActions)
+{
+	m_death_actions = DeathActions;
+}
+
 void ABoomDragon::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
 {
 	m_next_actions = NextActions;
@@ -137,8 +142,14 @@ void ABoomDragon::EventUpdate()
 	}
 	if (m_current_HP < 1)
 	{
+		for (const auto& i : m_death_actions)
+		{
+			m_actions.Enqueue(i);
+		}
+
 		UE_LOG(LogTemp, Log, TEXT("ABoomDragon Death"));
 		m_actions.Enqueue(EVariousAction::DEATH);
+
 
 		m_death_sound->SetSound(m_death_sound_asset);
 		m_death_sound->Play();

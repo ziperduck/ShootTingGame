@@ -4,6 +4,7 @@
 
 #include "Fuselage.h"
 #include "EnumPack.h"
+#include "DragonSpecies.h"
 #include "Airframe.h"
 #include <Engine/Classes/Components/SphereComponent.h>
 #include "CoreMinimal.h"
@@ -12,7 +13,7 @@
 
 
 UCLASS()
-class SHOOTINGGAME_API AEnemyDragon : public AActor , public IFuselage, public IAirframe
+class SHOOTINGGAME_API AEnemyDragon : public AActor , public IFuselage, public IAirframe, public IDragonSpecies
 {
 	GENERATED_BODY()
 
@@ -47,6 +48,7 @@ public:
 	virtual const TArray<EVariousAction> GetNextActions() override;
 
 	//Setter
+	virtual void SetDeathActions_Implementation(const TArray<EVariousAction>& DeathActions) override;
 
 	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override;
 
@@ -88,6 +90,8 @@ private:
 	TQueue<EVariousAction> m_actions;
 
 	TArray<EVariousAction> m_next_actions;
+
+	TArray<EVariousAction> m_death_actions;
 
 	//플레이어의 무기에 관한 변수들
 	EVariousWeapon m_weapon_kind;
