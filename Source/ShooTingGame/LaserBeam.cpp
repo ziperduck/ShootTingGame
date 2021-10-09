@@ -30,7 +30,6 @@ void ALaserBeam::WeaponInitalize(const int32 Power)
 
 		m_attack_power = Power;
 
-		SetActorTickInterval(1.0f);
 		SetActorTickEnabled(true);
 		SetActorEnableCollision(true);
 

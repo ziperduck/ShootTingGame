@@ -148,6 +148,9 @@ void APlayerCharacter::SetAttackPower(const int32 Power)
 void APlayerCharacter::UpgradeWeapon()
 {
 	++m_weapon_level;
+	if (m_weapon_level > 3)
+		m_weapon_level = 3;
+
 }
 
 void APlayerCharacter::PressSpecialBoom()

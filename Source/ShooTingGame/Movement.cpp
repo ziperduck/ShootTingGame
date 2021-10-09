@@ -172,6 +172,7 @@ void Shooting::Execute(AActor* Target) {
 	{
 	case EVariousWeapon::RIFLE_WEAPON:
 	{
+		WeaponPower = 50;
 		switch (Airframe->GetWeaponLevel())
 		{
 		case 1:
@@ -188,7 +189,7 @@ void Shooting::Execute(AActor* Target) {
 			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation + FVector{ 0.0f,40.0f,0.0f }, FVector::OneVector });
 			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation - FVector{ 0.0f,80.0f,0.0f}, FVector::OneVector });
 			WeaponTransform.Add(FTransform{ FQuat{0.0f,0.0f,0.0f,0.0f}, TargetLocation + FVector{ 0.0f,80.0f,0.0f }, FVector::OneVector });
-			WeaponPower = 2;
+			WeaponPower = 100;
 			break;
 		default:
 			break;
@@ -209,11 +210,10 @@ void Shooting::Execute(AActor* Target) {
 			break;
 		case 2:
 			WeaponTransform[0].SetScale3D(FVector{ 1.0f,2.0f,1.0f });
-			WeaponPower = 2;
 			break;
 		case 3:
 			WeaponTransform[0].SetScale3D(FVector{ 1.0f,5.0f,1.0f });
-			WeaponPower = 3;
+			WeaponPower = 2;
 			break;
 		default:
 			break;
