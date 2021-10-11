@@ -74,9 +74,9 @@ IAction* ChangeAction(const EVariousAction& Action)
 		static IAction* Event = new Healing();
 		return Event;
 	}
-	case EVariousAction::WEAPON_UPGRADE:
+	case EVariousAction::PLAYER_WEAPON_CHANGE:
 	{
-		static IAction* Event = new WeaponUpgrad();
+		static IAction* Event = new PlayerWeaponChange();
 		return Event;
 	}
 	case EVariousAction::SPECIAL_BOOM:

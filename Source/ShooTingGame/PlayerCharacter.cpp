@@ -145,12 +145,43 @@ void APlayerCharacter::SetAttackPower(const int32 Power)
 	m_attack_power = Power;
 }
 
-void APlayerCharacter::UpgradeWeapon()
+void APlayerCharacter::WeaponChange(const EVariousWeapon ChangeWeapon)
 {
-	++m_weapon_level;
-	if (m_weapon_level > 3)
-		m_weapon_level = 3;
+	if (ChangeWeapon != m_weapon_kind)
+	{
+		checkf(EVariousWeapon::FIRESHOOT_WEAPON != ChangeWeapon,TEXT("change Weapon is fireshoot"));
+		m_weapon_kind = ChangeWeapon;
+		m_weapon_level = 1;
+		switch (m_weapon_kind)
+		{
+		case EVariousWeapon::RIFLE_WEAPON:
+		{
+			m_weapon_lifespan = 5.0f;
 
+			checkf(RifleSound != nullptr, TEXT("Laser Weapon assets not find"));
+
+			m_weapon_shoot_audio->SetSound(RifleSound);
+			break;
+		}
+		case EVariousWeapon::LASERBEAM_WEAPON:
+		{
+			m_weapon_lifespan = 0.0f;
+			checkf(LaserGatherSound != nullptr, TEXT("Laser Weapon assets not find"));
+
+			m_weapon_shoot_audio->SetSound(LaserGatherSound);
+			break;
+		}
+		default:
+			checkf(false, TEXT("weapon is no player weapon"));
+			break;
+		}
+	}
+	else
+	{
+		++m_weapon_level;
+		if (m_weapon_level > 3)
+			m_weapon_level = 3;
+	}
 }
 
 void APlayerCharacter::PressSpecialBoom()

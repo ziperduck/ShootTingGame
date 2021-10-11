@@ -105,7 +105,7 @@ public:
 
 };
 
-class WeaponUpgrad : public IAction
+class PlayerWeaponChange : public IAction
 {
 public:
 

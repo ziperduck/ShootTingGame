@@ -11,7 +11,7 @@
 UENUM(BlueprintType, Category = "Fuselage")
 enum class EFuselageKind : uint8
 {
-	PLAYER_FUSELAGE UMETA(DisplayName = "PLAYER_FUSELAGE"),
+	PLAYER_FUSELAGE = 0 UMETA(DisplayName = "PLAYER_FUSELAGE"),
 	PLAYER_WEAPON UMETA(DisplayName = "PLAYER_WEAPON"),
 	ENEMY_FUSELAGE UMETA(DisplayName = "ENEMY_FUSELAGE"),
 	ENEMY_WEAPON UMETA(DisplayName = "ENEMY_WEAPON"),
@@ -21,15 +21,15 @@ enum class EFuselageKind : uint8
 UENUM(BlueprintType, Category = "Fuselage")
 enum class EVariousWeapon : uint8
 {
-	RIFLE_WEAPON  UMETA(DisplayName = "RIFLE_WEAPON"),
+	RIFLE_WEAPON = 0 UMETA(DisplayName = "RIFLE_WEAPON"),
 	LASERBEAM_WEAPON  UMETA(DisplayName = "LASERBEAM_WEAPON"),
 	FIRESHOOT_WEAPON UMETA(DisplayName = "FIRESHOOT_WEAPON"),
 };
 
-UENUM(BlueprintType, Category = "Fuselage'Action")
+UENUM(BlueprintType, Category = "FuselageAction")
 enum class EVariousAction : uint8
 {
-	EAST_MOVE UMETA(DisplayName = "EAST_MOVE"),
+	EAST_MOVE = 0 UMETA(DisplayName = "EAST_MOVE"),
 	WEST_MOVE UMETA(DisplayName = "WEST_MOVE"),
 	SOUTH_MOVE UMETA(DisplayName = "SOUTH_MOVE "),
 	NORTH_MOVE UMETA(DisplayName = "NORTH_MOVE"),
@@ -42,7 +42,7 @@ enum class EVariousAction : uint8
 	BOOM_ATTACK UMETA(DisplayName = "BOOM_ATTACK"),
 	SPECIAL_BOOM UMETA(DisplayName = "SPECIAL_BOOM"),
 	HEALING UMETA(DisplayName = "HEALING"),
-	WEAPON_UPGRADE UMETA(DisplayName = "WEAPON_UPGRADE"),
+	PLAYER_WEAPON_CHANGE UMETA(DisplayName = "PLAYER_WEAPON_CHANGE"),
 	DROP_ITEM UMETA(DisplayName = "DROP_ITEM"),
 	FUSELAGE_DIVIDE UMETA(DisplayName = "FUSELAGE_DIVIDE"),
 };
