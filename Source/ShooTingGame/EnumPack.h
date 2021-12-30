@@ -46,3 +46,13 @@ enum class EVariousAction : uint8
 	DROP_ITEM UMETA(DisplayName = "DROP_ITEM"),
 	FUSELAGE_DIVIDE UMETA(DisplayName = "FUSELAGE_DIVIDE"),
 };
+
+UENUM(BlueprintType, Category = "DirectMove")
+enum class EDirectMove : uint8
+{
+	LEFT_MOVE = 0 UMETA(DisplayName = "LEFT_MOVE "),
+	RIGHT_MOVE UMETA(DisplayName = "RIGHT_MOVE "),
+	STRAIGHT_MOVE UMETA(DisplayName = "STRAIGHT_MOVE "),
+	BACK_MOVE UMETA(DisplayName = "BACK_MOVE ")
+
+};
