@@ -61,7 +61,12 @@ void ATestCharacter::BeginPlay()
 void ATestCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	checkf(m_move->Move(), TEXT("TestCharacter(%s) error"), *GetName());
 
+	m_pressed_array_key.at(static_cast<int>(EDirectMove::LEFT_MOVE)) = false;
+	m_pressed_array_key.at(static_cast<int>(EDirectMove::RIGHT_MOVE)) = false;
+	m_pressed_array_key.at(static_cast<int>(EDirectMove::BACK_MOVE)) = false;
+	m_pressed_array_key.at(static_cast<int>(EDirectMove::STRAIGHT_MOVE)) = false;
 }
 
 // Called to bind functionality to input
@@ -73,8 +78,6 @@ void ATestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ATestCharacter::m_left_right(int Direction)
 {
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::LEFT_MOVE)) = false;
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::RIGHT_MOVE)) = false;
 	switch (Direction)
 	{
 	case -1:
@@ -90,8 +93,6 @@ void ATestCharacter::m_left_right(int Direction)
 
 void ATestCharacter::m_up_dawn(int Direction)
 {
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::BACK_MOVE)) = false;
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::STRAIGHT_MOVE)) = false;
 	switch (Direction)
 	{
 	case -1:
