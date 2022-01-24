@@ -2,9 +2,11 @@
 
 #pragma once
 
-#include "FuselageMove.h"
-#include <array>
+#include "DirectData.h"
 #include "CoreMinimal.h"
+#include "Fuselages.h"
+#include "FuselageData.h"
+#include "DirectMove.h"
 #include "GameFramework/Pawn.h"
 #include "TestCharacter.generated.h"
 
@@ -34,28 +36,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
 	void m_up_dawn(int Direction);
 
-	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
-		void m_left_pressed();
-	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
-		void m_right_pressed();
-	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
-		void m_stright_pressed();
-	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
-		void m_back_pressed();
-
-	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
-		void m_left_released();
-	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
-		void m_right_released();
-	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
-		void m_stright_released();
-	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
-		void m_back_released();
 
 private:
-	FuselageMove* m_move;
 
-	std::array<bool, 4> m_pressed_array_key;
+	DirectMove m_move;
 
-	const float m_speed = 3.0f;
+	const FuselageData* m_base_data;
 };

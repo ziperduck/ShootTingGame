@@ -3,47 +3,70 @@
 
 #include "DirectMove.h"
 
-DirectMove::DirectMove(USceneComponent* Fuselage, const std::array<bool, 4>& Directions, const float Speed)
-	:m_fuselage(Fuselage), m_directions( Directions ), m_speed(Speed){
 
-	checkf(Fuselage != nullptr, TEXT("Direct Move in parameter Fuselage is nullptr"));
+DirectMove::DirectMove(){
 
 }
+
+
 DirectMove::~DirectMove()
 {
 }
 
-bool DirectMove::Move()
+void DirectMove::LeftPresses()
 {
-	checkf(m_fuselage != nullptr , TEXT("DirectMove class memver m_fuselage is nullptr "));
+	checkf(m_directions.Y >= 0, TEXT("LeftPresses over call"));
+	m_directions += FVector::LeftVector;
+}
 
+void DirectMove::RightPresses()
+{
+	checkf(m_directions.Y <= 0, TEXT("RightPresses over call"));
+	m_directions += FVector::RightVector;
+}
 
-	FVector MoveingLocation{0.0f,};
+void DirectMove::ForwardPresses()
+{
+	checkf(m_directions.X <= 0, TEXT("ForwardPresses over call"));
+	m_directions += FVector::ForwardVector;
+}
 
-	for (auto i = 0; i < 4; i++)
-	{
-		if (!m_directions[i])
-			continue;
-		switch (static_cast<EDirectMove>(i))
-		{
-		case EDirectMove::LEFT_MOVE:
-			MoveingLocation.X -= 1;
-			break;
-		case EDirectMove::RIGHT_MOVE:
-			MoveingLocation.X += 1;
-			break;
-		case EDirectMove::STRAIGHT_MOVE:
-			MoveingLocation.Y += 1;
-			break;
-		case EDirectMove::BACK_MOVE:
-			MoveingLocation.Y -= 1;
-			break;
-		default:
-			break;
-		}
-	}
+void DirectMove::BackwardPresses()
+{
+	checkf(m_directions.X >= 0, TEXT("BackwardPresses over call"));
+	m_directions += FVector::BackwardVector;
+}
 
-	m_fuselage->SetRelativeLocation(m_fuselage->GetComponentLocation() + MoveingLocation);
+void DirectMove::LeftRelease()
+{
+	checkf(m_directions.Y < 0, TEXT("LeftRelease over call"));
+	m_directions -= FVector::LeftVector;
+}
 
-	return true;
+void DirectMove::RightRelease()
+{
+	checkf(m_directions.Y > 0, TEXT("RightRelease over call"));
+	m_directions -= FVector::RightVector;
+}
+
+void DirectMove::ForwardRelease()
+{
+	checkf(m_directions.X > 0, TEXT("ForwardRelease over call"));
+	m_directions -= FVector::ForwardVector;
+}
+
+void DirectMove::BackwardRelease()
+{
+	checkf(m_directions.X < 0, TEXT("BackwardRelease over call"));
+	m_directions -= FVector::BackwardVector;
+}
+
+void DirectMove::Resetkey()
+{
+	m_directions = FVector::ZeroVector;
+}
+
+const FVector& DirectMove::GetDirections()const
+{
+	return m_directions;
 }

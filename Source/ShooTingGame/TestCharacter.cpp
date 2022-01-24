@@ -9,64 +9,29 @@ ATestCharacter::ATestCharacter()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bAllowTickOnDedicatedServer = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Fuselage RootComponenet"));
 
-	m_move = new DirectMove(GetRootComponent(), m_pressed_array_key, m_speed);
-}
-
-
-void ATestCharacter::m_left_pressed()
-{
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::LEFT_MOVE)) = true;
-}
-void ATestCharacter::m_right_pressed()
-{
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::RIGHT_MOVE)) = true;
-}
-void ATestCharacter::m_stright_pressed()
-{
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::STRAIGHT_MOVE)) = true;
-}
-void ATestCharacter::m_back_pressed()
-{
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::BACK_MOVE)) = true;
-}
-
-void ATestCharacter::m_left_released()
-{
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::LEFT_MOVE)) = false;
-}
-void ATestCharacter::m_right_released()
-{
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::RIGHT_MOVE)) = false;
-}
-void ATestCharacter::m_stright_released()
-{
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::STRAIGHT_MOVE)) = false;
-}
-void ATestCharacter::m_back_released()
-{
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::BACK_MOVE)) = false;
 }
 
 // Called when the game starts or when spawned
 void ATestCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	m_base_data = Fuselages::GetUFO();
 }
 
 // Called every frame
 void ATestCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	checkf(m_move->Move(), TEXT("TestCharacter(%s) error"), *GetName());
 
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::LEFT_MOVE)) = false;
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::RIGHT_MOVE)) = false;
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::BACK_MOVE)) = false;
-	m_pressed_array_key.at(static_cast<int>(EDirectMove::STRAIGHT_MOVE)) = false;
+	UE_LOG(LogTemp, Log, TEXT("Actor Location(%s)"), *GetActorLocation().ToString());
+	SetActorLocation(GetActorLocation() + m_move.GetDirections());
+	m_move.Resetkey();
 }
 
 // Called to bind functionality to input
@@ -81,10 +46,10 @@ void ATestCharacter::m_left_right(int Direction)
 	switch (Direction)
 	{
 	case -1:
-		m_pressed_array_key.at(static_cast<int>(EDirectMove::LEFT_MOVE)) = true;
+		m_move.LeftPresses();
 		break;
 	case 1:
-		m_pressed_array_key.at(static_cast<int>(EDirectMove::RIGHT_MOVE)) = true;
+		m_move.RightPresses();
 		break;
 	default:
 		break;
@@ -96,10 +61,10 @@ void ATestCharacter::m_up_dawn(int Direction)
 	switch (Direction)
 	{
 	case -1:
-		m_pressed_array_key.at(static_cast<int>(EDirectMove::BACK_MOVE)) = true;
+		m_move.BackwardPresses();
 		break;
 	case 1:
-		m_pressed_array_key.at(static_cast<int>(EDirectMove::STRAIGHT_MOVE)) = true;
+		m_move.ForwardPresses();
 		break;
 	default:
 		break;
