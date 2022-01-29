@@ -3,8 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include <GenericPlatform/GenericPlatform.h>
 
 /**
  * 
  */
+class FuselageBehavior
+{
+public:
+	FuselageBehavior();
+	virtual ~FuselageBehavior() = 0 {};
+
+	virtual bool execute() = 0;
+};

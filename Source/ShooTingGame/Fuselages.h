@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FuselageData.h"
+#include "FuselageStatus.h"
 
 /**
  * 
@@ -12,12 +12,12 @@
 namespace Fuselages
 {
 	//UFO(플레이어의 동체)의 fuselage값을 리턴한다.
-	const FuselageData* GetUFO();
+	FuselageStatus* GetUFO();
 
 	//불쏘는 드레곤 fuselage값을 리턴한다
-	const FuselageData* GetFireDragon();
+	FuselageStatus* GetFireDragon();
 
 	//돌진하는 드레곤 fuselage값을 리턴한다
-	const FuselageData* GetRushDragon();
+	FuselageStatus* GetRushDragon();
 
 }

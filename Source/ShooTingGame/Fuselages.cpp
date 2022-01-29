@@ -6,21 +6,21 @@
 namespace Fuselages
 {
 
-	const FuselageData* GetUFO()
+	FuselageStatus* GetUFO()
 	{
-		static FuselageData* FireDragon = new FuselageData{ 2.0f, 1 };
+		static FuselageStatus* UFO = new FuselageStatus{ 10,2.0f, 1 };
+		return UFO;
+	}
+
+	FuselageStatus* GetFireDragon()
+	{
+		static FuselageStatus* FireDragon = new FuselageStatus{ 10,1.0f, 1 };
 		return FireDragon;
 	}
 
-	const FuselageData* GetFireDragon()
+	FuselageStatus* GetRushDragon()
 	{
-		static FuselageData* FireDragon = new FuselageData{ 1.0f, 1 };
-		return FireDragon;
-	}
-
-	const FuselageData* GetRushDragon()
-	{
-		static FuselageData* RushDragon = new FuselageData{ 2.0f, 1 };
+		static FuselageStatus* RushDragon = new FuselageStatus{ 10,2.0f, 1 };
 		return RushDragon;
 	}
 

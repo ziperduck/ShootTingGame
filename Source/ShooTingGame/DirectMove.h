@@ -7,7 +7,7 @@
 #include "CoreMinimal.h"
 #include "EnumPack.h"
 #include <array>
-#include "DirectData.h"
+
 
 /**
  * 움직일 위치를 계산하는것과 움직일 위치 데이터를 따로 두려고 했으나 FuselageMove들을 싱글톤화 해야해서 그냥 합쳐버렸다. 

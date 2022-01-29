@@ -2,6 +2,7 @@
 
 
 #include "TestCharacter.h"
+#include "FuselageMovement.h"
 #include "DirectMove.h"
 
 // Sets default values
@@ -9,8 +10,6 @@ ATestCharacter::ATestCharacter()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;
-	PrimaryActorTick.bAllowTickOnDedicatedServer = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Fuselage RootComponenet"));
 
@@ -22,6 +21,7 @@ void ATestCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	m_base_data = Fuselages::GetUFO();
+	m_behavior = std::make_unique<FuselageMovement>(RootComponent, &m_move, m_base_data);
 }
 
 // Called every frame
@@ -31,6 +31,7 @@ void ATestCharacter::Tick(float DeltaTime)
 
 	UE_LOG(LogTemp, Log, TEXT("Actor Location(%s)"), *GetActorLocation().ToString());
 	SetActorLocation(GetActorLocation() + m_move.GetDirections());
+	m_behavior->execute();
 	m_move.Resetkey();
 }
 

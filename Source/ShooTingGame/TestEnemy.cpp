@@ -2,8 +2,8 @@
 
 
 #include "TestEnemy.h"
+#include "FuselageMovement.h"
 #include <Engine/Classes/Kismet/GameplayStatics.h>
-#include "TrackingMove.h"
 
 // Sets default values
 ATestEnemy::ATestEnemy()
@@ -23,13 +23,16 @@ void ATestEnemy::BeginPlay()
 	const USceneComponent* PlayerComponenet
 		= GetWorld()->GetFirstPlayerController()->GetPawn()->GetRootComponent();
 	m_base_data = Fuselages::GetFireDragon();
-	//m_movey = new TrackingMove(PlayerComponenet, RootComponent, m_base_data->GetSpeed());
+	m_movey = std::make_unique<TrackingMove>(PlayerComponenet, RootComponent);
+	m_behavior = new FuselageMovement(RootComponent, m_movey.get(), m_base_data);
 }
 
 // Called every frame
 void ATestEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	m_movey->Tracking();
+	m_behavior->execute();
 
 }
 

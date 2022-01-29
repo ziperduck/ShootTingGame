@@ -3,8 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include <GenericPlatform/GenericPlatform.h>
 
 /**
  * 
  */
+class FuselageAttack
+{
+public:
+	FuselageAttack();
+	~FuselageAttack();
+};

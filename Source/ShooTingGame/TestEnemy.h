@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "Fuselages.h"
 #include "MovingData.h"
-#include "FuselageMove.h"
 #include "Fuselages.h"
+#include "FuselageStatus.h"
+#include "FuselageBehavior.h"
+#include "TrackingMove.h"
 #include "GameFramework/Actor.h"
 #include "TestEnemy.generated.h"
 
@@ -27,8 +29,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	const FuselageData* m_base_data;
+	FuselageStatus* m_base_data;
 
-	//FuselageMove* m_movey;
+	FuselageBehavior* m_behavior;
+
+	std::unique_ptr<TrackingMove> m_movey;
 	
 };

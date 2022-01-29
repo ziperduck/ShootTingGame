@@ -2,13 +2,15 @@
 
 #pragma once
 
-#include "DirectData.h"
+
 #include "CoreMinimal.h"
 #include "Fuselages.h"
-#include "FuselageData.h"
+#include "FuselageStatus.h"
 #include "DirectMove.h"
+#include "FuselageBehavior.h"
 #include "GameFramework/Pawn.h"
 #include "TestCharacter.generated.h"
+
 
 UCLASS()
 class SHOOTINGGAME_API ATestCharacter : public APawn
@@ -41,5 +43,6 @@ private:
 
 	DirectMove m_move;
 
-	const FuselageData* m_base_data;
+	const FuselageStatus* m_base_data;
+	std::unique_ptr<FuselageBehavior> m_behavior;
 };
