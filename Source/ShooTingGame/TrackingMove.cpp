@@ -3,8 +3,8 @@
 
 #include "TrackingMove.h"
 
-TrackingMove::TrackingMove(const USceneComponent* TargetScene,const USceneComponent* ChaserScene)
-	: m_target_scene(TargetScene),m_chaser_scene(ChaserScene){
+TrackingMove::TrackingMove(const FuselageStatus& Speed, const USceneComponent* TargetScene,const USceneComponent* ChaserScene)
+	: MoveEvent(Speed),m_target_scene(TargetScene),m_chaser_scene(ChaserScene){
 
 	checkf(m_target_scene != nullptr, TEXT("TrackingMove m_target_scene is nullptr"));
 	checkf(m_chaser_scene != nullptr , TEXT("TrackingMove m_chaser_scene is nullptr"));
@@ -15,8 +15,13 @@ TrackingMove::~TrackingMove()
 	m_chaser_scene = nullptr;
 }
 
-bool TrackingMove::Tracking()
+bool TrackingMove::Move(AActor* Actor)
 {
+	if (Actor == nullptr)
+	{
+		return false;
+	}
+
 	if (m_target_scene == nullptr || m_chaser_scene == nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("TrackingMove m_target_scene or m_chaser_scene is nullptr"));
@@ -32,10 +37,6 @@ bool TrackingMove::Tracking()
 
 	m_directions = { DistanceBetween.X / Hypotenuse, DistanceBetween.Y / Hypotenuse,0.0f };
 
+	Actor->SetActorLocation(Actor->GetActorLocation() + (m_directions * m_speed));
 	return true;
-}
-
-const FVector& TrackingMove::GetDirections() const
-{
-	return m_directions;
 }

@@ -3,25 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FuselageData.h"
 
 /**
- * 
+ * max speed attack power같은경우 static 변수로 사용할려면 current hp를 따로 만들어 놓아야한다,
+ * union도 있으니 같이 고정 static값으로 만들어 놓으면 될것같다.
+ * 아 하필 USTRUCT를 사용해서 인터페이스를 완성해야하네
  */
 
-struct FuselageStatus
+class FuselageStatus
 {
 public:
-
-	FuselageStatus();
-
 	FuselageStatus(const int32 MaxHP, const float Speed, const int32 AttackPower);
-
 	~FuselageStatus();
-
-	void AddHP(int32 Num);
-
-	const int32 GetHP() const { return m_current_hp; };
 
 	const int32 GetMaxHP() const { return m_max_hp; };
 
@@ -31,13 +24,10 @@ public:
 
 private:
 
-	int32 m_current_hp;
-
 	const int32 m_max_hp;
 
 	const float m_speed;
 
 	const int32 m_attack_power;
-
 
 };

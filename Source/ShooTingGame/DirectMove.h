@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "FuselageMove.h"
+#include "MoveEvent.h"
 #include <Engine/Classes/Components/SceneComponent.h>
 #include "CoreMinimal.h"
 #include "EnumPack.h"
@@ -10,14 +10,14 @@
 
 
 /**
- * 움직일 위치를 계산하는것과 움직일 위치 데이터를 따로 두려고 했으나 FuselageMove들을 싱글톤화 해야해서 그냥 합쳐버렸다. 
+ * 움직일 위치를 계산하는것과 움직일 위치 데이터를 따로 두려고 했으나 MoveEvent들을 싱글톤화 해야해서 그냥 합쳐버렸다. 
  */
-class DirectMove : public FuselageMove
+class DirectMove : public MoveEvent
 {
 public:
 
 	//움직일 물체의 위치와 이동속도 그리고 움직일 위치들을 받는다.
-	DirectMove();
+	DirectMove(const FuselageStatus& Speed);
 	virtual ~DirectMove() final;
 
 	//나중에는 템플릿을 이용해서 compile과정에서 수정하자
@@ -41,11 +41,6 @@ public:
 
 	void Resetkey();
 
-	virtual const FVector& GetDirections()const final;
-
-private:
-
-	DirectMove(DirectMove&) = delete;
-	const DirectMove& operator=(const DirectMove&) = delete;
+	virtual bool Move(AActor* Actor) final;
 
 };

@@ -5,15 +5,15 @@
 #include "CoreMinimal.h"
 #include "Fuselages.h"
 #include "MovingData.h"
-#include "Fuselages.h"
 #include "FuselageStatus.h"
 #include "FuselageBehavior.h"
 #include "TrackingMove.h"
+#include "FuselageBaseData.h"
 #include "GameFramework/Actor.h"
 #include "TestEnemy.generated.h"
 
 UCLASS()
-class SHOOTINGGAME_API ATestEnemy : public AActor
+class SHOOTINGGAME_API ATestEnemy : public AActor, public IFuselageBaseData
 {
 	GENERATED_BODY()
 	
@@ -29,10 +29,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	FuselageStatus* m_base_data;
+private:
 
-	FuselageBehavior* m_behavior;
+	std::unique_ptr<FuselageBehavior> m_behavior;
 
-	std::unique_ptr<TrackingMove> m_movey;
+	std::shared_ptr<TrackingMove> m_movey;
 	
 };

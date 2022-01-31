@@ -3,27 +3,22 @@
 #include "FuselageMovement.h"
 #include "DirectMove.h"
 
-FuselageMovement::FuselageMovement(USceneComponent* Fuselage, const  FuselageMove* Directions, const FuselageStatus* Speed)
-	:m_fuselage(Fuselage), m_directions(Directions->GetDirections()), m_speed(Speed->GetSpeed())
+FuselageMovement::FuselageMovement(std::shared_ptr<MoveEvent> Event)
+	: m_move_event(Event)
 {
-	checkf(m_fuselage != nullptr, TEXT("Movement Fuselage is nullptr"));
+	checkf(m_move_event != nullptr, TEXT("Movement Fuselage is nullptr"));
 }
 
 FuselageMovement::~FuselageMovement()
 {
 }
 
-bool FuselageMovement::execute()
+bool FuselageMovement::execute(AActor* Actor)
 {
-	if (m_fuselage != nullptr)
+	if (Actor != nullptr && m_move_event != nullptr)
 	{
-		m_fuselage->SetWorldLocation(m_fuselage->GetComponentLocation() + (m_directions * m_speed));
-		return true;
-
+		return m_move_event->Move(Actor);
 	}
-	else
-	{
-		checkf(m_fuselage != nullptr, TEXT("Movement Fuselage is nullptr"));
-		return false;
-	}
+	
+	return false;
 }

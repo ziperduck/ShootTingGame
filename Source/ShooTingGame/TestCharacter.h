@@ -7,13 +7,15 @@
 #include "Fuselages.h"
 #include "FuselageStatus.h"
 #include "DirectMove.h"
+#include "FuselageData.h"
+#include "FuselageBaseData.h"
 #include "FuselageBehavior.h"
 #include "GameFramework/Pawn.h"
 #include "TestCharacter.generated.h"
 
 
 UCLASS()
-class SHOOTINGGAME_API ATestCharacter : public APawn
+class SHOOTINGGAME_API ATestCharacter : public APawn, public IFuselageBaseData
 {
 	GENERATED_BODY()
 
@@ -38,11 +40,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
 	void m_up_dawn(int Direction);
 
-
 private:
 
-	DirectMove m_move;
+	std::shared_ptr<DirectMove> m_move;
 
-	const FuselageStatus* m_base_data;
 	std::unique_ptr<FuselageBehavior> m_behavior;
 };

@@ -13,6 +13,7 @@ ATestEnemy::ATestEnemy()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Fuselage RootComponenet"));
 
+	m_base_data = Fuselages::GetFireDragon();
 }
 
 // Called when the game starts or when spawned
@@ -22,17 +23,15 @@ void ATestEnemy::BeginPlay()
 
 	const USceneComponent* PlayerComponenet
 		= GetWorld()->GetFirstPlayerController()->GetPawn()->GetRootComponent();
-	m_base_data = Fuselages::GetFireDragon();
-	m_movey = std::make_unique<TrackingMove>(PlayerComponenet, RootComponent);
-	m_behavior = new FuselageMovement(RootComponent, m_movey.get(), m_base_data);
+	m_movey = std::make_shared<TrackingMove>(m_base_data->GetStatus(),PlayerComponenet, RootComponent);
+	m_behavior = std::make_unique<FuselageMovement>(m_movey);
 }
 
 // Called every frame
 void ATestEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	m_movey->Tracking();
-	m_behavior->execute();
+	m_behavior->execute(this);
 
 }
 

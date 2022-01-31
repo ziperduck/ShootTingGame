@@ -6,22 +6,28 @@
 namespace Fuselages
 {
 
-	FuselageStatus* GetUFO()
+	std::shared_ptr<FuselageData> GetUFO()
 	{
-		static FuselageStatus* UFO = new FuselageStatus{ 10,2.0f, 1 };
-		return UFO;
+		UE_LOG(LogTemp, Log, TEXT("GetUFO"));
+		static const FuselageStatus UFOStatus { 1,1.0f, 1 };
+		static const FuselageUnion UFOUnion{ 0b1,0b100 };
+		return std::make_shared<FuselageData>(UFOStatus, UFOUnion);
 	}
 
-	FuselageStatus* GetFireDragon()
+	std::shared_ptr<FuselageData> GetFireDragon()
 	{
-		static FuselageStatus* FireDragon = new FuselageStatus{ 10,1.0f, 1 };
-		return FireDragon;
+		UE_LOG(LogTemp, Log, TEXT("GetFireDragon"));
+		static const FuselageStatus& FireDragonStatus{ 1,1.0f, 1 };
+		static const FuselageUnion& FireDragonUnion{ 0b100, 0b1 };
+		return std::make_shared<FuselageData>(FireDragonStatus, FireDragonUnion);
 	}
 
-	FuselageStatus* GetRushDragon()
+	std::shared_ptr<FuselageData> GetRushDragon()
 	{
-		static FuselageStatus* RushDragon = new FuselageStatus{ 10,2.0f, 1 };
-		return RushDragon;
+		UE_LOG(LogTemp, Log, TEXT("GetRushDragon"));
+		static const FuselageStatus& RushDragonStatus{ 1,1.0f, 1 };
+		static const FuselageUnion& RushDragonUnion{ 0b100, 0b1 };
+		return std::make_shared<FuselageData>(RushDragonStatus, RushDragonUnion);
 	}
 
 }

@@ -5,8 +5,7 @@
 #include "CoreMinimal.h"
 #include <Engine/Classes/Components/SceneComponent.h>
 #include "FuselageBehavior.h"
-#include "FuselageMove.h"
-#include "FuselageStatus.h"
+#include "MoveEvent.h"
 
 /**
  * 템플릿을 사용해서 선언을 억제하자
@@ -19,19 +18,14 @@ class FuselageMovement : public FuselageBehavior
 {
 public:
 
-	FuselageMovement(USceneComponent* Fuselage,const FuselageMove* Directions, const FuselageStatus* Speed);
+	FuselageMovement(std::shared_ptr<MoveEvent> Event);
 	virtual ~FuselageMovement() final;
 
-	virtual bool execute() final;
+	virtual bool execute(AActor* Actor) final;
 
 private:
 	FuselageMovement() = delete;
 
-	USceneComponent* m_fuselage;
-
-	const FVector& m_directions;
-
-	const float& m_speed;
-
+	std::shared_ptr<MoveEvent> m_move_event;
 
 };

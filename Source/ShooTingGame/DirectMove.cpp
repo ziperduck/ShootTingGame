@@ -4,7 +4,8 @@
 #include "DirectMove.h"
 
 
-DirectMove::DirectMove(){
+DirectMove::DirectMove(const FuselageStatus& Speed) 
+:MoveEvent(Speed){
 
 }
 
@@ -15,25 +16,25 @@ DirectMove::~DirectMove()
 
 void DirectMove::LeftPresses()
 {
-	checkf(m_directions.Y >= 0, TEXT("LeftPresses over call"));
+	checkf(m_directions.Y > -1, TEXT("LeftPresses over call"));
 	m_directions += FVector::LeftVector;
 }
 
 void DirectMove::RightPresses()
 {
-	checkf(m_directions.Y <= 0, TEXT("RightPresses over call"));
+	checkf(m_directions.Y < 1, TEXT("RightPresses over call"));
 	m_directions += FVector::RightVector;
 }
 
 void DirectMove::ForwardPresses()
 {
-	checkf(m_directions.X <= 0, TEXT("ForwardPresses over call"));
+	checkf(m_directions.X < 1, TEXT("ForwardPresses over call"));
 	m_directions += FVector::ForwardVector;
 }
 
 void DirectMove::BackwardPresses()
 {
-	checkf(m_directions.X >= 0, TEXT("BackwardPresses over call"));
+	checkf(m_directions.X > -1, TEXT("BackwardPresses over call"));
 	m_directions += FVector::BackwardVector;
 }
 
@@ -66,7 +67,13 @@ void DirectMove::Resetkey()
 	m_directions = FVector::ZeroVector;
 }
 
-const FVector& DirectMove::GetDirections()const
+bool DirectMove::Move(AActor* Actor)
 {
-	return m_directions;
+	if (Actor != nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("m_directions(%s) * Speed = %f"), *m_directions.ToString(), m_speed);
+		Actor->SetActorLocation(Actor->GetActorLocation() + (m_directions * m_speed));
+		return true;
+	}
+	return false;
 }
