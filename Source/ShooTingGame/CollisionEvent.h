@@ -6,7 +6,7 @@
 #include "FuselageData.h"
 
 /**
- * 
+ * 충돌 이벤트
  */
 class CollisionEvent
 {
@@ -17,10 +17,13 @@ public:
 	virtual bool Collision(AActor* Actor) = 0;
 
 private:
+
 	CollisionEvent() = delete;
+
+protected:
 
 	std::shared_ptr<FuselageData> m_fuselage;
 
 };
 
-TSet<AActor*> GetOverlapActors(AActor* Target);
+TSet<AActor*> SearchOverlapActors(AActor* Target);

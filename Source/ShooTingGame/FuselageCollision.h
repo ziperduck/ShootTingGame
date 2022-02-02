@@ -7,18 +7,18 @@
 #include "CollisionEvent.h"
 
 /**
-* 충돌시 호출하는 이벤트
+* Actor의 충돌 이벤트를 실행시키는 클래스
  */
-class FuselageAttack : public FuselageBehavior
+class FuselageCollision : public FuselageBehavior
 {
 public:
-	FuselageAttack(std::shared_ptr<CollisionEvent> Event);
-	virtual ~FuselageAttack() final;
+	FuselageCollision(std::shared_ptr<CollisionEvent> Event);
+	virtual ~FuselageCollision() final;
 
 	virtual bool execute(AActor* Actor) final;
 private:
 
-	FuselageAttack() = delete;
+	FuselageCollision() = delete;
 
 private:
 

@@ -6,7 +6,7 @@
 #include "CollisionEvent.h"
 
 /**
- * 
+ * 부딪힌 대상을 공격하는 이벤트 
  */
 class AttackEvent : public CollisionEvent
 {
@@ -15,8 +15,5 @@ public:
 	virtual ~AttackEvent() final;
 
 	virtual bool Collision(AActor* Actor) final;
-
-private:
-
 
 };

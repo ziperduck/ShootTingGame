@@ -1,19 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "FuselageAttack.h"
+#include "FuselageCollision.h"
 
 
-FuselageAttack::FuselageAttack(std::shared_ptr<CollisionEvent> Event)
+FuselageCollision::FuselageCollision(std::shared_ptr<CollisionEvent> Event)
 	:m_collision_event(Event)
 {
 }
 
-FuselageAttack::~FuselageAttack()
+FuselageCollision::~FuselageCollision()
 {
 }
 
-bool FuselageAttack::execute(AActor* Actor)
+bool FuselageCollision::execute(AActor* Actor)
 {
 	if (m_collision_event != nullptr && Actor != nullptr)
 	{

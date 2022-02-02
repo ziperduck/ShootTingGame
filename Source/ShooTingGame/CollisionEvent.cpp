@@ -6,11 +6,14 @@
 CollisionEvent::CollisionEvent(std::shared_ptr<FuselageData> Fuselage)
 :m_fuselage(Fuselage){}
 
-TSet<AActor*> GetOverlapActors(AActor* Target)
+TSet<AActor*> SearchOverlapActors(AActor* Target)
 {
 	if (!Target->GetActorEnableCollision())
 	{
 		return TSet<AActor*>();
 	}
-    return TSet<AActor*>();
+
+	TSet<AActor*> OverlapActiors;
+	Target->GetOverlappingActors(OverlapActiors);
+    return OverlapActiors;
 }

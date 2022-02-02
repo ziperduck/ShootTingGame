@@ -3,11 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "Fuselages.h"
-#include "MovingData.h"
 #include "FuselageStatus.h"
+
 #include "FuselageBehavior.h"
+#include "AttackEvent.h"
 #include "TrackingMove.h"
+
 #include "FuselageBaseData.h"
 #include "GameFramework/Actor.h"
 #include "TestEnemy.generated.h"
@@ -29,10 +32,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void NotifyActorBeginOverlap(AActor* other) final;
+
 private:
 
-	std::unique_ptr<FuselageBehavior> m_behavior;
+	std::shared_ptr<AttackEvent> m_collision;
 
 	std::shared_ptr<TrackingMove> m_movey;
 	
+	std::unique_ptr<FuselageBehavior> m_behavior;
+
 };

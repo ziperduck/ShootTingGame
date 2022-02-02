@@ -14,6 +14,7 @@ ATestEnemy::ATestEnemy()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Fuselage RootComponenet"));
 
 	m_base_data = Fuselages::GetFireDragon();
+
 }
 
 // Called when the game starts or when spawned
@@ -24,8 +25,14 @@ void ATestEnemy::BeginPlay()
 	const USceneComponent* PlayerComponenet
 		= GetWorld()->GetFirstPlayerController()->GetPawn()->GetRootComponent();
 	m_movey = std::make_shared<TrackingMove>(m_base_data->GetStatus(),PlayerComponenet, RootComponent);
+	m_collision = std::make_shared<AttackEvent>(m_base_data);
 	m_behavior = std::make_unique<FuselageMovement>(m_movey);
 }
+
+void ATestEnemy::NotifyActorBeginOverlap(AActor* other)
+{
+}
+
 
 // Called every frame
 void ATestEnemy::Tick(float DeltaTime)
