@@ -4,12 +4,17 @@
 
 
 #include "CoreMinimal.h"
+
 #include "Fuselages.h"
-#include "FuselageStatus.h"
-#include "DirectMove.h"
-#include "FuselageData.h"
+
 #include "FuselageBaseData.h"
+#include "FuselageData.h"
+#include "FuselageStatus.h"
+
 #include "FuselageBehavior.h"
+#include "DirectMove.h"
+#include "FuselageAttack.h"
+
 #include "GameFramework/Pawn.h"
 #include "TestCharacter.generated.h"
 
@@ -34,15 +39,23 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//충돌시 호출되는 함수
+	virtual void NotifyActorBeginOverlap(AActor* other) final;
 
 	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
 	void m_left_right(int Direction);
 	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
 	void m_up_dawn(int Direction);
 
+
 private:
 
+	//충돌시 하는 행동
+	std::shared_ptr<FuselageAttack> m_collision;
+
+	//움직이는 방법
 	std::shared_ptr<DirectMove> m_move;
 
-	std::unique_ptr<FuselageBehavior> m_behavior;
+	//해당 객체의 모든 행동들
+	std::queue<std::shared_ptr<FuselageBehavior>> m_behavior;
 };

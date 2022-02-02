@@ -3,19 +3,24 @@
 
 #include "TrackingMove.h"
 
-TrackingMove::TrackingMove(const FuselageStatus& Speed, const USceneComponent* TargetScene,const USceneComponent* ChaserScene)
-	: MoveEvent(Speed),m_target_scene(TargetScene),m_chaser_scene(ChaserScene){
+TrackingMove::TrackingMove
+(const FuselageStatus& Speed, const USceneComponent* TargetScene,const USceneComponent* ChaserScene)
+	: m_speed(Speed.GetSpeed()), m_directions(0.0f,0.0f,0.0f) ,m_target_scene(TargetScene),m_chaser_scene(ChaserScene){
 
 	checkf(m_target_scene != nullptr, TEXT("TrackingMove m_target_scene is nullptr"));
 	checkf(m_chaser_scene != nullptr , TEXT("TrackingMove m_chaser_scene is nullptr"));
 }
+
+TrackingMove::TrackingMove(const TrackingMove& Temporary)
+	: m_speed(Temporary.m_speed), m_directions(Temporary.m_directions)
+	, m_target_scene(Temporary.m_target_scene), m_chaser_scene(Temporary.m_chaser_scene) {}
 
 TrackingMove::~TrackingMove()
 {
 	m_chaser_scene = nullptr;
 }
 
-bool TrackingMove::Move(AActor* Actor)
+bool TrackingMove::execute(AActor* Actor)
 {
 	if (Actor == nullptr)
 	{

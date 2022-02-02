@@ -8,7 +8,7 @@
 #include "FuselageStatus.h"
 
 #include "FuselageBehavior.h"
-#include "AttackEvent.h"
+#include "FuselageAttack.h"
 #include "TrackingMove.h"
 
 #include "FuselageBaseData.h"
@@ -32,14 +32,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//충돌시 호출되는 함수
 	virtual void NotifyActorBeginOverlap(AActor* other) final;
 
 private:
 
-	std::shared_ptr<AttackEvent> m_collision;
+	//충돌시 하는 행동
+	std::shared_ptr<FuselageAttack> m_collision;
 
-	std::shared_ptr<TrackingMove> m_movey;
-	
-	std::unique_ptr<FuselageBehavior> m_behavior;
+	//움직이는 방법
+	std::shared_ptr<TrackingMove> m_move;
+
+	//해당 객체의 모든 행동들
+	std::queue<std::shared_ptr<FuselageBehavior>> m_behavior;
 
 };

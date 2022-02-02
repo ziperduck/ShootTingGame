@@ -75,6 +75,8 @@ public:
 
 	void AddHP(int32 Num);
 
+	const int32 GetCurrentHP() const;
+
 	const FuselageStatus& GetStatus() const;
 
 	const FuselageUnion& GetUnion()const;

@@ -5,8 +5,12 @@
 
 
 DirectMove::DirectMove(const FuselageStatus& Speed) 
-:MoveEvent(Speed){
+:m_directions(0.0f,0.0f,0.0f),m_speed(Speed.GetSpeed()){
 
+}
+
+DirectMove::DirectMove(const DirectMove& Temporary)
+: m_directions(Temporary.m_directions),m_speed(Temporary.m_speed){
 }
 
 
@@ -67,7 +71,7 @@ void DirectMove::Resetkey()
 	m_directions = FVector::ZeroVector;
 }
 
-bool DirectMove::Move(AActor* Actor)
+bool DirectMove::execute(AActor* Actor)
 {
 	if (Actor != nullptr)
 	{
