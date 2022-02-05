@@ -66,7 +66,7 @@ public:
 
 	virtual void SetAttackPower(const int32 Power) override;
 
-	void WeaponChange(const EVariousWeapon ChangeWeapon);
+	void UpgradeWeapon();
 
 	//Event
 	virtual void EventUpdate() override;

@@ -31,8 +31,6 @@ void AWeaponKit::WeaponKitInitalize(const float Spped)
 		SetActorTickEnabled(true);
 		SetActorEnableCollision(true);
 
-		m_change_weapon = EVariousWeapon::RIFLE_WEAPON;
-
 		m_speed = Spped;
 	}
 }
@@ -41,22 +39,6 @@ void AWeaponKit::BeginPlay()
 {
 	Super::BeginPlay();
 	UE_LOG(LogTemp, Log, TEXT("AWeaponKit::BeginPlay"));
-}
-
-void AWeaponKit::ChangeWeaponEvent()
-{
-	switch (m_change_weapon)
-	{
-	case EVariousWeapon::RIFLE_WEAPON:
-		m_change_weapon = EVariousWeapon::LASERBEAM_WEAPON;
-		break;
-	case EVariousWeapon::LASERBEAM_WEAPON:
-		m_change_weapon = EVariousWeapon::RIFLE_WEAPON;
-		break;
-	default:
-		checkNoEntry();
-		break;
-	}
 }
 
 // Called every frame
@@ -77,7 +59,7 @@ void AWeaponKit::NotifyActorBeginOverlap(AActor* Actor)
 
 	if (Fuselage->GetKind() == EFuselageKind::PLAYER_FUSELAGE)
 	{
-		m_actions.Enqueue(EVariousAction::PLAYER_WEAPON_CHANGE);
+		m_actions.Enqueue(EVariousAction::WEAPON_UPGRADE);
 		m_actions.Enqueue(EVariousAction::DEATH);
 	}
 }
@@ -100,11 +82,6 @@ const int32 AWeaponKit::GetAttackPower() const
 const TArray<EVariousAction> AWeaponKit::GetNextActions()
 {
 	return m_next_actions;
-}
-
-const EVariousWeapon AWeaponKit::GetChangeWeapon() const
-{
-	return m_change_weapon;
 }
 
 void AWeaponKit::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)

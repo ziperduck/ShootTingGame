@@ -23,12 +23,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
-	//무기종류를 바뀌 플레이어에게 다른 이벤트를 주는 함수
-	UFUNCTION(BlueprintCallable, Category = "WeaponKit")
-		void ChangeWeaponEvent();
-
-
 public:
 
 	virtual void Tick(float Delta) override;
@@ -36,7 +30,7 @@ public:
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
 
 	//Heal은 attack power가 heal power다
-	UFUNCTION(BlueprintCallable, Category = "WeaponKit")
+	UFUNCTION(BlueprintCallable, Category = "Healpack")
 		void WeaponKitInitalize(const float Spped);
 
 	//Getter
@@ -47,10 +41,6 @@ public:
 	virtual const int32 GetAttackPower() const override;
 
 	virtual const TArray<EVariousAction> GetNextActions() override;
-
-	//Weapon Kit의 무기종류
-	UFUNCTION(BlueprintCallable, Category = "WeaponKit")
-		const EVariousWeapon GetChangeWeapon() const;
 
 	//Setter
 
@@ -72,8 +62,6 @@ public:
 private:
 
 	const EFuselageKind m_kind = EFuselageKind::ITEM_FUSELAGE;
-
-	EVariousWeapon m_change_weapon;
 
 	float m_speed;
 

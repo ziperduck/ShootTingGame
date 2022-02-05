@@ -410,9 +410,9 @@ void Healing::Execute(AActor* Target) {
 
 }
 
-void PlayerWeaponChange::Execute(AActor* Target)
+void WeaponUpgrad::Execute(AActor* Target)
 {
-	UE_LOG(LogTemp, Log, TEXT("PlayerWeaponChange Excute"));
+	UE_LOG(LogTemp, Log, TEXT("WeaponChange Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	checkf(Target->IsA(AWeaponKit::StaticClass()), TEXT("Item is nullptr"));
@@ -435,8 +435,8 @@ void PlayerWeaponChange::Execute(AActor* Target)
 
 		if (OverlapFuselage != nullptr)
 		{
-			UE_LOG(LogTemp, Log, TEXT("PlayerWeaponChange"));
-			OverlapFuselage->WeaponChange(WeaponKit->GetChangeWeapon());
+			UE_LOG(LogTemp, Log, TEXT("WeaponChange"));
+			OverlapFuselage->UpgradeWeapon();
 			break;
 		}
 	}
