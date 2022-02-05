@@ -18,9 +18,16 @@ ATestCharacter::ATestCharacter()
 void ATestCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	m_move = std::make_shared<DirectMove>(m_base_data.get()->GetStatus());
+	m_move = std::make_shared<DirectMove>(m_base_data);
 	m_collision = std::make_shared<FuselageAttack>(m_base_data);
 	m_behavior.push(m_move);
+}
+
+// Called to bind functionality to input
+void ATestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
 }
 
 // Called every frame
@@ -35,15 +42,11 @@ void ATestCharacter::Tick(float DeltaTime)
 		m_behavior.pop();
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("Player Location(%s)"), *GetActorLocation().ToString());
+	UE_LOG(LogTemp, Log, TEXT("Player HP %d"), m_base_data->GetCurrentHP());
+
 	//나중에 수정하자
 	m_move->Resetkey();
-}
-
-// Called to bind functionality to input
-void ATestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void ATestCharacter::NotifyActorBeginOverlap(AActor* other)
@@ -53,8 +56,6 @@ void ATestCharacter::NotifyActorBeginOverlap(AActor* other)
 	{
 		m_behavior.push(m_collision);
 	}
-	UE_LOG(LogTemp, Log, TEXT("Player Location(%s)"), *GetActorLocation().ToString());
-	UE_LOG(LogTemp, Log, TEXT("Player HP %d"), m_base_data->GetCurrentHP());
 }
 
 //임시로 모든 방향키에 move를 push했다

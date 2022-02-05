@@ -4,10 +4,8 @@
 #include "DirectMove.h"
 
 
-DirectMove::DirectMove(const FuselageStatus& Speed) 
-:m_directions(0.0f,0.0f,0.0f),m_speed(Speed.GetSpeed()){
-
-}
+DirectMove::DirectMove(const std::shared_ptr<FuselageData> Speed)
+:m_directions(0.0f,0.0f,0.0f),m_speed(Speed->GetStatus().GetSpeed()){}
 
 DirectMove::DirectMove(const DirectMove& Temporary)
 : m_directions(Temporary.m_directions),m_speed(Temporary.m_speed){

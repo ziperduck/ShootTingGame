@@ -3,3 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+/**
+ * 
+ */
+class SHOOTINGGAME_API DeadState
+{
+public:
+	DeadState();
+	~DeadState();
+};

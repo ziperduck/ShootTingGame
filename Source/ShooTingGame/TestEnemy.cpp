@@ -21,10 +21,7 @@ void ATestEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	const USceneComponent* PlayerComponenet
-		= GetWorld()->GetFirstPlayerController()->GetPawn()->GetRootComponent();
-
-	m_move = std::make_shared<TrackingMove>(m_base_data.get()->GetStatus(),PlayerComponenet, RootComponent);
+	m_move = std::make_shared<PlayerTrackingMove>(m_base_data);
 	m_collision = std::make_shared<FuselageAttack>(m_base_data);
 	m_behavior.push(m_move);
 }

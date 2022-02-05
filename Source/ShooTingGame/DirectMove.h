@@ -2,11 +2,10 @@
 
 #pragma once
 
-#include <Engine/Classes/Components/SceneComponent.h>
 #include "CoreMinimal.h"
 #include "FuselageBehavior.h"
-#include "FuselageStatus.h"
-#include <array>
+
+#include "FuselageData.h"
 
 
 /**
@@ -17,7 +16,7 @@ class DirectMove : public FuselageBehavior
 public:
 
 	//움직일 물체의 위치와 이동속도 그리고 움직일 위치들을 받는다.
-	DirectMove(const FuselageStatus& Speed);
+	DirectMove(const std::shared_ptr<FuselageData> Speed);
 	DirectMove(const DirectMove& Temporary);
 	virtual ~DirectMove() final;
 

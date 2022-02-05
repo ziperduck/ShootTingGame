@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "FuselageBehavior.h"
 #include "FuselageData.h"
+
 #include <memory>
 
 /**
