@@ -121,7 +121,7 @@ void BounceMove::Execute(AActor* Target) {
 	TArray<EVariousAction> ChangeAction = Fuselage->GetNextActions();
 
 	const auto& GameInstance = GameInformation::GetInstance();
-	
+
 	if (TargetLocation.X > GameInstance->GetMapHeightMaxLocation())
 	{
 		ChangeAction[ChangeAction.Find(EVariousAction::NORTH_MOVE)] = EVariousAction::SOUTH_MOVE;
@@ -262,7 +262,6 @@ void Shooting::Execute(AActor* Target) {
 
 void Attack::Execute(AActor* Target) {
 
-	return;
 	UE_LOG(LogTemp, Log, TEXT("Attack Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
@@ -349,7 +348,7 @@ void BoomAttack::Execute(AActor* Target) {
 
 void SpecialBoom::Execute(AActor* Target)
 {
-	UE_LOG(LogTemp, Log, TEXT("BoomAttack Excute"));
+	UE_LOG(LogTemp, Log, TEXT("SpecialBoom Excute"));
 	checkf(Target != nullptr, TEXT("Target is nullptr"));
 
 	const UWorld* TargetWorld = Target->GetWorld();
@@ -373,7 +372,7 @@ void SpecialBoom::Execute(AActor* Target)
 		case EFuselageKind::ITEM_FUSELAGE:
 			break;
 		default:
-			OverlapFuselage->AttackFuselage(-99);
+			OverlapFuselage->AttackFuselage(-999);
 			break;
 		}
 	}
@@ -472,7 +471,11 @@ void DropItem::Execute(AActor* Target)
 
 	UWorld* TargetWorld = Target->GetWorld();
 	FVector TargetLocation = Target->GetActorLocation();
+	auto GameData = GameInformation::GetInstance();
 	
+	TargetLocation.X = FMath::Clamp(TargetLocation.X, GameData->GetMapHeightMinLocation(), GameData->GetMapHeightMaxLocation());
+	TargetLocation.Y = FMath::Clamp(TargetLocation.Y, GameData->GetMapWidthMinLocation(), GameData->GetMapWidthMaxLocation());
+
 	UClass* ItemClass = nullptr;
 
 	//회복아이템인지 업그레이드 키트인지 결정하는 알고리즘

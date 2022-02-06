@@ -4,6 +4,7 @@
 #include "BoomDragon.h"
 #include "ActionInstance.h"
 #include <Engine/Classes/Components/AudioComponent.h>
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 ABoomDragon::ABoomDragon()
@@ -73,6 +74,8 @@ void ABoomDragon::NotifyActorBeginOverlap(AActor* Actor)
 
 	if (!GetWorldTimerManager().IsTimerActive(m_boom_timer_handle)&& Fuselage->GetKind() == EFuselageKind::PLAYER_FUSELAGE)
 	{
+		DrawDebugCircle(GetWorld(), GetActorLocation(), 200.0f, 40, FColor::Red, false, m_boom_delay, 10, 10.0f
+			, FVector::ForwardVector, FVector::RightVector, false);
 		GetWorldTimerManager().SetTimer(m_boom_timer_handle
 			, [&] {	m_actions.Enqueue(EVariousAction::BOOM_ATTACK);
 			m_actions.Enqueue(EVariousAction::DEATH); }, m_boom_delay, false);

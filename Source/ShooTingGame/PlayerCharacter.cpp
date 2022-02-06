@@ -100,8 +100,16 @@ void APlayerCharacter::FuselageInitialize(
 
 		m_special_boom_number = 3;
 
-		m_score = 10;
+		m_score = 0;
 	}
+	FQuat tempQuat = GetActorRotation().Quaternion() * FRotator(0, 90, 0).Quaternion();
+
+	FRotator DesiredAngleZ = tempQuat.Rotator();
+
+	FVector XVector = DesiredAngleZ.RotateVector(FVector(0, 1, 0));
+
+	FVector YVector = DesiredAngleZ.RotateVector(FVector(0, 0, 1));
+
 }
 
 //Getter
