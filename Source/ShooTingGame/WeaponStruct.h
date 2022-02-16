@@ -6,3 +6,7 @@
 #include "CoreMinimal.h"
 /**
  */
+
+struct WeaponStruct {
+
+};

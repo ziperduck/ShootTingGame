@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FuselageData.h"
+#include "FuselageCharacter.h"
 #include "UObject/Interface.h"
 #include "FuselageBaseData.generated.h"
 
@@ -24,10 +24,10 @@ class SHOOTINGGAME_API IFuselageBaseData
 public:
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 
-	std::shared_ptr<FuselageData> GetBaseData() const { return m_base_data; };
+	std::shared_ptr<FuselageCharacter> GetBaseData() const { return m_base_data; };
 
 protected:
 
-	std::shared_ptr<FuselageData> m_base_data;
+	std::shared_ptr<FuselageCharacter> m_base_data;
 
 };

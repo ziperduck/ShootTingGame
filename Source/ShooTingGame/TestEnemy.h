@@ -8,8 +8,8 @@
 #include "FuselageStatus.h"
 
 #include "FuselageBehavior.h"
-#include "FuselageAttack.h"
-#include "PlayerTrackingMove.h"
+
+#include "FuselageCharacter.h"
 
 #include "FuselageBaseData.h"
 #include "GameFramework/Actor.h"
@@ -37,11 +37,10 @@ public:
 
 private:
 
-	//충돌시 하는 행동
-	std::shared_ptr<FuselageAttack> m_collision;
+	//공격 관련 행동
+	std::shared_ptr<FuselageBehavior> m_attackevent;
 
-	//움직이는 방법
-	std::shared_ptr<PlayerTrackingMove> m_move;
+	std::shared_ptr<FuselageBehavior> m_trackingevent;
 
 	//해당 객체의 모든 행동들
 	std::queue<std::shared_ptr<FuselageBehavior>> m_behavior;

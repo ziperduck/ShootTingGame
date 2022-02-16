@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FuselageCharacter.h"
 
 /**
  * 
@@ -13,5 +14,5 @@ public:
 	FuselageBehavior();
 	virtual ~FuselageBehavior() = 0 {};
 
-	virtual bool execute(AActor* Actor) = 0;
+	virtual bool execute(std::shared_ptr<FuselageCharacter> Character) = 0;
 };

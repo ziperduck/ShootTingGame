@@ -4,53 +4,50 @@
 #include "FuselageAttack.h"
 #include "FuselageBaseData.h"
 
-FuselageAttack::FuselageAttack(std::shared_ptr<FuselageData> Fuselage)
-	:m_fuselage(Fuselage){}
+namespace AttackEvent {
 
-FuselageAttack::FuselageAttack(const FuselageAttack& Temporary)
-	: m_fuselage(Temporary.m_fuselage){}
-
-
-FuselageAttack::~FuselageAttack()
-{
-}
-
-bool FuselageAttack::execute(AActor* Actor)
-{
-	if (Actor == nullptr)
+	bool FuselageAttack::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
-		return false;
-	}
 
-	//출돌을 했는지 확인한다.
-	if (!Actor->GetActorEnableCollision())
-	{
-		return false;
-	}
-
-	UE_LOG(LogTemp, Log, TEXT("In FuselageAttack"));
-
-	TSet<AActor*> OverlapActors;
-	Actor->GetOverlappingActors(OverlapActors);
-
-	for (auto Actor : OverlapActors)
-	{
-		//충돌한 객체가 Fuselage인지 확인한다.
-		IFuselageBaseData* executeActor = Cast<IFuselageBaseData>(Actor);
-		if (!executeActor)
+		if (Character->GetActor() == nullptr)
 		{
-			UE_LOG(LogTemp, Log, TEXT("executeActor cast fail"));
-			continue;
+			return false;
 		}
 
-		std::shared_ptr<FuselageData> executeFuselage = executeActor->GetBaseData();
-
-		//충돌한 Fuselage가 데미지를 줘야하는지 확인한다.
-		if (executeFuselage->GetUnion().MatchUnion(m_fuselage->GetUnion()))
+		//출돌을 했는지 확인한다.
+		if (!Character->GetActor()->GetActorEnableCollision())
 		{
-			UE_LOG(LogTemp, Log, TEXT("other fuselage Attack"));
-			executeFuselage->AddHP(-m_fuselage->GetStatus().GetAttackPower());
+			return false;
 		}
+
+
+
+		UE_LOG(LogTemp, Log, TEXT("In FuselageAttack"));
+
+		TSet<AActor*> OverlapActors;
+		Character->GetActor()->GetOverlappingActors(OverlapActors);
+
+		for (auto Actor : OverlapActors)
+		{
+			//충돌한 객체가 Fuselage인지 확인한다.
+			IFuselageBaseData* OverlapData = Cast<IFuselageBaseData>(Actor);
+			if (!OverlapData)
+			{
+				UE_LOG(LogTemp, Log, TEXT("executeActor cast fail"));
+				continue;
+			}
+
+			std::shared_ptr<FuselageCharacter> OverlapFuselage = OverlapData->GetBaseData();
+
+			//충돌한 Fuselage가 데미지를 줘야하는지 확인한다.
+			UE_LOG(LogTemp, Log, TEXT("GetUnion & GetCollision"));
+			if (Character->GetUnion() & OverlapFuselage->GetCollision())
+			{
+				UE_LOG(LogTemp, Log, TEXT("other fuselage Attack"));
+				OverlapFuselage->AddHP(-Character->GetAttackPower());
+			}
+		}
+
+		return false;
 	}
-	return true;
 }

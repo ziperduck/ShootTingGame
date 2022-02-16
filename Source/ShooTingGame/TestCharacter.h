@@ -12,8 +12,9 @@
 #include "FuselageStatus.h"
 
 #include "FuselageBehavior.h"
-#include "DirectMove.h"
 #include "FuselageAttack.h"
+
+#include "FuselageCharacter.h"
 
 #include "GameFramework/Pawn.h"
 #include "TestCharacter.generated.h"
@@ -50,11 +51,14 @@ public:
 
 private:
 
-	//충돌시 하는 행동
-	std::shared_ptr<FuselageAttack> m_collision;
+	//공격 관련 행동
+	std::shared_ptr<FuselageBehavior> m_attackevent;
 
-	//움직이는 방법
-	std::shared_ptr<DirectMove> m_move;
+	//이동 관련 행동들
+	std::shared_ptr<FuselageBehavior> m_leftevent;
+	std::shared_ptr<FuselageBehavior> m_rightevent;
+	std::shared_ptr<FuselageBehavior> m_forwardevent;
+	std::shared_ptr<FuselageBehavior> m_backwardevent;
 
 	//해당 객체의 모든 행동들
 	std::queue<std::shared_ptr<FuselageBehavior>> m_behavior;

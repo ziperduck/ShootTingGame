@@ -8,6 +8,8 @@
  * max speed attack power같은경우 static 변수로 사용할려면 current hp를 따로 만들어 놓아야한다,
  * union도 있으니 같이 고정 static값으로 만들어 놓으면 될것같다.
  * 아 하필 USTRUCT를 사용해서 인터페이스를 완성해야하네
+ * 
+ * 나중에는 현재체력도 여기다 놓자
  */
 
 class FuselageStatus

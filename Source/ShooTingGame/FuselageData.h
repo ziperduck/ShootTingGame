@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "FuselageStatus.h"
+#include "WeaponStruct.h"
 
 /**
  * 하나의 커다란 데이터 덩어리를 만들고
@@ -40,6 +41,7 @@
  * 
  * 플레이어의 상태및 행동들을 할수있게 하는 클래스 하나를 만들어놓고 
  * 
+ * 
  */
 
 
@@ -56,6 +58,10 @@ public:
 
 	//전달된 Union이 충돌해야하는 객체인지 확인한다.
 	const bool MatchUnion(const FuselageUnion& Union) const;
+
+	const int8 GetUnion() const;
+
+	const int8 GetCollision() const;
 
 private:
 
@@ -79,6 +85,7 @@ public:
 	FuselageData(const FuselageStatus& Status, const FuselageUnion& Union);
 	~FuselageData() {};
 
+	//최대체력을 넘지 않을만큼만 체력을 회복한다.
 	void AddHP(int32 Num);
 
 	const int32 GetCurrentHP() const;
@@ -95,6 +102,8 @@ private:
 private:
 
 	int32 m_current_hp;
+
+	WeaponStruct m_weapon;
 
 	const FuselageStatus& m_fix_status;
 

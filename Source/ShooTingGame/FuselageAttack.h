@@ -12,17 +12,19 @@
 /**
  * 부딪힌 대상을 공격하는 이벤트 
  */
-class FuselageAttack : public FuselageBehavior
-{
-public:
-	FuselageAttack(std::shared_ptr<FuselageData> Fuselage);
-	FuselageAttack(const FuselageAttack& Temporary);
-	virtual ~FuselageAttack() final;
 
-	virtual bool execute(AActor* Actor) final;
+namespace AttackEvent {
 
-private:
+	class FuselageAttack : public FuselageBehavior
+	{
+	public:
+		FuselageAttack() {};
+		virtual ~FuselageAttack() final {};
 
-	std::shared_ptr<FuselageData> m_fuselage;
+	private:
 
-};
+		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
+
+	};
+
+}
