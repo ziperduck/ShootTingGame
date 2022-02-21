@@ -7,9 +7,9 @@
 /**
  * 
  */
-class SHOOTINGGAME_API PlayerTrackingMoving
+class SHOOTINGGAME_API TestEnemyData
 {
 public:
-	PlayerTrackingMoving();
-	~PlayerTrackingMoving();
+	TestEnemyData();
+	~TestEnemyData();
 };

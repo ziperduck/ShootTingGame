@@ -1,39 +1,53 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MoveEvent.h"
+#include "MoveCommand.h"
 #include "ShooTingGameModeBase.h"
 
-namespace MoveEvent
+namespace MoveCommand
 {
 
 	bool LeftMove::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
+		checkf(Character.get() != nullptr, TEXT("LeftMove execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("LeftMove execute"));
+
 		Character->MoveTo(FVector::LeftVector);
 		return true;
 	}
 
 	bool RightMove::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
+		checkf(Character.get() != nullptr, TEXT("RightMove execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("RightMove execute"));
+
 		Character->MoveTo(FVector::RightVector);
 		return true;
 	}
 
 	bool ForwardMove::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
+		checkf(Character.get() != nullptr, TEXT("ForwardMove execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("ForwardMove execute"));
+		
 		Character->MoveTo(FVector::ForwardVector);
 		return true;
 	}
 
 	bool BackwardMove::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
+		checkf(Character.get() != nullptr, TEXT("BackwardMove execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("BackwardMove execute"));
+
 		Character->MoveTo(FVector::BackwardVector);
 		return true;
 	}
 
 	bool PlayerTracking::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
-		UE_LOG(LogTemp, Log, TEXT("PlayerTracking"));
+		checkf(Character.get() != nullptr, TEXT("PlayerTracking execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("PlayerTracking execute"));
+
 		//플레이어및 움직일 대상의 위치를 찾는다.
 		FVector PlayerLocation 
 			= Character->GetActor()->GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();

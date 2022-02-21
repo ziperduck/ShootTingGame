@@ -56,9 +56,6 @@ public:
 
 	~FuselageUnion();
 
-	//전달된 Union이 충돌해야하는 객체인지 확인한다.
-	const bool MatchUnion(const FuselageUnion& Union) const;
-
 	const int8 GetUnion() const;
 
 	const int8 GetCollision() const;

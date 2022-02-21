@@ -43,11 +43,6 @@ FuselageUnion::~FuselageUnion()
 {
 }
 
-const bool FuselageUnion::MatchUnion(const FuselageUnion& Union) const
-{
-	return Union.m_union | m_collision;
-}
-
 const int8 FuselageUnion::GetUnion() const
 {
 	return m_union;

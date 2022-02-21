@@ -1,13 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "FuselageAttack.h"
+#include "AttackCommand.h"
 #include "FuselageBaseData.h"
 
-namespace AttackEvent {
+namespace AttackCommand {
 
-	bool FuselageAttack::execute(std::shared_ptr<FuselageCharacter> Character)
+	bool CollisionAttack::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
+
+		checkf(Character.get() != nullptr, TEXT("CollisionAttack execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("CollisionAttack execute"));
 
 		if (Character->GetActor() == nullptr)
 		{
@@ -20,10 +23,6 @@ namespace AttackEvent {
 			return false;
 		}
 
-
-
-		UE_LOG(LogTemp, Log, TEXT("In FuselageAttack"));
-
 		TSet<AActor*> OverlapActors;
 		Character->GetActor()->GetOverlappingActors(OverlapActors);
 
@@ -33,14 +32,12 @@ namespace AttackEvent {
 			IFuselageBaseData* OverlapData = Cast<IFuselageBaseData>(Actor);
 			if (!OverlapData)
 			{
-				UE_LOG(LogTemp, Log, TEXT("executeActor cast fail"));
 				continue;
 			}
 
 			std::shared_ptr<FuselageCharacter> OverlapFuselage = OverlapData->GetBaseData();
 
 			//충돌한 Fuselage가 데미지를 줘야하는지 확인한다.
-			UE_LOG(LogTemp, Log, TEXT("GetUnion & GetCollision"));
 			if (Character->GetUnion() & OverlapFuselage->GetCollision())
 			{
 				UE_LOG(LogTemp, Log, TEXT("other fuselage Attack"));

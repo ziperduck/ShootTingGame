@@ -7,9 +7,7 @@
 #include "Fuselages.h"
 #include "FuselageStatus.h"
 
-#include "FuselageBehavior.h"
-
-#include "FuselageCharacter.h"
+#include "Command.h"
 
 #include "FuselageBaseData.h"
 #include "GameFramework/Actor.h"
@@ -38,11 +36,13 @@ public:
 private:
 
 	//공격 관련 행동
-	std::shared_ptr<FuselageBehavior> m_attackevent;
+	std::shared_ptr<Command> m_attack_command;
 
-	std::shared_ptr<FuselageBehavior> m_trackingevent;
+	std::shared_ptr<Command> m_tracking_command;
+
+	std::shared_ptr<Command> m_death_command;
 
 	//해당 객체의 모든 행동들
-	std::queue<std::shared_ptr<FuselageBehavior>> m_behavior;
+	std::queue<std::shared_ptr<Command>> m_behavior;
 
 };

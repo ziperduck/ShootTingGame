@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "FuselageCharacter.h"
+
 #include "UObject/Interface.h"
 #include "FuselageBaseData.generated.h"
 

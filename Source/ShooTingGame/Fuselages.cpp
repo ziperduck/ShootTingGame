@@ -9,7 +9,7 @@ namespace Fuselages
 	std::shared_ptr<FuselageData> GetUFO()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetUFO"));
-		static const FuselageStatus UFOStatus { 1,1.0f, 1 };
+		static const FuselageStatus UFOStatus { 5,1.0f, 5 };
 		static const FuselageUnion UFOUnion{ 0b1,0b100 };
 		return std::make_shared<FuselageData>(UFOStatus, UFOUnion);
 	}

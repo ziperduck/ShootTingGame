@@ -7,3 +7,12 @@
 /**
  * 
  */
+class PlayerFuselage
+{
+public:
+	PlayerFuselage() {};
+	virtual ~PlayerFuselage() {};
+
+private:
+
+};

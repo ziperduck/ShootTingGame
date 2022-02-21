@@ -6,6 +6,10 @@
 #include "FuselageData.h"
 #include "WeaponStruct.h"
 
+#include "specialEvent.h"
+
+#include <memory>
+
 /**
 * character별로 나누지 말고 한 클래스안에서든 상속을 하던 생성을 따로 하게 만들자
  * stauts와 union과 weaponstatus등 여러가지 들을 놓자
@@ -33,6 +37,10 @@ public:
 	void SetWeapon(std::shared_ptr<WeaponStruct> ChangeWeapon);
 
 
+	void SetDeathEvent(std::vector<std::shared_ptr<SpecialEvent>> DeathEvents);
+
+	void AddDeathEvent(std::shared_ptr<SpecialEvent> DeathEvent);
+
 	const AActor* GetActor() const;
 
 	const int32 GetCurrentHP() const;
@@ -54,5 +62,9 @@ protected:
 
 	AActor* m_actor;
 
+	//동체의 기본 데이터
 	std::shared_ptr<FuselageData> m_base_data;
+
+	//죽을경우 호출되는 이벤트
+	std::vector<std::shared_ptr<SpecialEvent>> m_death_events;
 };

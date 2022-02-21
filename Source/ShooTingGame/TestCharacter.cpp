@@ -2,7 +2,12 @@
 
 
 #include "TestCharacter.h"
-#include "MoveEvent.h"
+
+#include "MoveCommand.h"
+#include "AttackCommand.h"
+
+#include "FuselageData.h"
+#include "FuselageStatus.h"
 
 
 // Sets default values
@@ -22,12 +27,15 @@ void ATestCharacter::BeginPlay()
 
 	m_base_data = std::make_shared<FuselageCharacter>(this, Fuselages::GetUFO());
 
-	m_leftevent = std::make_shared<MoveEvent::LeftMove>();
-	m_rightevent = std::make_shared<MoveEvent::RightMove>();
-	m_forwardevent = std::make_shared<MoveEvent::ForwardMove>();
-	m_backwardevent = std::make_shared<MoveEvent::BackwardMove>();
+	m_player_data = std::make_shared<PlayerCharacterData>(3);
 
-	m_attackevent = std::make_shared<AttackEvent::FuselageAttack>();
+
+	m_left_command = std::make_shared<MoveCommand::LeftMove>();
+	m_right_command = std::make_shared<MoveCommand::RightMove>();
+	m_forward_command = std::make_shared<MoveCommand::ForwardMove>();
+	m_backward_command = std::make_shared<MoveCommand::BackwardMove>();
+
+	m_attack_command = std::make_shared<AttackCommand::CollisionAttack>();
 }
 
 // Called to bind functionality to input
@@ -53,6 +61,7 @@ void ATestCharacter::Tick(float DeltaTime)
 
 	UE_LOG(LogTemp, Log, TEXT("Player Location(%s)"), *GetActorLocation().ToString());
 	UE_LOG(LogTemp, Log, TEXT("Player HP %d"), m_base_data->GetCurrentHP());
+	UE_LOG(LogTemp, Log, TEXT("Player Score %d"), m_player_data->GetScore());
 
 }
 
@@ -61,7 +70,7 @@ void ATestCharacter::NotifyActorBeginOverlap(AActor* other)
 	
 	if (m_base_data->GetCurrentHP() > 0)
 	{
-		m_behavior.push(m_attackevent);
+		m_behavior.push(m_attack_command);
 	}
 }
 
@@ -71,10 +80,10 @@ void ATestCharacter::m_left_right(int Direction)
 	switch (Direction)
 	{
 	case -1:
-		m_behavior.push(m_leftevent);
+		m_behavior.push(m_left_command);
 		break;
 	case 1:
-		m_behavior.push(m_rightevent);
+		m_behavior.push(m_right_command);
 		break;
 	default:
 		break;
@@ -86,10 +95,10 @@ void ATestCharacter::m_up_dawn(int Direction)
 	switch (Direction)
 	{
 	case -1:
-		m_behavior.push(m_forwardevent);
+		m_behavior.push(m_forward_command);
 		break;
 	case 1:
-		m_behavior.push(m_backwardevent);
+		m_behavior.push(m_backward_command);
 		break;
 	default:
 		break;

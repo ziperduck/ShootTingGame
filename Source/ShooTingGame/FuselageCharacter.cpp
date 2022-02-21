@@ -8,8 +8,13 @@ FuselageCharacter::FuselageCharacter(const FuselageCharacter& Reference)
 
 void FuselageCharacter::MoveTo(FVector Direction)
 {
+	checkf(m_actor != nullptr, TEXT("FuselageRemove Character is nullptr"));
+
 	//Z값이 이동하거나 움직이지 않을경우 false를 리턴한다.
-	checkf(Direction.Z == 0.0f && Direction != FVector::ZeroVector, TEXT("MoveTo is Direction ZeroVector or Z is zero"));
+	if (Direction.Z == 0.0f && Direction != FVector::ZeroVector)
+	{
+		UE_LOG(LogTemp, Log, TEXT("MoveTo is Direction ZeroVector or Z is zero"));
+	}
 
 	//이동할 방향
 	Direction = Direction.BoundToCube(1.0f);
@@ -35,11 +40,34 @@ void FuselageCharacter::Shooting()
 
 void FuselageCharacter::Death()
 {
+	checkf(m_actor != nullptr, TEXT("FuselageRemove Character is nullptr"));
+
+	//이벤트를 실행시킨다.
+	for (auto Event : m_death_events)
+	{
+		checkf(Event.get() != nullptr, TEXT("FuselageCharacter Death Event is nullptr"));
+		Event->EventPlay(this);
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Death Character")); 
+	m_actor->Destroy(true);
+	
 }
 
 void FuselageCharacter::SetWeapon(std::shared_ptr<WeaponStruct> ChangeWeapon)
 {
 }
+
+void FuselageCharacter::SetDeathEvent(std::vector<std::shared_ptr<SpecialEvent>> DeathEvents)
+{
+	m_death_events = DeathEvents;
+}
+
+void FuselageCharacter::AddDeathEvent(std::shared_ptr<SpecialEvent> DeathEvent)
+{
+	m_death_events.push_back(DeathEvent);
+}
+
 
 const AActor* FuselageCharacter::GetActor() const
 {

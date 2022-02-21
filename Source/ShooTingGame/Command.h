@@ -2,14 +2,19 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "FuselageCharacter.h"
+
+#include <memory>
 
 /**
  * 
  */
-class SHOOTINGGAME_API Command
+class Command
 {
 public:
-	Command();
-	~Command();
+	Command() {};
+	virtual ~Command() = 0 {};
+
+	virtual bool execute(std::shared_ptr<FuselageCharacter> Character) = 0;
 };
+

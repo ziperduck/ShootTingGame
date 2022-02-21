@@ -4,8 +4,11 @@
 #include "TestEnemy.h"
 #include <Engine/Classes/Kismet/GameplayStatics.h>
 
-#include "MoveEvent.h"
-#include "FuselageAttack.h"
+#include "MoveCommand.h"
+#include "AttackCommand.h"
+#include "DeathCommand.h"
+
+#include "SpecialEvents.h"
 
 // Sets default values
 ATestEnemy::ATestEnemy()
@@ -24,8 +27,13 @@ void ATestEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	m_base_data = std::make_shared<FuselageCharacter>(this, Fuselages::GetFireDragon());
-	m_trackingevent = std::make_shared<MoveEvent::PlayerTracking>();
-	m_attackevent = std::make_shared<AttackEvent::FuselageAttack>();
+
+	m_base_data->AddDeathEvent(std::make_shared<PlayerRaiseScore>(100));
+	m_base_data->AddDeathEvent(std::make_shared<RangeBoom>(100.0f,1,10.0f));
+
+	m_tracking_command = std::make_shared<MoveCommand::PlayerTracking>();
+	m_attack_command = std::make_shared<AttackCommand::CollisionAttack>();
+	m_death_command = std::make_shared<DeathCommand::EnemyDie>();
 }
 
 
@@ -46,15 +54,18 @@ void ATestEnemy::Tick(float DeltaTime)
 
 	UE_LOG(LogTemp, Log, TEXT("Enemy Location(%s)"), *GetActorLocation().ToString());
 	UE_LOG(LogTemp, Log, TEXT("Enemy HP %d"), m_base_data->GetCurrentHP());
-	m_behavior.push(m_trackingevent);
+	m_behavior.push(m_tracking_command);
 
+	if (m_base_data->GetCurrentHP() < 1)
+	{
+		m_behavior.push(m_death_command);
+	}
 }
 
 
 void ATestEnemy::NotifyActorBeginOverlap(AActor* other)
 {
-	if (m_base_data->GetCurrentHP() > 0)
-	{
-		m_behavior.push(m_attackevent);
-	}
+		m_behavior.push(m_attack_command);
+	
+	
 }

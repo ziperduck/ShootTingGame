@@ -8,20 +8,16 @@
 #include "Fuselages.h"
 
 #include "FuselageBaseData.h"
-#include "FuselageData.h"
-#include "FuselageStatus.h"
+#include "PlayerBaseData.h"
 
-#include "FuselageBehavior.h"
-#include "FuselageAttack.h"
-
-#include "FuselageCharacter.h"
+#include "Command.h"
 
 #include "GameFramework/Pawn.h"
 #include "TestCharacter.generated.h"
 
 
 UCLASS()
-class SHOOTINGGAME_API ATestCharacter : public APawn, public IFuselageBaseData
+class SHOOTINGGAME_API ATestCharacter : public APawn, public IFuselageBaseData, public IPlayerBaseData
 {
 	GENERATED_BODY()
 
@@ -52,14 +48,14 @@ public:
 private:
 
 	//공격 관련 행동
-	std::shared_ptr<FuselageBehavior> m_attackevent;
+	std::shared_ptr<Command> m_attack_command;
 
 	//이동 관련 행동들
-	std::shared_ptr<FuselageBehavior> m_leftevent;
-	std::shared_ptr<FuselageBehavior> m_rightevent;
-	std::shared_ptr<FuselageBehavior> m_forwardevent;
-	std::shared_ptr<FuselageBehavior> m_backwardevent;
+	std::shared_ptr<Command> m_left_command;
+	std::shared_ptr<Command> m_right_command;
+	std::shared_ptr<Command> m_forward_command;
+	std::shared_ptr<Command> m_backward_command;
 
 	//해당 객체의 모든 행동들
-	std::queue<std::shared_ptr<FuselageBehavior>> m_behavior;
+	std::queue<std::shared_ptr<Command>> m_behavior;
 };

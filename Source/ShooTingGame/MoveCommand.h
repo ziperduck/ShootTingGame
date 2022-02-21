@@ -3,19 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FuselageBehavior.h"
-
-#include "FuselageData.h"
+#include "Command.h"
 
 
 /**
- * 움직일 위치를 계산하는것과 움직일 위치 데이터를 따로 두려고 했으나 MoveEvent들을 싱글톤화 해야해서 그냥 합쳐버렸다. 
+ * 움직일 위치를 계산하는것과 움직일 위치 데이터를 따로 두려고 했으나 MoveCommand들을 싱글톤화 해야해서 그냥 합쳐버렸다. 
  */
 
-namespace MoveEvent {
+ /*
+ * 움직이는 상황의 이벤트들
+ */
+namespace MoveCommand {
 
-	//왼쪽이동 클래스
-	class LeftMove : public FuselageBehavior 
+	//왼쪽이동 이벤트
+	class LeftMove : public Command 
 	{
 	public:
 		LeftMove() {};
@@ -26,8 +27,8 @@ namespace MoveEvent {
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 	};
 
-	//오른쪽이동 클래스
-	class RightMove : public FuselageBehavior
+	//오른쪽이동 이벤트
+	class RightMove : public Command
 	{
 	public:
 		RightMove () {};
@@ -39,8 +40,8 @@ namespace MoveEvent {
 
 	};
 
-	//직진이동 클래스
-	class ForwardMove : public FuselageBehavior
+	//직진이동 이벤트
+	class ForwardMove : public Command
 	{
 	public:
 		ForwardMove() {};
@@ -51,8 +52,8 @@ namespace MoveEvent {
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 	};
 
-	//뒤로이동 클래스
-	class BackwardMove : public FuselageBehavior
+	//뒤로이동 이벤트
+	class BackwardMove : public Command
 	{
 	public:
 		BackwardMove() {};
@@ -64,8 +65,8 @@ namespace MoveEvent {
 
 	};
 
-	//플레이어를 찾아가는 클래스
-	class PlayerTracking : public FuselageBehavior
+	//플레이어를 찾아가는 이벤트
+	class PlayerTracking : public Command
 	{
 	public:
 		PlayerTracking() {};
