@@ -49,6 +49,7 @@ void ATestEnemy::Tick(float DeltaTime)
 	{
 		checkf(m_behavior.front().get() != nullptr, TEXT("ATestCharacter behavior front is nullptr"));
 		m_behavior.front()->execute(m_base_data);
+		UE_LOG(LogTemp, Log, TEXT("m_behavior Enum Pop"));
 		m_behavior.pop();
 	}
 
@@ -60,6 +61,7 @@ void ATestEnemy::Tick(float DeltaTime)
 	{
 		m_behavior.push(m_death_command);
 	}
+
 }
 
 

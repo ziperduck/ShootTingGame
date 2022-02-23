@@ -12,19 +12,21 @@ namespace AttackCommand {
 		checkf(Character.get() != nullptr, TEXT("CollisionAttack execute function in Parameter Character is nullptr"));
 		UE_LOG(LogTemp, Log, TEXT("CollisionAttack execute"));
 
-		if (Character->GetActor() == nullptr)
+		const AActor* CharacterActor = Character->GetActor();
+
+		if (CharacterActor == nullptr)
 		{
 			return false;
 		}
 
 		//출돌을 했는지 확인한다.
-		if (!Character->GetActor()->GetActorEnableCollision())
+		if (!CharacterActor->GetActorEnableCollision())
 		{
 			return false;
 		}
 
 		TSet<AActor*> OverlapActors;
-		Character->GetActor()->GetOverlappingActors(OverlapActors);
+		CharacterActor->GetOverlappingActors(OverlapActors);
 
 		for (auto Actor : OverlapActors)
 		{

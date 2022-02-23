@@ -83,7 +83,7 @@ public:
 	~FuselageData() {};
 
 	//최대체력을 넘지 않을만큼만 체력을 회복한다.
-	void AddHP(int32 Num);
+	void AddHP(float Num);
 
 	const int32 GetCurrentHP() const;
 
@@ -98,7 +98,7 @@ private:
 
 private:
 
-	int32 m_current_hp;
+	float m_current_hp;
 
 	WeaponStruct m_weapon;
 

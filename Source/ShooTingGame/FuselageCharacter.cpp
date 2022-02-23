@@ -27,7 +27,7 @@ void FuselageCharacter::MoveTo(FVector Direction)
 	
 }
 
-void FuselageCharacter::AddHP(int32 HP)
+void FuselageCharacter::AddHP(float HP)
 {
 	//체력을 더한다.
 	m_base_data->AddHP(HP);
@@ -40,17 +40,19 @@ void FuselageCharacter::Shooting()
 
 void FuselageCharacter::Death()
 {
+	UE_LOG(LogTemp, Log, TEXT("FuselageCharacter Death"));
 	checkf(m_actor != nullptr, TEXT("FuselageRemove Character is nullptr"));
 
 	//이벤트를 실행시킨다.
-	for (auto Event : m_death_events)
+	for(auto Evnt : m_death_events)
 	{
-		checkf(Event.get() != nullptr, TEXT("FuselageCharacter Death Event is nullptr"));
-		Event->EventPlay(this);
+		checkf(Evnt.get() != nullptr, TEXT("FuselageCharacter Death Event is nullptr"));
+		Evnt->EventPlay(this);
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("Death Character")); 
-	m_actor->Destroy(true);
+	UE_LOG(LogTemp, Log, TEXT("befor Character->Destroy()"));
+	m_actor->Destroy();
+	UE_LOG(LogTemp, Log, TEXT("after Character->Destroy()"));
 	
 }
 

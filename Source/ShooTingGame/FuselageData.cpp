@@ -10,7 +10,7 @@ FuselageData::FuselageData(const FuselageStatus& Status, const FuselageUnion& Un
 }
 
 
-void FuselageData::AddHP(int32 Num)
+void FuselageData::AddHP(float Num)
 {
 	UE_LOG(LogTemp, Log, TEXT("AddHP +=%d "),Num);
 	m_current_hp += Num;

@@ -32,7 +32,7 @@ class RangeBoom : public SpecialEvent
 {
 public:
 
-	RangeBoom(const float Radius, const int32 Damage, const float Timer);
+	RangeBoom(const float Radius, const float Damage, const float Delay);
 	virtual ~RangeBoom() final {};
 
 private:
@@ -41,10 +41,10 @@ private:
 
 private:
 
-	float m_radius;
+	const float m_radius;
 
-	int32 m_damage;
+	const float m_damage;
 
-	float m_timer;
+	const float m_delay;
 
 };

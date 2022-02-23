@@ -15,7 +15,7 @@
 class FuselageStatus
 {
 public:
-	FuselageStatus(const int32 MaxHP, const float Speed, const int32 AttackPower);
+	FuselageStatus(const float MaxHP, const float Speed, const int32 AttackPower);
 	~FuselageStatus();
 
 	const int32 GetMaxHP() const { return m_max_hp; };
@@ -26,7 +26,7 @@ public:
 
 private:
 
-	const int32 m_max_hp;
+	const float m_max_hp;
 
 	const float m_speed;
 

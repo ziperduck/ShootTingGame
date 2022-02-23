@@ -9,7 +9,10 @@
 #include "FuselageCharacter.h"
 
 #include "DrawDebugHelpers.h"
+#include "HAL/Event.h"
+#include <Engine/Classes/Kismet/GameplayStatics.h>
 
+#include "FuselageBaseData.h"
 
 PlayerRaiseScore::PlayerRaiseScore(const uint32 Score)
 	:m_score(Score){}
@@ -27,8 +30,8 @@ void PlayerRaiseScore::EventPlay(FuselageCharacter* Character)
 
 }
 
-RangeBoom::RangeBoom(const float Radius, const int32 Damage,const float Timer)
- : m_radius(Radius),m_damage(Damage), m_timer(Timer){
+RangeBoom::RangeBoom(const float Radius, const float Damage,const float Delay)
+ : m_radius(Radius),m_damage(Damage), m_delay(Delay){
 }
 
 void RangeBoom::EventPlay(FuselageCharacter* Character)
@@ -36,9 +39,48 @@ void RangeBoom::EventPlay(FuselageCharacter* Character)
 	checkf(Character != nullptr, TEXT("RangeBoom Character is nullptr"));
 
 	const AActor* Actor = Character->GetActor();
+	const UWorld* World = Actor->GetWorld();
+	FVector ActorLocation = Actor->GetActorLocation();
 	//원을 그린다.
-	DrawDebugCircle(Actor->GetWorld(), Actor->GetActorLocation(), m_radius, 40, FColor::Red
-		, false, m_timer, 10, 10.0f, FVector::ForwardVector, FVector::RightVector, false);
+	DrawDebugCircle(World, ActorLocation, m_radius, 40, FColor::Red, false, m_delay
+		, 10, 10.0f, FVector::ForwardVector, FVector::RightVector, false);
 	//동기화 타이머를 사용해서 시간이 지나면 데미지를 주고 종료하는 방식을 쓰자
 
+
+	//bounds
+	FVector Radius = FVector(m_radius, m_radius, 0.0f);
+	const float Damage = m_damage;
+
+	//FEvent::Wait(30.0f,true);
+	FTimerHandle m_boom_timer_handle;
+	Actor->GetWorldTimerManager().SetTimer(m_boom_timer_handle,
+		[&ActorLocation, &Radius,&Damage] {	TArray<AActor*> BoundsActors;
+	UGameplayStatics::GetActorArrayBounds(BoundsActors, true, ActorLocation, Radius);
+	for (auto Actor : BoundsActors)
+	{
+		UE_LOG(LogTemp, Log, TEXT("RangeBoom EventPlay"));
+
+		if (Actor == nullptr)
+		{
+			continue;
+		}
+		//충돌한 객체가 Fuselage인지 확인한다.
+		IFuselageBaseData* FuselageData = Cast<IFuselageBaseData>(Actor);
+		if (!FuselageData)
+		{
+			continue;
+		}
+
+		std::shared_ptr<FuselageCharacter> FuselageCharacter = FuselageData->GetBaseData();
+
+		if (!FuselageCharacter.get())
+		{
+			continue;
+		}
+
+		//충돌한 Fuselage가 데미지를 줘야하는지 확인한다.
+		UE_LOG(LogTemp, Log, TEXT("other fuselage Attack"));
+		FuselageCharacter->AddHP(-Damage);
+	}
+	}, m_delay, false);
 }

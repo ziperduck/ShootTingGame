@@ -25,7 +25,7 @@ public:
 	void MoveTo(FVector Direction);
 
 	//최대체력을 넘지 않게 인자값 만큼 체력을 회복한다.
-	void AddHP(int32 HP);
+	void AddHP(float HP);
 
 	//총을 쏘는 함수
 	void Shooting();
