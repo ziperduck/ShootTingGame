@@ -15,14 +15,21 @@
 class FuselageStatus
 {
 public:
-	FuselageStatus(const float MaxHP, const float Speed, const int32 AttackPower);
+	FuselageStatus(const float MaxHP, const float Speed, const float AttackPower);
 	~FuselageStatus();
 
+	//공격력을 바꾼다.
+	void SetAttackPower(const float Power);
+
+
+	//최대 HP를 받는다.
 	const int32 GetMaxHP() const { return m_max_hp; };
 
+	//이동속도를 받는다.
 	const float& GetSpeed() const { return m_speed; };
 
-	const int32 GetAttackPower() const { return m_attack_power; };
+	//공격력을 받는다.
+	const float GetAttackPower() const { return m_attack_power; };
 
 private:
 
@@ -30,6 +37,6 @@ private:
 
 	const float m_speed;
 
-	const int32 m_attack_power;
+	float m_attack_power;
 
 };

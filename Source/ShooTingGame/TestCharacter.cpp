@@ -4,7 +4,8 @@
 #include "TestCharacter.h"
 
 #include "MoveCommand.h"
-#include "AttackCommand.h"
+#include "CollisionCommand.h"
+#include "ShootingCommand.h"
 
 #include "FuselageData.h"
 #include "FuselageStatus.h"
@@ -25,23 +26,26 @@ void ATestCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	m_base_data = std::make_shared<FuselageCharacter>(this, Fuselages::GetUFO());
+	m_base_data = std::make_shared<FuselageCharacter>(this, FuselageMaker::GetUFO());
 
 	m_player_data = std::make_shared<PlayerCharacterData>(3);
 
+	m_shooting_command = std::make_shared<ShootingCommand::ShotAttack>();
 
 	m_left_command = std::make_shared<MoveCommand::LeftMove>();
 	m_right_command = std::make_shared<MoveCommand::RightMove>();
 	m_forward_command = std::make_shared<MoveCommand::ForwardMove>();
 	m_backward_command = std::make_shared<MoveCommand::BackwardMove>();
 
-	m_attack_command = std::make_shared<AttackCommand::CollisionAttack>();
+	m_attack_command = std::make_shared<CollisionCommand::CollisionAttack>();
 }
 
 // Called to bind functionality to input
 void ATestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	InputComponent->BindAction("EventA",IE_Pressed, this, &ATestCharacter::Shooting);
 
 }
 
@@ -95,13 +99,18 @@ void ATestCharacter::m_up_dawn(int Direction)
 	switch (Direction)
 	{
 	case -1:
-		m_behavior.push(m_forward_command);
+		m_behavior.push(m_backward_command);
 		break;
 	case 1:
-		m_behavior.push(m_backward_command);
+		m_behavior.push(m_forward_command);
 		break;
 	default:
 		break;
 	}
+}
+
+void ATestCharacter::Shooting()
+{
+	m_behavior.push(m_shooting_command);
 }
 

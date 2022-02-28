@@ -51,7 +51,6 @@ void RangeBoom::EventPlay(FuselageCharacter* Character)
 	FVector Radius = FVector(m_radius, m_radius, 0.0f);
 	const float Damage = m_damage;
 
-	//FEvent::Wait(30.0f,true);
 	FTimerHandle m_boom_timer_handle;
 	Actor->GetWorldTimerManager().SetTimer(m_boom_timer_handle,
 		[&ActorLocation, &Radius,&Damage] {	TArray<AActor*> BoundsActors;
@@ -83,4 +82,9 @@ void RangeBoom::EventPlay(FuselageCharacter* Character)
 		FuselageCharacter->AddHP(-Damage);
 	}
 	}, m_delay, false);
+}
+
+void RandomItemDrop::EventPlay(FuselageCharacter* Character)
+{
+
 }

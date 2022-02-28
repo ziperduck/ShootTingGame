@@ -6,22 +6,21 @@
 
 #include "Command.h"
 
- /*
- * 움직이는 상황의 이벤트들
+/**
+ * 
  */
-namespace AttackCommand {
+namespace ShootingCommand {
 
 	// 부딪힌 상대에게 데미지를 주는 이벤트
-	class CollisionAttack : public Command
+	class ShotAttack : public Command
 	{
 	public:
-		CollisionAttack() {};
-		virtual ~CollisionAttack() final {};
+		ShotAttack() {};
+		virtual ~ShotAttack() final {};
 
 	private:
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 
 	};
-
 }

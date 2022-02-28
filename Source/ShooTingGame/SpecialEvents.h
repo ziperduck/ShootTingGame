@@ -48,3 +48,17 @@ private:
 	const float m_delay;
 
 };
+
+//범위에 폭팔데미지를 주는 공격을 한다.
+class RandomItemDrop : public SpecialEvent
+{
+public:
+
+	RandomItemDrop() {};
+	virtual ~RandomItemDrop() final {};
+
+private:
+
+	virtual void EventPlay(FuselageCharacter* Character) final;
+
+};

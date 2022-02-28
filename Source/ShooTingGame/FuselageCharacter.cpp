@@ -3,6 +3,8 @@
 
 #include "FuselageCharacter.h"
 
+#include "WeaponStruct.h"
+
 FuselageCharacter::FuselageCharacter(const FuselageCharacter& Reference)
 	:m_actor(Reference.m_actor),m_base_data(Reference.m_base_data){}
 
@@ -35,7 +37,10 @@ void FuselageCharacter::AddHP(float HP)
 
 void FuselageCharacter::Shooting()
 {
-
+	if (m_base_data->GetWeapon() != nullptr)
+	{
+		m_base_data->GetWeapon()->CreateWeapon(m_actor);
+	}
 }
 
 void FuselageCharacter::Death()
@@ -52,12 +57,18 @@ void FuselageCharacter::Death()
 
 	UE_LOG(LogTemp, Log, TEXT("befor Character->Destroy()"));
 	m_actor->Destroy();
+	m_actor->SetActorTickEnabled(false);
 	UE_LOG(LogTemp, Log, TEXT("after Character->Destroy()"));
 	
 }
 
-void FuselageCharacter::SetWeapon(std::shared_ptr<WeaponStruct> ChangeWeapon)
+void FuselageCharacter::ChangeWeapon(WeaponStruct* ChangeWeapon)
 {
+}
+
+void FuselageCharacter::SetAttackPower(const float Power)
+{
+	m_base_data->SetAttackPower(Power);
 }
 
 void FuselageCharacter::SetDeathEvent(std::vector<std::shared_ptr<SpecialEvent>> DeathEvents)
@@ -86,7 +97,7 @@ const float FuselageCharacter::GetSpeed() const
 	return m_base_data->GetStatus().GetSpeed();
 }
 
-const int32 FuselageCharacter::GetAttackPower() const
+const float FuselageCharacter::GetAttackPower() const
 {
 	return m_base_data->GetStatus().GetAttackPower();
 }

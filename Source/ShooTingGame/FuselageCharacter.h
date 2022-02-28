@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "FuselageData.h"
-#include "WeaponStruct.h"
 
 #include "specialEvent.h"
 
@@ -14,6 +13,10 @@
 * character별로 나누지 말고 한 클래스안에서든 상속을 하던 생성을 따로 하게 만들자
  * stauts와 union과 weaponstatus등 여러가지 들을 놓자
  */
+  
+class WeaponStruct;
+
+//동체들의 정보를 정보를 가진 클래스
 class FuselageCharacter
 {
 public:
@@ -34,23 +37,34 @@ public:
 	void Death();
 
 	//무기를 교체한다.
-	void SetWeapon(std::shared_ptr<WeaponStruct> ChangeWeapon);
+	void ChangeWeapon(WeaponStruct* ChangeWeapon);
 
+	//동체의 공격력을 조절한다.
+	void SetAttackPower(const float Power);
 
+	//죽을때 실행되는 이벤트를 설정한다.
 	void SetDeathEvent(std::vector<std::shared_ptr<SpecialEvent>> DeathEvents);
 
+	//죽을때 실행되는 이벤트를 추가한다.
 	void AddDeathEvent(std::shared_ptr<SpecialEvent> DeathEvent);
 
+
+	//현재 동체의 Actor를 반환한다.
 	const AActor* GetActor() const;
 
+	//현재 동체의 현재체력을 반환한다.
 	const int32 GetCurrentHP() const;
 
+	//현재 동체의 이동속도를 반환한다.
 	const float GetSpeed() const;
 
-	const int32 GetAttackPower() const;
+	//현재 동체의 공격력을 반환한다.
+	const float GetAttackPower() const;
 
+	//현재 동체의 소속을 반환한다.
 	const int8 GetUnion() const;
 
+	//현재 동체의 충돌할수있는 객체를 반환한다.
 	const int8 GetCollision() const;
 
 private:

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "FuselageStatus.h"
-#include "WeaponStruct.h"
 
 /**
  * 하나의 커다란 데이터 덩어리를 만들고
@@ -48,6 +47,8 @@
  /*
  * 어떤 물체와 충돌할지 자신은 어디 소속인지를 나타내는 Struct
  */
+class WeaponStruct;
+
 struct FuselageUnion
 {
 public:
@@ -79,16 +80,29 @@ class FuselageData
 {
 public:
 
-	FuselageData(const FuselageStatus& Status, const FuselageUnion& Union);
+	FuselageData(WeaponStruct* Weapon,FuselageStatus& Status, const FuselageUnion& Union);
 	~FuselageData() {};
-
+		
 	//최대체력을 넘지 않을만큼만 체력을 회복한다.
 	void AddHP(float Num);
 
+	//무기를 교체한다
+	void ChangeWeapon(WeaponStruct* Weapon);
+
+	//동체의 공격력을 조절한다.
+	void SetAttackPower(const float Power);
+
+
+	//현재 체력을 받는다.
 	const int32 GetCurrentHP() const;
 
+	//현재 무기를 받는다.
+	WeaponStruct* GetWeapon() const;
+
+	//현재 능력치를 받는다.
 	const FuselageStatus& GetStatus() const;
 
+	//현재 (충돌관련)소속을 받는다.
 	const FuselageUnion& GetUnion()const;
 
 
@@ -100,9 +114,9 @@ private:
 
 	float m_current_hp;
 
-	WeaponStruct m_weapon;
+	WeaponStruct* m_weapon;
 
-	const FuselageStatus& m_fix_status;
+	FuselageStatus& m_fix_status;
 
 	const FuselageUnion& m_union;
 

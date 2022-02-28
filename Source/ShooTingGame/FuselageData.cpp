@@ -3,9 +3,10 @@
 
 #include "FuselageData.h"
 
+#include "WeaponStruct.h"
 
-FuselageData::FuselageData(const FuselageStatus& Status, const FuselageUnion& Union)
-	:m_fix_status(Status), m_union(Union) {
+FuselageData::FuselageData(WeaponStruct* Weapon, FuselageStatus& Status, const FuselageUnion& Union)
+	:m_weapon(Weapon),m_fix_status(Status), m_union(Union) {
 	m_current_hp = Status.GetMaxHP();
 }
 
@@ -21,9 +22,24 @@ void FuselageData::AddHP(float Num)
 	}
 }
 
+void FuselageData::ChangeWeapon(WeaponStruct* Weapon)
+{
+	m_weapon = Weapon;
+}
+
+void FuselageData::SetAttackPower(const float Power)
+{
+	m_fix_status.SetAttackPower(Power);
+}
+
 const int32 FuselageData::GetCurrentHP() const
 {
 	return m_current_hp;
+}
+
+WeaponStruct* FuselageData::GetWeapon() const
+{
+	return m_weapon;
 }
 
 const FuselageStatus& FuselageData::GetStatus() const

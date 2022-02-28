@@ -4,22 +4,21 @@
 
 #include "CoreMinimal.h"
 
-#include "FuselageStatus.h"
+#include "FuselageBaseData.h"
 
 #include "Command.h"
 
-#include "FuselageBaseData.h"
 #include "GameFramework/Actor.h"
-#include "TestEnemy.generated.h"
+#include "TestBullet.generated.h"
 
 UCLASS()
-class SHOOTINGGAME_API ATestEnemy : public AActor, public IFuselageBaseData
+class SHOOTINGGAME_API ATestBullet : public AActor, public IFuselageBaseData
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATestEnemy();
+	ATestBullet();
 
 protected:
 	// Called when the game starts or when spawned
@@ -38,11 +37,12 @@ private:
 	//공격 관련 행동
 	std::shared_ptr<Command> m_attack_command;
 
-	std::shared_ptr<Command> m_tracking_command;
+	//움직임 관련 행동
+	std::shared_ptr<Command> m_direct_command;
 
+	//죽을때 행동
 	std::shared_ptr<Command> m_death_command;
 
 	//해당 객체의 모든 행동들
 	std::queue<std::shared_ptr<Command>> m_behavior;
-
 };

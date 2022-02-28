@@ -5,7 +5,7 @@
 
 #include "CoreMinimal.h"
 
-#include "Fuselages.h"
+#include "FuselageMaker.h"
 
 #include "FuselageBaseData.h"
 #include "PlayerBaseData.h"
@@ -44,8 +44,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "TestFuselage")
 	void m_up_dawn(int Direction);
 
+	//총을 쏘는 함수
+	void Shooting();
 
 private:
+
+	//공격 관련 행동
+	std::shared_ptr<Command> m_shooting_command;
 
 	//공격 관련 행동
 	std::shared_ptr<Command> m_attack_command;
