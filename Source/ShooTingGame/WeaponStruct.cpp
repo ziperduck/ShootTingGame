@@ -11,25 +11,6 @@ WeaponStruct::WeaponStruct(UClass* WeaponClass,const int32 WeaponLevel, const fl
 :m_weapon_class(WeaponClass), m_level(WeaponLevel),m_power(Power), m_lifespan(LifeSpan), m_scale(Scale){}
 
 
-void WeaponStruct::CreateWeapon(AActor* Gunner)
-{
-	UE_LOG(LogTemp, Log, TEXT("Create Weapon"));
-
-	checkf(Gunner != nullptr, TEXT("CreateWeapon Gunner is nullptr "));
-	UWorld* CreateWorld = Gunner->GetWorld();
-
-	checkf(CreateWorld != nullptr, TEXT("CreateWeapon Gunner is nullptr "));
-	AActor* Weapon = CreateWorld->SpawnActor<AActor>(m_weapon_class, Gunner->GetActorLocation(), FRotator::ZeroRotator);
-
-	checkf(Weapon != nullptr, TEXT("CreateWeapon SpawnActor is nullptr "));
-
-	Weapon->SetActorScale3D(m_scale);
-	Weapon->SetLifeSpan(m_lifespan);
-
-	IFuselageBaseData* WeaponBaseData = Cast<IFuselageBaseData>(Weapon);
-	WeaponBaseData->GetBaseData()->SetAttackPower(m_power);
-}
-
 void WeaponStruct::SetLifeSpan(const float LifeSpan)
 {
 	m_lifespan = LifeSpan;

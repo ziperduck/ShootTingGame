@@ -1,7 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#pragma once
 
-#include "WeaponMaker.h"
+#include "CoreMinimal.h"
 
-#include "TestBullet.h"
-#include "TestLaserBeam.h"
+#include "WeaponStruct.h"
+/**
+ * 
+ */

@@ -3,7 +3,7 @@
 
 #include "FuselageMaker.h"
 
-#include "WeaponMaker.h"
+#include "TestPlayerWeapon.h"
 
 const int8 PLAYER_UNION() { return 0b1; };
 
@@ -19,7 +19,7 @@ namespace FuselageMaker
 		UE_LOG(LogTemp, Log, TEXT("GetUFO"));
 		static FuselageStatus UFOStatus { 5.0f,1.0f, 2.0f };
 		static const FuselageUnion UFOUnion{ PLAYER_UNION(),ENEMY_UNION() };
-		return std::make_shared<FuselageData>(WeaponMaker::GetBulletLvel_1(),UFOStatus, UFOUnion);
+		return std::make_shared<FuselageData>(new PlayerWeapon::BulletLvel_1,UFOStatus, UFOUnion);
 	}
 
 	std::shared_ptr<FuselageData> GetFireDragon()

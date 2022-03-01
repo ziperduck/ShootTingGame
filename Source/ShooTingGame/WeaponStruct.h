@@ -11,10 +11,10 @@ class WeaponStruct {
 public:
 
 	WeaponStruct(UClass* WeaponClass,const int32 WeaponLevel, const float Power, const float LifeSpan, const FVector Scale);
-	~WeaponStruct() {};
+	virtual ~WeaponStruct() =0 {};
 	
 	//무기의 데이터를 토대로 Actor를 생성한다.
-	void CreateWeapon(AActor* Gunner);
+	virtual void CreateWeapon(AActor* Gunner) = 0;
 
 	//생명주기를 설정한다.
 	void SetLifeSpan(const float LifeSpan);
@@ -36,7 +36,7 @@ private:
 
 	WeaponStruct() = delete;
 
-private:
+protected:
 
 	UClass* m_weapon_class;
 
