@@ -87,7 +87,7 @@ const AActor* FuselageCharacter::GetActor() const
 	return m_actor;
 }
 
-const int32 FuselageCharacter::GetCurrentHP() const
+const float FuselageCharacter::GetCurrentHP() const
 {
 	return m_base_data->GetCurrentHP();
 }
@@ -110,6 +110,11 @@ const int8 FuselageCharacter::GetUnion() const
 const int8 FuselageCharacter::GetCollision() const
 {
 	return m_base_data->GetUnion().GetCollision();
+}
+
+WeaponStruct* FuselageCharacter::GetWeapon() const
+{
+	return m_base_data->GetWeapon();
 }
 
 FuselageCharacter::FuselageCharacter(AActor* Actor, std::shared_ptr<FuselageData> BaseData)

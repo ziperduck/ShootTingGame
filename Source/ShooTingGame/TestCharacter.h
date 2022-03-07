@@ -2,9 +2,6 @@
 
 #pragma once
 
-
-#include "CoreMinimal.h"
-
 #include "FuselageMaker.h"
 
 #include "FuselageBaseData.h"
@@ -12,6 +9,7 @@
 
 #include "Command.h"
 
+#include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "TestCharacter.generated.h"
 
@@ -45,7 +43,10 @@ public:
 	void m_up_dawn(int Direction);
 
 	//ÃÑÀ» ½î´Â ÇÔ¼ö
-	void Shooting();
+	void ReleasedAttackKey();
+
+	//ÃÑÀ» ½î´Â ÇÔ¼ö
+	void PressedAttackKey();
 
 private:
 
@@ -63,4 +64,6 @@ private:
 
 	//ÇØ´ç °´Ã¼ÀÇ ¸ðµç Çàµ¿µé
 	std::queue<std::shared_ptr<Command>> m_behavior;
+
+	float m_preesed_time;
 };

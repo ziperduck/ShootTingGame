@@ -7,7 +7,7 @@
 /**
  * 
  */
-class SHOOTINGGAME_API CollisionState
+class CollisionState
 {
 public:
 	CollisionState();

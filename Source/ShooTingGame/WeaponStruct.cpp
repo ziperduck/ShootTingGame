@@ -35,3 +35,17 @@ const FVector WeaponStruct::GetScale() const
 {
 	return m_scale;
 }
+
+
+AActor* CheckCreateActor(UClass* ActorClass, AActor* CheckActor)
+{
+	checkf(CheckActor != nullptr, TEXT("CheckCreateActor Gunner is nullptr "));
+	UWorld* CreateWorld = CheckActor->GetWorld();
+
+	checkf(CreateWorld != nullptr, TEXT("CheckCreateActor World is nullptr "));
+	AActor* Weapon = CreateWorld->SpawnActor<AActor>(ActorClass, CheckActor->GetActorLocation(), FRotator::ZeroRotator);
+
+	checkf(Weapon != nullptr, TEXT("CreateWeapon SpawnActor is nullptr "));
+
+	return Weapon;
+}

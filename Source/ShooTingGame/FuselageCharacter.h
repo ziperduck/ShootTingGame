@@ -49,23 +49,26 @@ public:
 	void AddDeathEvent(std::shared_ptr<SpecialEvent> DeathEvent);
 
 
-	//현재 동체의 Actor를 반환한다.
+	//동체의 Actor를 반환한다.
 	const AActor* GetActor() const;
 
-	//현재 동체의 현재체력을 반환한다.
-	const int32 GetCurrentHP() const;
+	//동체의 현재체력을 반환한다.
+	const float GetCurrentHP() const;
 
-	//현재 동체의 이동속도를 반환한다.
+	//동체의 이동속도를 반환한다.
 	const float GetSpeed() const;
 
-	//현재 동체의 공격력을 반환한다.
+	//동체의 공격력을 반환한다.
 	const float GetAttackPower() const;
 
-	//현재 동체의 소속을 반환한다.
+	//동체의 소속을 반환한다.
 	const int8 GetUnion() const;
 
-	//현재 동체의 충돌할수있는 객체를 반환한다.
+	//동체의 충돌할수있는 객체를 반환한다.
 	const int8 GetCollision() const;
+
+	//동체의 무기를 반환한다.
+	WeaponStruct* GetWeapon() const;
 
 private:
 

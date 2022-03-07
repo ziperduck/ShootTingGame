@@ -209,7 +209,7 @@ void APlayerCharacter::AttackFuselage(const int32 HP)
 			UE_LOG(LogTemp, Log, TEXT("You not Invincible HP"));}, 3.0f, false);
 	} 
 
-	UE_LOG(LogTemp, Log, TEXT("Player Attack %d Now HP %d "), HP, m_current_HP);
+	UE_LOG(LogTemp, Log, TEXT("Player Attack %d Now HP %0.10f.10 "), HP, m_current_HP);
 
 	if (m_current_HP < 1)
 	{

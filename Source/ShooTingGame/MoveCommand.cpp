@@ -68,4 +68,9 @@ namespace MoveCommand
 		return true;
 	}
 
+	bool AttatchMove::execute(std::shared_ptr<FuselageCharacter> Character)
+	{
+		return true;
+	}
+
 }

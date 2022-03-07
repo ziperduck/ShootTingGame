@@ -32,7 +32,7 @@ void FuselageData::SetAttackPower(const float Power)
 	m_fix_status.SetAttackPower(Power);
 }
 
-const int32 FuselageData::GetCurrentHP() const
+const float FuselageData::GetCurrentHP() const
 {
 	return m_current_hp;
 }

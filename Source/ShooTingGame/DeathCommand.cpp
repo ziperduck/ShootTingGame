@@ -3,6 +3,7 @@
 
 #include "DeathCommand.h"
 
+#include <random>
 
 namespace DeathCommand {
 

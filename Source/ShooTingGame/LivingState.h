@@ -7,7 +7,7 @@
 /**
  * 
  */
-class SHOOTINGGAME_API LivingState
+class LivingState
 {
 public:
 	LivingState();

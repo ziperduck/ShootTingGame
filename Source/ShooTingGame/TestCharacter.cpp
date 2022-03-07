@@ -10,6 +10,8 @@
 #include "FuselageData.h"
 #include "FuselageStatus.h"
 
+#include "WeaponStruct.h"
+
 
 // Sets default values
 ATestCharacter::ATestCharacter()
@@ -45,7 +47,8 @@ void ATestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	InputComponent->BindAction("EventA",IE_Pressed, this, &ATestCharacter::Shooting);
+	InputComponent->BindAction("EventA",IE_Pressed, this, &ATestCharacter::PressedAttackKey);
+	InputComponent->BindAction("EventA", IE_Released, this, &ATestCharacter::ReleasedAttackKey);
 
 }
 
@@ -64,7 +67,7 @@ void ATestCharacter::Tick(float DeltaTime)
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Player Location(%s)"), *GetActorLocation().ToString());
-	UE_LOG(LogTemp, Log, TEXT("Player HP %d"), m_base_data->GetCurrentHP());
+	UE_LOG(LogTemp, Log, TEXT("Player HP %f"), m_base_data->GetCurrentHP());
 	UE_LOG(LogTemp, Log, TEXT("Player Score %d"), m_player_data->GetScore());
 
 }
@@ -109,8 +112,15 @@ void ATestCharacter::m_up_dawn(int Direction)
 	}
 }
 
-void ATestCharacter::Shooting()
+void ATestCharacter::ReleasedAttackKey()
 {
+	m_base_data->GetWeapon()->SetLifeSpan(m_preesed_time);
 	m_behavior.push(m_shooting_command);
+	m_preesed_time = 0.0f;
+}
+
+void ATestCharacter::PressedAttackKey()
+{
+	m_preesed_time += 10.0f;
 }
 

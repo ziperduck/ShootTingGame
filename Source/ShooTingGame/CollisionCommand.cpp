@@ -2,7 +2,10 @@
 
 
 #include "CollisionCommand.h"
+
 #include "FuselageBaseData.h"
+
+#include "WeaponStruct.h"
 
 //fuselagecharacter의 데이터가 존재하는지 확인하고 존재하면 overlap된 캐릭터를 리턴한다.
 TSet<AActor*> ReturnOverlapCharacter(std::shared_ptr<FuselageCharacter> Character);
@@ -77,10 +80,11 @@ namespace CollisionCommand {
 
 			std::shared_ptr<FuselageCharacter> OverlapFuselage = OverlapData->GetBaseData();
 
-			//충돌한 무기를 바꾼다.
+			//충돌한 Fuselage의 무기를 바꾼다.
 			if (Character->GetUnion() & OverlapFuselage->GetCollision())
 			{
 				UE_LOG(LogTemp, Log, TEXT("other fuselage Heal"));
+				OverlapFuselage->ChangeWeapon(Character->GetWeapon());
 			}
 		}
 

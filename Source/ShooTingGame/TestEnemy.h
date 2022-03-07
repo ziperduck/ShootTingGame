@@ -36,6 +36,9 @@ private:
 private:
 
 	//공격 관련 행동
+	std::shared_ptr<Command> m_shooting_command;
+
+	//공격 관련 행동
 	std::shared_ptr<Command> m_attack_command;
 
 	std::shared_ptr<Command> m_tracking_command;

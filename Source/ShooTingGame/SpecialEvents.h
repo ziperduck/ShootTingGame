@@ -49,13 +49,27 @@ private:
 
 };
 
-//범위에 폭팔데미지를 주는 공격을 한다.
+//아이템을 떨어트린다.
 class RandomItemDrop : public SpecialEvent
 {
 public:
 
 	RandomItemDrop() {};
 	virtual ~RandomItemDrop() final {};
+
+private:
+
+	virtual void EventPlay(FuselageCharacter* Character) final;
+
+};
+
+//크기가 작아지면서 분열한다.
+class PairDivide : public SpecialEvent
+{
+public:
+
+	PairDivide() {};
+	virtual ~PairDivide() final {};
 
 private:
 

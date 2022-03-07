@@ -29,7 +29,7 @@ void ATestBullet::BeginPlay()
 
 	m_direct_command = std::make_shared<MoveCommand::ForwardMove>();
 	m_attack_command = std::make_shared<CollisionCommand::CollisionAttack>();
-	m_death_command = std::make_shared<DeathCommand::EnemyDie>();
+	m_death_command = std::make_shared<DeathCommand::FuselageRemove>();
 }
 
 // Called every frame
@@ -39,17 +39,18 @@ void ATestBullet::Tick(float DeltaTime)
 
 	while (!m_behavior.empty())
 	{
-		checkf(m_behavior.front().get() != nullptr, TEXT("ATestBullet behavior front is nullptr"));
+		checkf(m_base_data.get() != nullptr, TEXT("ATestLaserBeam m_base_data is nullptr"));
+		checkf(m_behavior.front().get() != nullptr, TEXT("ATestLaserBeam Behavior is nullptr"));
+		
 		m_behavior.front()->execute(m_base_data);
-		UE_LOG(LogTemp, Log, TEXT("m_behavior Enum Pop"));
 		m_behavior.pop();
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Bullet Location(%s)"), *GetActorLocation().ToString());
-	UE_LOG(LogTemp, Log, TEXT("Bullet HP %d"), m_base_data->GetCurrentHP());
+	UE_LOG(LogTemp, Log, TEXT("Bullet HP %f"), m_base_data->GetCurrentHP());
 	m_behavior.push(m_direct_command);
 
-	if (m_base_data->GetCurrentHP() < 1)
+	if (m_base_data->GetCurrentHP() <= 0.0f)
 	{
 		m_behavior.push(m_death_command);
 	}

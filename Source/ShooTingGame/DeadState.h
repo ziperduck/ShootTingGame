@@ -7,7 +7,7 @@
 /**
  * 
  */
-class SHOOTINGGAME_API DeadState
+class DeadState
 {
 public:
 	DeadState();

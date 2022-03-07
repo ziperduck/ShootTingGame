@@ -34,11 +34,11 @@ private:
 
 private:
 
-	//공격 관련 행동
-	std::shared_ptr<Command> m_attack_command;
-
 	//움직임 관련 행동
 	std::shared_ptr<Command> m_direct_command;
+	
+	//공격 관련 행동
+	std::shared_ptr<Command> m_attack_command;
 
 	//죽을때 행동
 	std::shared_ptr<Command> m_death_command;

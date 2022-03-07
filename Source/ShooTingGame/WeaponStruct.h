@@ -48,3 +48,7 @@ protected:
 
 	const FVector m_scale;
 };
+
+
+//생성하는 주체가 존재하는지 클래스는 맞게 생성됐는지 확인한다.
+AActor* CheckCreateActor(UClass* ActorClass, AActor* CheckActor);

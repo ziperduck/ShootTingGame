@@ -26,4 +26,15 @@ namespace FuselageMaker
 
 	//총알 fuselage값을 리턴한다.
 	std::shared_ptr<FuselageData> GetBullet();
+
+	//파이어볼 fuselage값을 리턴한다.
+	std::shared_ptr<FuselageData> GetFireBall();
+
+	//레이저 빔 fuselage값을 리턴한다.
+	std::shared_ptr<FuselageData> GetLaserBeam();
+
+	//힐팩 fuselage값을 리턴한다.
+	std::shared_ptr<FuselageData> GetHealPack();
+
+
 }

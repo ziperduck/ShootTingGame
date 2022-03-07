@@ -78,4 +78,15 @@ namespace MoveCommand {
 
 	};
 
+	class AttatchMove : public Command
+	{
+	public:
+		AttatchMove() {};
+		virtual ~AttatchMove() final {};
+
+	private:
+
+		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
+
+	};
 }

@@ -2,45 +2,49 @@
 
 #pragma once
 
+#include "CoreMinimal.h"
+
 #include "FuselageBaseData.h"
 
 #include "Command.h"
 
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "TestLaserBeam.generated.h"
+#include "SpecialEvent.h"
 
-//레이저 빔은 죽지 않는다.
+#include "GameFramework/Actor.h"
+#include "TestHealKit.generated.h"
+
 UCLASS()
-class SHOOTINGGAME_API ATestLaserBeam : public AActor, public IFuselageBaseData
+class SHOOTINGGAME_API ATestHealKit : public AActor, public IFuselageBaseData
 {
 	GENERATED_BODY()
-
-public:
+	
+public:	
 	// Sets default values for this actor's properties
-	ATestLaserBeam();
+	ATestHealKit();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
+public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-private:
-
 	virtual void NotifyActorBeginOverlap(AActor* Actor) final;
-
 private:
 
-	//공격 관련 행동
-	std::shared_ptr<Command> m_attatch_command;
+	//움직임 관련 command
+	std::vector<std::shared_ptr<Command>> m_direct_command;
 
-	//공격 관련 행동
-	std::shared_ptr<Command> m_attack_command;
+	//충돌 관련 command
+	std::shared_ptr<Command> m_collision_heal_command;
 
-	//해당 객체의 모든 행동들
+	//죽음 관련 command
+	std::shared_ptr<Command> m_death_command;
+
+	//모든 행동들을 실행시키는 함수
 	std::queue<std::shared_ptr<Command>> m_behavior;
 
+	//죽음 관련 event
+	std::shared_ptr<SpecialEvent> m_death_event;
 };

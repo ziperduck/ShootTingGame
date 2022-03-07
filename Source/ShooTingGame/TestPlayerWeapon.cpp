@@ -6,9 +6,6 @@
 #include "TestBullet.h"
 #include "TestLaserBeam.h"
 
-//생성하는 주체가 존재하는지 클래스는 맞게 생성됐는지 확인한다.
-AActor* CheckCreateActor(UClass* ActorClass,AActor* CheckActor);
-
 namespace PlayerWeapon {
 
 	//----------------------총알----------------------
@@ -47,9 +44,12 @@ namespace PlayerWeapon {
 	{
 		UE_LOG(LogTemp, Log, TEXT("Create BulletLvel_2"));
 
+		int32 MultiplicationLocation = (m_bullet_number - 1) * 0.5;
+
 		//AActor를 생성한다.
 		AActor* Weapon = CheckCreateActor(m_weapon_class, Gunner);
 
+		Weapon->SetActorLocation(Weapon->GetActorLocation() + FVector(0.0f, 50.0f * -MultiplicationLocation,  0.0f));
 		Weapon->SetActorScale3D(m_scale);
 		Weapon->SetLifeSpan(m_lifespan);
 
@@ -59,10 +59,23 @@ namespace PlayerWeapon {
 
 		WeaponBaseData->GetBaseData()->SetAttackPower(m_power);
 
+		UWorld* WeaponWorld = Weapon->GetWorld();
+		UClass* WeaponClass = Weapon->StaticClass();
+
 		//총알을 하나 생성했으니 나머지 총알만큼 생성한다.
 		for (int32 i = 1; i < m_bullet_number; i++)
 		{
+			AActor* Bullet = CheckCreateActor(m_weapon_class, Gunner);
+			Bullet->SetActorLocation(Bullet->GetActorLocation() + FVector(0.0f, 50.0f * (i - MultiplicationLocation),0.0f));
 
+			Bullet->SetActorScale3D(m_scale);
+			Bullet->SetLifeSpan(m_lifespan);
+
+			//레벨마다 다른 공격력을 AActor에 조절한다.
+			WeaponBaseData = Cast<IFuselageBaseData>(Bullet);
+			checkf(WeaponBaseData != nullptr, TEXT("WeaponBaseData is nullptr"));
+
+			WeaponBaseData->GetBaseData()->SetAttackPower(m_power);
 		}
 
 	}
@@ -70,8 +83,8 @@ namespace PlayerWeapon {
 	//----------------------레이저 빔----------------------
 
 	LaserBeamLvel_1::LaserBeamLvel_1()
-		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestBullet::StaticClass(), NULL,
-			TEXT("Class'/Game/Blueprint/BP_TestBullet.BP_TestBullet_C'")))
+		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestLaserBeam::StaticClass(), NULL,
+			TEXT("Class'/Game/Blueprint/BP_TestLaserBeam.BP_TestLaserBeam_C'")))
 			, 1, 0.1f, 0.0f, FVector(1.0f, 1.0f, 1.0f)) {}
 	
 	LaserBeamLvel_1::~LaserBeamLvel_1(){}
@@ -92,8 +105,8 @@ namespace PlayerWeapon {
 		WeaponBaseData->GetBaseData()->SetAttackPower(m_power);
 	}
 	LaserBeamLvel_2::LaserBeamLvel_2()
-		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestBullet::StaticClass(), NULL,
-			TEXT("Class'/Game/Blueprint/BP_TestBullet.BP_TestBullet_C'")))
+		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestLaserBeam::StaticClass(), NULL,
+			TEXT("Class'/Game/Blueprint/BP_TestLaserBeam.BP_TestLaserBeam_C'")))
 			, 1, 0.2f, 0.0f, FVector(1.0f, 1.0f, 1.0f)) {}
 
 	LaserBeamLvel_2::~LaserBeamLvel_2(){}
@@ -101,18 +114,4 @@ namespace PlayerWeapon {
 	void LaserBeamLvel_2::CreateWeapon(AActor* Gunner)
 	{
 	}
-}
-
-AActor* CheckCreateActor(UClass* ActorClass, AActor* CheckActor)
-{
-	checkf(CheckActor != nullptr, TEXT("CreateWeapon Gunner is nullptr "));
-	UWorld* CreateWorld = CheckActor->GetWorld();
-
-	checkf(CreateWorld != nullptr, TEXT("CreateWeapon Gunner is nullptr "));
-	AActor* Weapon
-		= CreateWorld->SpawnActor<AActor>(ActorClass, CheckActor->GetActorLocation(), FRotator::ZeroRotator);
-
-	checkf(Weapon != nullptr, TEXT("CreateWeapon SpawnActor is nullptr "));
-	
-	return Weapon;
 }

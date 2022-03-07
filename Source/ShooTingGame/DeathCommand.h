@@ -22,6 +22,7 @@ namespace DeathCommand {
 
 	};
 
+	//적이 죽는경우
 	class EnemyDie : public Command {
 	public:
 		EnemyDie() {};

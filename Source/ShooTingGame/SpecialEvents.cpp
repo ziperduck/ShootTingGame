@@ -3,16 +3,18 @@
 
 #include "SpecialEvents.h"
 
-#include "PlayerCharacterData.h"
+#include "FuselageBaseData.h"
+
 #include "PlayerBaseData.h"
+#include "PlayerCharacterData.h"
 
 #include "FuselageCharacter.h"
 
-#include "DrawDebugHelpers.h"
-#include "HAL/Event.h"
+#include <DrawDebugHelpers.h>
+#include <HAL/Event.h>
 #include <Engine/Classes/Kismet/GameplayStatics.h>
 
-#include "FuselageBaseData.h"
+#include <random>
 
 PlayerRaiseScore::PlayerRaiseScore(const uint32 Score)
 	:m_score(Score){}
@@ -86,5 +88,67 @@ void RangeBoom::EventPlay(FuselageCharacter* Character)
 
 void RandomItemDrop::EventPlay(FuselageCharacter* Character)
 {
+
+	checkf(Character != nullptr, TEXT("RandomItemDrop Parameter Character is nullptr"));
+	UE_LOG(LogTemp, Log, TEXT("RandomItemDrop EventPlay"));
+
+	//랜덤 난수 생성
+	std::random_device Device;
+	std::mt19937 Gen(Device());
+
+	std::uniform_int_distribution<int32> Dis{ 0,2 };
+
+	int32 RandomNum = Dis(Gen);
+
+	//int32 RandomNum = FMath::RandRange(0, 2);
+	// 
+	//생성할 월드
+	UWorld* SpawnWorld = Character->GetActor()->GetWorld();
+
+	UE_LOG(LogTemp, Log, TEXT("RandomNum %d"), RandomNum);
+
+	switch (RandomNum)
+	{
+	case 1:
+		SpawnWorld->SpawnActor<AActor>(StaticLoadClass(UObject::StaticClass(), NULL,
+			TEXT("Class'/Game/Blueprint/BP_TestHealKit.BP_TestHealKit_C'"))
+			, Character->GetActor()->GetActorLocation(), FRotator::ZeroRotator);
+		break;
+	case 2:
+		SpawnWorld->SpawnActor<AActor>(StaticLoadClass(UObject::StaticClass(), NULL,
+			TEXT("Class'/Game/Blueprint/BP_TestHealKit.BP_TestHealKit_C'"))
+			, Character->GetActor()->GetActorLocation(), FRotator::ZeroRotator);
+		break;
+	default:
+		break;
+	}
+}
+
+void PairDivide::EventPlay(FuselageCharacter* Character)
+{
+	checkf(Character != nullptr, TEXT("PairDivide Parameter Character is nullptr"));
+	UE_LOG(LogTemp, Log, TEXT("PairDivide EventPlay"));
+
+	//받은 엑트를 표본으로 만들고 크기를 조절한다.
+	const AActor* ModelActor = Character->GetActor();
+	UWorld* SpawnWorld = ModelActor->GetWorld();
+
+	//엑터의 ActorScale 3D값을 가지고 분열을 했는지 확인한다(scale값이 1이 아닌지 확인한다.
+	if (ModelActor->GetActorScale() == FVector::OneVector) {
+
+		UE_LOG(LogTemp, Log, TEXT("PairDivide"));
+
+		AActor* DivideActor = SpawnWorld->SpawnActor<AActor>(ModelActor->GetClass()
+			, ModelActor->GetActorLocation() + FVector(0.0f, 32.0f, 0.0f), FRotator::ZeroRotator);
+
+		DivideActor->SetActorScale3D(DivideActor->GetActorScale() * 0.5f);
+
+		DivideActor = SpawnWorld->SpawnActor<AActor>(ModelActor->GetClass()
+			, ModelActor->GetActorLocation() - FVector(0.0f, 32.0f, 0.0f), FRotator::ZeroRotator);
+
+		DivideActor->SetActorScale3D(DivideActor->GetActorScale() * 0.5f);
+
+	}
+
 
 }

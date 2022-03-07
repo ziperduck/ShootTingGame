@@ -94,7 +94,7 @@ public:
 
 
 	//현재 체력을 받는다.
-	const int32 GetCurrentHP() const;
+	const float GetCurrentHP() const;
 
 	//현재 무기를 받는다.
 	WeaponStruct* GetWeapon() const;
