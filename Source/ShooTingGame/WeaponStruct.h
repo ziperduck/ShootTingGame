@@ -19,6 +19,9 @@ public:
 	//생명주기를 설정한다.
 	void SetLifeSpan(const float LifeSpan);
 
+	//현재 무기의 강화된 무기를 반환합니다. 없을경우 자기 자신을 리턴합니다.
+	virtual WeaponStruct* GetUpgradeWeapon() = 0;
+
 
 	//크기를 받는다.
 	const int32 GetWeaponLevel()const;
@@ -31,6 +34,9 @@ public:
 
 	//크기를 받는다.
 	const FVector GetScale()const;
+
+	//무기의 UClass를 받는다.
+	const UClass* GetUClass() const;
 
 private:
 

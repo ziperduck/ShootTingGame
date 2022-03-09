@@ -64,6 +64,7 @@ void FuselageCharacter::Death()
 
 void FuselageCharacter::ChangeWeapon(WeaponStruct* ChangeWeapon)
 {
+	m_base_data->ChangeWeapon(ChangeWeapon);
 }
 
 void FuselageCharacter::SetAttackPower(const float Power)

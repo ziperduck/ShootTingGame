@@ -34,14 +34,13 @@ void ATestEnemy::BeginPlay()
 	m_shooting_command = std::make_shared<ShootingCommand::ShotAttack>();
 
 	m_base_data->AddDeathEvent(std::make_shared<PlayerRaiseScore>(100));
-	m_base_data->AddDeathEvent(std::make_shared<PairDivide>());
 
 	m_tracking_command = std::make_shared<MoveCommand::PlayerTracking>();
-	m_attack_command = std::make_shared<CollisionCommand::CollisionAttack>();
+	m_attack_command = std::make_shared<CollisionCommand::CollisionChangeWeapon>();
 	m_death_command = std::make_shared<DeathCommand::EnemyDie>();
 
 	FTimerHandle ShootingTimer;
-	GetWorldTimerManager().SetTimer(ShootingTimer, [&] {m_behavior.push(m_shooting_command); }, 1.0f, true);
+	//GetWorldTimerManager().SetTimer(ShootingTimer, [&] {m_behavior.push(m_shooting_command); }, 1.0f, true);
 
 }
 

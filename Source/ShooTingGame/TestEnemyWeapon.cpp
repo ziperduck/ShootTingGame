@@ -32,4 +32,8 @@ namespace EnemyWeapon {
 		//레벨마다 다른 공격력을 AActor에 조절한다.
 		WeaponBaseData->GetBaseData()->SetAttackPower(m_power);
 	}
+	WeaponStruct* FireBallLvel_1::GetUpgradeWeapon()
+	{
+		return new FireBallLvel_1;
+	}
 }

@@ -36,6 +36,11 @@ const FVector WeaponStruct::GetScale() const
 	return m_scale;
 }
 
+const UClass* WeaponStruct::GetUClass() const
+{
+	return m_weapon_class;
+}
+
 
 AActor* CheckCreateActor(UClass* ActorClass, AActor* CheckActor)
 {

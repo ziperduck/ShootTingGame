@@ -36,7 +36,7 @@ namespace CollisionCommand {
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 	};
 
-	//부딪히면 힐을 주는 데이터 이벤트 힐팩은 공격력이 치유력이다.
+	//부딪히면 부딪힌 대상의 무기를 교체한다.
 	class CollisionChangeWeapon : public Command
 	{
 	public:

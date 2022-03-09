@@ -83,8 +83,20 @@ namespace CollisionCommand {
 			//충돌한 Fuselage의 무기를 바꾼다.
 			if (Character->GetUnion() & OverlapFuselage->GetCollision())
 			{
-				UE_LOG(LogTemp, Log, TEXT("other fuselage Heal"));
-				OverlapFuselage->ChangeWeapon(Character->GetWeapon());
+				WeaponStruct* ChangerWeapon = Character->GetWeapon();
+				WeaponStruct* TargetWeapon = OverlapFuselage->GetWeapon();
+
+				if(ChangerWeapon->GetUClass() == TargetWeapon->GetUClass())
+				{
+					UE_LOG(LogTemp, Log, TEXT("other fuselage Upgrade Weapon"));
+					OverlapFuselage->ChangeWeapon(TargetWeapon->GetUpgradeWeapon());
+				}
+				else
+				{
+					UE_LOG(LogTemp, Log, TEXT("other fuselage Change Weapon"));
+					OverlapFuselage->ChangeWeapon(ChangerWeapon);
+				}
+
 			}
 		}
 

@@ -9,20 +9,19 @@
 namespace PlayerWeapon {
 
 	//----------------------총알----------------------
-
 	PlayerWeapon::BulletLvel_1::BulletLvel_1()
-	 : WeaponStruct(Cast<UClass>(StaticLoadClass(ATestBullet::StaticClass(), NULL,
-		 TEXT("Class'/Game/Blueprint/BP_TestBullet.BP_TestBullet_C'")))
-		 ,1,1.0f,10.0f,FVector(1.0f,1.0f,1.0f)){}
+		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestBullet::StaticClass(), NULL,
+			TEXT("Class'/Game/Blueprint/BP_TestBullet.BP_TestBullet_C'")))
+			, 1, 1.0f, 10.0f, FVector(1.0f, 1.0f, 1.0f)) {}
 
-	BulletLvel_1::~BulletLvel_1(){}
+	BulletLvel_1::~BulletLvel_1() {}
 
 	void BulletLvel_1::CreateWeapon(AActor* Gunner)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Create BulletLvel_1"));
 
 		//AActor를 생성한다.
-		AActor* Weapon = CheckCreateActor(m_weapon_class,Gunner);
+		AActor* Weapon = CheckCreateActor(m_weapon_class, Gunner);
 
 		Weapon->SetActorScale3D(m_scale);
 		Weapon->SetLifeSpan(m_lifespan);
@@ -33,12 +32,17 @@ namespace PlayerWeapon {
 
 		WeaponBaseData->GetBaseData()->SetAttackPower(m_power);
 	}
+	WeaponStruct* BulletLvel_1::GetUpgradeWeapon()
+	{
+		return new BulletLvel_2;
+	}
+
 	BulletLvel_2::BulletLvel_2()
 		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestBullet::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_TestBullet.BP_TestBullet_C'")))
-			, 1, 2.0f, 10.0f, FVector(1.0f, 1.0f, 1.0f)), m_bullet_number(3){}
+			, 1, 2.0f, 10.0f, FVector(1.0f, 1.0f, 1.0f)), m_bullet_number(3) {}
 
-	BulletLvel_2::~BulletLvel_2(){}
+	BulletLvel_2::~BulletLvel_2() {}
 
 	void BulletLvel_2::CreateWeapon(AActor* Gunner)
 	{
@@ -49,7 +53,7 @@ namespace PlayerWeapon {
 		//AActor를 생성한다.
 		AActor* Weapon = CheckCreateActor(m_weapon_class, Gunner);
 
-		Weapon->SetActorLocation(Weapon->GetActorLocation() + FVector(0.0f, 50.0f * -MultiplicationLocation,  0.0f));
+		Weapon->SetActorLocation(Weapon->GetActorLocation() + FVector(0.0f, 50.0f * -MultiplicationLocation, 0.0f));
 		Weapon->SetActorScale3D(m_scale);
 		Weapon->SetLifeSpan(m_lifespan);
 
@@ -66,7 +70,7 @@ namespace PlayerWeapon {
 		for (int32 i = 1; i < m_bullet_number; i++)
 		{
 			AActor* Bullet = CheckCreateActor(m_weapon_class, Gunner);
-			Bullet->SetActorLocation(Bullet->GetActorLocation() + FVector(0.0f, 50.0f * (i - MultiplicationLocation),0.0f));
+			Bullet->SetActorLocation(Bullet->GetActorLocation() + FVector(0.0f, 50.0f * (i - MultiplicationLocation), 0.0f));
 
 			Bullet->SetActorScale3D(m_scale);
 			Bullet->SetLifeSpan(m_lifespan);
@@ -80,14 +84,19 @@ namespace PlayerWeapon {
 
 	}
 
+	WeaponStruct* BulletLvel_2::GetUpgradeWeapon()
+	{
+		return new BulletLvel_2;
+	}
+
 	//----------------------레이저 빔----------------------
 
 	LaserBeamLvel_1::LaserBeamLvel_1()
 		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestLaserBeam::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_TestLaserBeam.BP_TestLaserBeam_C'")))
 			, 1, 0.1f, 0.0f, FVector(1.0f, 1.0f, 1.0f)) {}
-	
-	LaserBeamLvel_1::~LaserBeamLvel_1(){}
+
+	LaserBeamLvel_1::~LaserBeamLvel_1() {}
 
 	void LaserBeamLvel_1::CreateWeapon(AActor* Gunner)
 	{
@@ -103,15 +112,27 @@ namespace PlayerWeapon {
 
 		//레벨마다 다른 공격력을 AActor에 조절한다.
 		WeaponBaseData->GetBaseData()->SetAttackPower(m_power);
+
+		Gunner->AttachToActor(Weapon,FAttachmentTransformRules(EAttachmentRule::SnapToTarget,false),TEXT("LaserBeam Attach"));
 	}
+	WeaponStruct* LaserBeamLvel_1::GetUpgradeWeapon()
+	{
+		return new LaserBeamLvel_2;
+	}
+
 	LaserBeamLvel_2::LaserBeamLvel_2()
 		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestLaserBeam::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_TestLaserBeam.BP_TestLaserBeam_C'")))
 			, 1, 0.2f, 0.0f, FVector(1.0f, 1.0f, 1.0f)) {}
 
-	LaserBeamLvel_2::~LaserBeamLvel_2(){}
+	LaserBeamLvel_2::~LaserBeamLvel_2() {}
 
 	void LaserBeamLvel_2::CreateWeapon(AActor* Gunner)
 	{
 	}
+	WeaponStruct* LaserBeamLvel_2::GetUpgradeWeapon()
+	{
+		return new LaserBeamLvel_2;
+	}
+
 }

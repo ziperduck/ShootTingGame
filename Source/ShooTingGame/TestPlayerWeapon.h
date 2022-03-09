@@ -22,6 +22,8 @@ namespace PlayerWeapon {
 		//무기의 데이터를 토대로 Actor를 생성한다.
 		virtual void CreateWeapon(AActor* Gunner) final;
 
+		virtual WeaponStruct* GetUpgradeWeapon() final;
+
 	};
 
 	class BulletLvel_2 : public WeaponStruct
@@ -33,20 +35,13 @@ namespace PlayerWeapon {
 		//무기의 데이터를 토대로 Actor를 생성한다.
 		virtual void CreateWeapon(AActor* Gunner) final;
 
+		virtual WeaponStruct* GetUpgradeWeapon() final;
 	private:
 		const int32 m_bullet_number;
 	};
-	class LaserBeamLvel_1 : public WeaponStruct
-	{
-	public:
-		LaserBeamLvel_1();
-		virtual ~LaserBeamLvel_1() final;
 
-		//무기의 데이터를 토대로 Actor를 생성한다.
-		virtual void CreateWeapon(AActor* Gunner) final;
 
-	};
-
+	//레이저 무기
 	class LaserBeamLvel_2 : public WeaponStruct
 	{
 	public:
@@ -56,5 +51,19 @@ namespace PlayerWeapon {
 		//무기의 데이터를 토대로 Actor를 생성한다.
 		virtual void CreateWeapon(AActor* Gunner) final;
 
+		virtual WeaponStruct* GetUpgradeWeapon() final;
 	};
+
+	class LaserBeamLvel_1 : public WeaponStruct
+	{
+	public:
+		LaserBeamLvel_1();
+		virtual ~LaserBeamLvel_1() final;
+
+		//무기의 데이터를 토대로 Actor를 생성한다.
+		virtual void CreateWeapon(AActor* Gunner) final;
+
+		virtual WeaponStruct* GetUpgradeWeapon() final;
+	};
+
 }

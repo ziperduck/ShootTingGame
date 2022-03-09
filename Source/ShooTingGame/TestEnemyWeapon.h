@@ -20,5 +20,7 @@ namespace EnemyWeapon {
 		//무기의 데이터를 토대로 Actor를 생성한다.
 		virtual void CreateWeapon(AActor* Gunner) final;
 
+		virtual WeaponStruct* GetUpgradeWeapon() final;
+
 	};
 }
