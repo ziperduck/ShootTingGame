@@ -24,4 +24,12 @@ namespace DeathCommand {
 		Character->Death();
 		return true;
 	}
+	bool PlayerDie::execute(std::shared_ptr<FuselageCharacter> Character)
+	{
+		checkf(Character.get() != nullptr, TEXT("PlayerDie execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("PlayerDie execute"));
+
+		Character->Death();
+		return false;
+	}
 }

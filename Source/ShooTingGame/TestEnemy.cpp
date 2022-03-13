@@ -36,7 +36,7 @@ void ATestEnemy::BeginPlay()
 	m_base_data->AddDeathEvent(std::make_shared<PlayerRaiseScore>(100));
 
 	m_tracking_command = std::make_shared<MoveCommand::PlayerTracking>();
-	m_attack_command = std::make_shared<CollisionCommand::CollisionChangeWeapon>();
+	m_attack_command = std::make_shared<CollisionCommand::CollisionAttack>();
 	m_death_command = std::make_shared<DeathCommand::EnemyDie>();
 
 	FTimerHandle ShootingTimer;

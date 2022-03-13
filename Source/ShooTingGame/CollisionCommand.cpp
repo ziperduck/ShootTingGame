@@ -67,6 +67,8 @@ namespace CollisionCommand {
 	}
 	bool CollisionChangeWeapon::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
+		checkf(Character->GetWeapon() != nullptr, TEXT("character Actor no have weapon"));
+
 		TSet<AActor*> OverlapActors = ReturnOverlapCharacter(Character);
 
 		for (auto Actor : OverlapActors)
@@ -86,15 +88,20 @@ namespace CollisionCommand {
 				WeaponStruct* ChangerWeapon = Character->GetWeapon();
 				WeaponStruct* TargetWeapon = OverlapFuselage->GetWeapon();
 
-				if(ChangerWeapon->GetUClass() == TargetWeapon->GetUClass())
-				{
-					UE_LOG(LogTemp, Log, TEXT("other fuselage Upgrade Weapon"));
-					OverlapFuselage->ChangeWeapon(TargetWeapon->GetUpgradeWeapon());
-				}
-				else
+				if (TargetWeapon == nullptr)
 				{
 					UE_LOG(LogTemp, Log, TEXT("other fuselage Change Weapon"));
 					OverlapFuselage->ChangeWeapon(ChangerWeapon);
+				}
+				else if(ChangerWeapon->GetUClass() != TargetWeapon->GetUClass())
+				{
+					UE_LOG(LogTemp, Log, TEXT("other fuselage Change Weapon"));
+					OverlapFuselage->ChangeWeapon(ChangerWeapon);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Log, TEXT("other fuselage Upgrade Weapon"));
+					OverlapFuselage->ChangeWeapon(TargetWeapon->GetUpgradeWeapon());
 				}
 
 			}

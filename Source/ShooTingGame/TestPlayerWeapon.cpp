@@ -112,8 +112,7 @@ namespace PlayerWeapon {
 
 		//레벨마다 다른 공격력을 AActor에 조절한다.
 		WeaponBaseData->GetBaseData()->SetAttackPower(m_power);
-
-		Gunner->AttachToActor(Weapon,FAttachmentTransformRules(EAttachmentRule::SnapToTarget,false),TEXT("LaserBeam Attach"));
+		Weapon->AttachToActor(Gunner, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true), TEXT("LaserBeam Attach"));
 	}
 	WeaponStruct* LaserBeamLvel_1::GetUpgradeWeapon()
 	{

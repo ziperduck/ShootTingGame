@@ -33,4 +33,16 @@ namespace DeathCommand {
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 
 	};
+
+	//적이 죽는경우
+	class PlayerDie : public Command {
+	public:
+		PlayerDie() {};
+		virtual ~PlayerDie() final {};
+
+	private:
+
+		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
+
+	};
 }

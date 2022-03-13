@@ -25,7 +25,7 @@ namespace FuselageMaker
 		UE_LOG(LogTemp, Log, TEXT("GetUFO"));
 		static FuselageStatus UFOStatus { 5.0f,1.0f, 2.0f };
 		static const FuselageUnion UFOUnion{ PLAYER_UNION(),ENEMY_UNION() | ENEMY_WEAPON_UNION () | KIT_UNION ()};
-		return std::make_shared<FuselageData>(new PlayerWeapon::BulletLvel_1(),UFOStatus, UFOUnion);
+		return std::make_shared<FuselageData>(new PlayerWeapon::LaserBeamLvel_1(),UFOStatus, UFOUnion);
 	}
 
 	std::shared_ptr<FuselageData> GetFireDragon()
