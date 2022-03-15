@@ -2,11 +2,3 @@
 
 
 #include "EnemyState.h"
-
-LivingState::LivingState()
-{
-}
-
-LivingState::~LivingState()
-{
-}

@@ -39,6 +39,9 @@ public:
 	//무기를 교체한다.
 	void ChangeWeapon(WeaponStruct* ChangeWeapon);
 
+	//소속과 충돌체를 교체한다.
+	void ChangeUnion(const FuselageUnion* Union);
+
 	//동체의 공격력을 조절한다.
 	void SetAttackPower(const float Power);
 

@@ -67,6 +67,11 @@ void FuselageCharacter::ChangeWeapon(WeaponStruct* ChangeWeapon)
 	m_base_data->ChangeWeapon(ChangeWeapon);
 }
 
+void FuselageCharacter::ChangeUnion(const FuselageUnion* Union)
+{
+	m_base_data->ChangeUnion(Union);
+}
+
 void FuselageCharacter::SetAttackPower(const float Power)
 {
 	m_base_data->SetAttackPower(Power);
@@ -105,12 +110,12 @@ const float FuselageCharacter::GetAttackPower() const
 
 const int8 FuselageCharacter::GetUnion() const
 {
-	return m_base_data->GetUnion().GetUnion();
+	return m_base_data->GetUnion()->GetUnion();
 }
 
 const int8 FuselageCharacter::GetCollision() const
 {
-	return m_base_data->GetUnion().GetCollision();
+	return m_base_data->GetUnion()->GetCollision();
 }
 
 WeaponStruct* FuselageCharacter::GetWeapon() const

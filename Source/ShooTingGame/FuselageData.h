@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "FuselageStatus.h"
+#include "FuselageUnion.h"
 
 /**
  * 하나의 커다란 데이터 덩어리를 만들고
@@ -44,35 +45,7 @@
  */
 
 
- /*
- * 어떤 물체와 충돌할지 자신은 어디 소속인지를 나타내는 Struct
- */
 class WeaponStruct;
-
-struct FuselageUnion
-{
-public:
-
-	FuselageUnion(const int8 Union, const int8 Collision);
-
-	~FuselageUnion();
-
-	const int8 GetUnion() const;
-
-	const int8 GetCollision() const;
-
-private:
-
-	FuselageUnion() = delete;
-
-private:
-
-	const int8 m_union;
-
-	const int8 m_collision;
-
-};
-
 /*
 * 동체들의 능력치와 출돌 처리 정보를 가지고있는 데이터
 */
@@ -80,7 +53,7 @@ class FuselageData
 {
 public:
 
-	FuselageData(WeaponStruct* Weapon,FuselageStatus& Status, const FuselageUnion& Union);
+	FuselageData(WeaponStruct* Weapon,FuselageStatus& Status, const FuselageUnion* Union);
 	~FuselageData() {};
 		
 	//최대체력을 넘지 않을만큼만 체력을 회복한다.
@@ -88,6 +61,9 @@ public:
 
 	//무기를 교체한다
 	void ChangeWeapon(WeaponStruct* Weapon);
+
+	//소속과 충돌체를 교체한다.
+	void ChangeUnion(const FuselageUnion* Union);
 
 	//동체의 공격력을 조절한다.
 	void SetAttackPower(const float Power);
@@ -103,7 +79,7 @@ public:
 	const FuselageStatus& GetStatus() const;
 
 	//현재 (충돌관련)소속을 받는다.
-	const FuselageUnion& GetUnion()const;
+	const FuselageUnion* GetUnion()const;
 
 
 private:
@@ -118,7 +94,7 @@ private:
 
 	FuselageStatus& m_fix_status;
 
-	const FuselageUnion& m_union;
+	const FuselageUnion* m_union;
 
 };
 

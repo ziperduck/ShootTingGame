@@ -7,10 +7,18 @@
 
 #include "WeaponStruct.h"
 
+#include "FuselageUnion.h"
+
 //fuselagecharacter의 데이터가 존재하는지 확인하고 존재하면 overlap된 캐릭터를 리턴한다.
 TSet<AActor*> ReturnOverlapCharacter(std::shared_ptr<FuselageCharacter> Character);
 
 namespace CollisionCommand {
+	
+	Command& CollisionAttack::getinstance()
+	{
+		static Command* instance = new CollisionAttack;
+		return *instance;
+	}
 
 	bool CollisionAttack::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
@@ -31,7 +39,7 @@ namespace CollisionCommand {
 
 			
 			//충돌한 Fuselage가 데미지를 줘야하는지 확인한다.
-			if (Character->GetUnion() & OverlapFuselage->GetCollision())
+			if (Character->GetCollision() & OverlapFuselage->GetUnion())
 			{
 				UE_LOG(LogTemp, Log, TEXT("other fuselage Attack"));
 				OverlapFuselage->AddHP(-Character->GetAttackPower());
@@ -40,6 +48,13 @@ namespace CollisionCommand {
 
 		return true;
 	}
+
+	Command& CollisionHeal::getinstance()
+	{
+		static Command* instance = new CollisionHeal;
+		return *instance;
+	}
+
 	bool CollisionHeal::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
 		TSet<AActor*> OverlapActors = ReturnOverlapCharacter(Character);
@@ -65,6 +80,13 @@ namespace CollisionCommand {
 
 		return true;
 	}
+
+	Command& CollisionChangeWeapon::getinstance()
+	{
+		static Command* instance = new CollisionChangeWeapon;
+		return *instance;
+	}
+
 	bool CollisionChangeWeapon::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
 		checkf(Character->GetWeapon() != nullptr, TEXT("character Actor no have weapon"));
@@ -107,6 +129,46 @@ namespace CollisionCommand {
 			}
 		}
 
+		return true;
+	}
+
+	Command& CollisionInvincibilityOn::getinstance()
+	{
+		static Command* Instance = new CollisionInvincibilityOn;
+		return *Instance;
+	}
+
+	bool CollisionInvincibilityOn::execute(std::shared_ptr<FuselageCharacter> Character)
+	{
+		checkf(Character.get() != nullptr, TEXT("CollisionInvincibilityOn Character is nullptr"));
+		switch (Character->GetUnion())
+		{
+		case static_cast<int8>(EUnionBinary::PLAYER_BINARY):
+			Character->ChangeUnion(FuselageUnion::PlayerInvincibilityUnion());
+			break;
+		default:
+			break;
+		}
+		return true;
+
+	}
+	Command& CollisionInvincibilityOff::getinstance()
+	{
+		static Command* Instance = new CollisionInvincibilityOff;
+		return *Instance;
+	}
+
+	bool CollisionInvincibilityOff::execute(std::shared_ptr<FuselageCharacter> Character)
+	{
+		checkf(Character.get() != nullptr, TEXT("CollisionInvincibilityOff Character is nullptr"));
+		switch (Character->GetUnion())
+		{
+		case static_cast<int8>(EUnionBinary::PLAYER_INVINCIBILITY_BINARY):
+			Character->ChangeUnion(FuselageUnion::PlayerUnion());
+			break;
+		default:
+			break;
+		}
 		return true;
 	}
 }

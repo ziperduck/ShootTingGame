@@ -6,49 +6,121 @@
 #include "MoveCommand.h"
 #include "CollisionCommand.h"
 #include "DeathCommand.h"
+#include "ShootingCommand.h"
 
 PlayerLiving::PlayerLiving()
-: m_left_move_command(new MoveCommand::LeftMove), m_right_move_command(new MoveCommand::RightMove),
-m_forward_move_command(new MoveCommand::ForwardMove), m_backward_move_command(new MoveCommand::BackwardMove),
-m_collision_command(new MoveCommand::AttatchMove){}
+: IFuselageState(),
+	m_left_move_command(MoveCommand::LeftMove::getinstance()), m_right_move_command(MoveCommand::RightMove::getinstance()),
+m_forward_move_command(MoveCommand::ForwardMove::getinstance()), m_backward_move_command(MoveCommand::BackwardMove::getinstance()),
+m_invincibility_off_command(CollisionCommand::CollisionInvincibilityOff::getinstance()),
+m_collision_command(CollisionCommand::CollisionAttack::getinstance())
+{
+	m_update_state = this;
+}
 
 PlayerLiving::~PlayerLiving()
 {
 }
 
-IFuselageState* PlayerLiving::HandleInput(FuselageCharacter& Fuselage, EInputBehavior Input)
+void PlayerLiving::HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input)
 {
+	checkf(Character.get() != nullptr, TEXT("PlayerLiving::HandleInput Character is nullptr"));
 
-
-	return nullptr;
-}
-
-void PlayerLiving::Update(FuselageCharacter& Fuselage)
-{
-	while (!m_all_command.empty())
+	switch (Input)
 	{
+	case EInputBehavior::LEFT_MOVE:
+		m_all_command.push(&m_left_move_command);
+		break;
+	case EInputBehavior::RIGHT_MOVE:
+		m_all_command.push(&m_right_move_command);
+		break;
+	case EInputBehavior::FORWARD_MOVE:
+		m_all_command.push(&m_forward_move_command);
+		break;
+	case EInputBehavior::BACKWARD_MOVE:
+		m_all_command.push(&m_backward_move_command);
+		break;
+	case EInputBehavior::COLLISION:
+		UE_LOG(LogTemp, Log, TEXT("Player Collision"));
+		m_all_command.push(&m_collision_command);
+		m_update_state = new PlayerInvincibility;
+		break;
+	default:
+		break;
 	}
 
 }
 
-PlayerCollide::PlayerCollide()
-	: m_left_move_command(new MoveCommand::LeftMove), m_right_move_command(new MoveCommand::RightMove),
-	m_forward_move_command(new MoveCommand::ForwardMove), m_backward_move_command(new MoveCommand::BackwardMove){}
+IFuselageState* PlayerLiving::Update(std::shared_ptr<FuselageCharacter> Character)
+{
+	//모든 커맨드를 푼다.
+	m_knot_command(Character);
 
-PlayerCollide::~PlayerCollide()
+	return m_update_state;
+}
+
+void PlayerLiving::Enter(std::shared_ptr<FuselageCharacter> Character)
+{
+	m_all_command.push(&m_invincibility_off_command);
+}
+
+PlayerInvincibility::PlayerInvincibility()
+	: m_left_move_command(MoveCommand::LeftMove::getinstance()), m_right_move_command(MoveCommand::RightMove::getinstance()),
+	m_forward_move_command(MoveCommand::ForwardMove::getinstance()), m_backward_move_command(MoveCommand::BackwardMove::getinstance()),
+	m_invincibility_on_command(CollisionCommand::CollisionInvincibilityOn::getinstance()),
+	m_time_bounds(200), m_time_count(0)
+{
+	m_update_state = this;
+}
+
+PlayerInvincibility::~PlayerInvincibility()
 {
 }
 
-IFuselageState* PlayerCollide::HandleInput(FuselageCharacter& Fuselage, EInputBehavior Input)
+void PlayerInvincibility::HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input)
 {
-	return nullptr;
+	checkf(Character.get() != nullptr, TEXT("PlayerInvincibility::HandleInput Character is nullptr"));
+
+	switch (Input)
+	{
+	case EInputBehavior::LEFT_MOVE:
+		m_all_command.push(&m_left_move_command);
+		break;
+	case EInputBehavior::RIGHT_MOVE:
+		m_all_command.push(&m_right_move_command);
+		break;
+	case EInputBehavior::FORWARD_MOVE:
+		m_all_command.push(&m_forward_move_command);
+		break;
+	case EInputBehavior::BACKWARD_MOVE:
+		m_all_command.push(&m_backward_move_command);
+		break;
+	default:
+		break;
+	}
+
 }
 
-void PlayerCollide::Update(FuselageCharacter& Fuselage)
+IFuselageState* PlayerInvincibility::Update(std::shared_ptr<FuselageCharacter> Character)
 {
+
+	if (m_time_bounds < ++m_time_count)
+	{
+		m_update_state = new PlayerLiving;
+	}
+
+	//모든 커맨드를 푼다.
+	m_knot_command(Character);
+
+	return std::move(m_update_state);
 }
 
-PlayerDied::PlayerDied() : m_death_command(new DeathCommand::PlayerDie)
+void PlayerInvincibility::Enter(std::shared_ptr<FuselageCharacter> Character)
+{
+	m_all_command.push(&m_invincibility_on_command);
+}
+
+PlayerDied::PlayerDied() : m_death_command(DeathCommand::PlayerDie::getinstance())
 {
 }
 
@@ -56,16 +128,20 @@ PlayerDied::~PlayerDied()
 {
 }
 
-IFuselageState* PlayerDied::HandleInput(FuselageCharacter& Fuselage, EInputBehavior Input)
+void PlayerDied::HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input)
+{
+}
+
+IFuselageState* PlayerDied::Update(std::shared_ptr<FuselageCharacter> Character)
 {
 	return nullptr;
 }
 
-void PlayerDied::Update(FuselageCharacter& Fuselage)
+void PlayerDied::Enter(std::shared_ptr<FuselageCharacter> Character)
 {
 }
 
-PlayerLoaded::PlayerLoaded()
+PlayerLoaded::PlayerLoaded():m_shooting_command(ShootingCommand::ShotAttack::getinstance())
 {
 }
 
@@ -73,11 +149,15 @@ PlayerLoaded::~PlayerLoaded()
 {
 }
 
-IFuselageState* PlayerLoaded::HandleInput(FuselageCharacter& Fuselage, EInputBehavior Input)
+void PlayerLoaded::HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input)
+{
+}
+
+IFuselageState* PlayerLoaded::Update(std::shared_ptr<FuselageCharacter> Character)
 {
 	return nullptr;
 }
 
-void PlayerLoaded::Update(FuselageCharacter& Fuselage)
+void PlayerLoaded::Enter(std::shared_ptr<FuselageCharacter> Character)
 {
 }

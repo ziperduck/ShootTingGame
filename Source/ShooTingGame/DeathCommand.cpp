@@ -6,7 +6,11 @@
 #include <random>
 
 namespace DeathCommand {
-
+	Command& FuselageRemove::getinstance()
+	{
+		static Command* instance = new FuselageRemove;
+		return *instance;
+	}
 	bool FuselageRemove::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
 		checkf(Character.get() != nullptr, TEXT("FuselageRemove execute function in Parameter Character is nullptr"));
@@ -16,6 +20,12 @@ namespace DeathCommand {
 		return true;
 	}
 
+	Command& EnemyDie::getinstance()
+	{
+		static Command* instance = new EnemyDie;
+		return *instance;
+	}
+
 	bool EnemyDie::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
 		checkf(Character.get() != nullptr, TEXT("EnemyDie execute function in Parameter Character is nullptr"));
@@ -23,6 +33,11 @@ namespace DeathCommand {
 
 		Character->Death();
 		return true;
+	}
+	Command& PlayerDie::getinstance()
+	{
+		static Command* instance = new PlayerDie;
+		return *instance;
 	}
 	bool PlayerDie::execute(std::shared_ptr<FuselageCharacter> Character)
 	{

@@ -16,6 +16,8 @@ namespace DeathCommand {
 		FuselageRemove() {};
 		virtual ~FuselageRemove() final {};
 
+		static Command& getinstance();
+
 	private:
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
@@ -28,6 +30,8 @@ namespace DeathCommand {
 		EnemyDie() {};
 		virtual ~EnemyDie() final {};
 
+		static Command& getinstance();
+
 	private:
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
@@ -39,6 +43,8 @@ namespace DeathCommand {
 	public:
 		PlayerDie() {};
 		virtual ~PlayerDie() final {};
+
+		static Command& getinstance();
 
 	private:
 

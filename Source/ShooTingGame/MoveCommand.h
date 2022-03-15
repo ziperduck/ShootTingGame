@@ -22,6 +22,8 @@ namespace MoveCommand {
 		LeftMove() {};
 		virtual ~LeftMove() final {};
 
+		static Command& getinstance();
+
 	private:
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
@@ -33,6 +35,8 @@ namespace MoveCommand {
 	public:
 		RightMove () {};
 		virtual ~RightMove() final {};
+
+		static Command& getinstance();
 
 	private:
 
@@ -47,6 +51,8 @@ namespace MoveCommand {
 		ForwardMove() {};
 		virtual ~ForwardMove() final {};
 
+		static Command& getinstance();
+
 	private:
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
@@ -58,6 +64,8 @@ namespace MoveCommand {
 	public:
 		BackwardMove() {};
 		virtual ~BackwardMove() final {};
+
+		static Command& getinstance();
 
 	private:
 
@@ -72,6 +80,8 @@ namespace MoveCommand {
 		PlayerTracking() {};
 		virtual ~PlayerTracking() final {};
 
+		static Command& getinstance();
+
 	private:
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
@@ -83,6 +93,8 @@ namespace MoveCommand {
 	public:
 		AttatchMove() {};
 		virtual ~AttatchMove() final {};
+
+		static Command& getinstance();
 
 	private:
 

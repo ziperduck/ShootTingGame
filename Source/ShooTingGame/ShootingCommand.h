@@ -7,7 +7,7 @@
 #include "Command.h"
 
 /**
- * 
+ * ÃÑÀ» ½î´Â Ä¿¸Çµå
  */
 namespace ShootingCommand {
 
@@ -17,6 +17,8 @@ namespace ShootingCommand {
 	public:
 		ShotAttack() {};
 		virtual ~ShotAttack() final {};
+
+		static Command& getinstance();
 
 	private:
 

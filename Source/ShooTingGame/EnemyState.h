@@ -3,19 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "FuselageState.h"
+
+#include "Command.h"
 
 /**
  * 
  */
-class LivingState : public IFuselageState
-{
-public:
-	LivingState();
-	~LivingState();
-
-private:
-
-	virtual IFuselageState* HandleInput(FuselageCharacter& Fuselage, EInputBehavior Input) final;
-	virtual void Update(FuselageCharacter& Fuselage) final;
-};

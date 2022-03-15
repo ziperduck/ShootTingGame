@@ -3,9 +3,7 @@
 
 #include "TestCharacter.h"
 
-#include "MoveCommand.h"
-#include "CollisionCommand.h"
-#include "ShootingCommand.h"
+#include "PlayerState.h"
 
 #include "FuselageData.h"
 #include "FuselageStatus.h"
@@ -30,16 +28,10 @@ void ATestCharacter::BeginPlay()
 
 	m_base_data = std::make_shared<FuselageCharacter>(this, FuselageMaker::GetUFO());
 
-	m_player_data = std::make_shared<PlayerCharacterData>(3);
+	m_player_data = std::make_shared<PlayerCharacterData>(5);
 
-	m_shooting_command = std::make_shared<ShootingCommand::ShotAttack>();
+	m_player_state = new PlayerLiving;
 
-	m_left_command = std::make_shared<MoveCommand::LeftMove>();
-	m_right_command = std::make_shared<MoveCommand::RightMove>();
-	m_forward_command = std::make_shared<MoveCommand::ForwardMove>();
-	m_backward_command = std::make_shared<MoveCommand::BackwardMove>();
-
-	m_attack_command = std::make_shared<CollisionCommand::CollisionAttack>();
 }
 
 // Called to bind functionality to input
@@ -57,13 +49,15 @@ void ATestCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	checkf(m_base_data.get() != nullptr, TEXT("ATestCharacter base data is nullptr"));
+	IFuselageState* UpdateState = m_player_state->Update(m_base_data);
 
-	while (!m_behavior.empty())
+	if (m_player_state != UpdateState)
 	{
-		checkf(m_behavior.front().get() != nullptr, TEXT("ATestCharacter behavior front is nullptr"));
-		m_behavior.front()->execute(m_base_data);
-		m_behavior.pop();
+		UE_LOG(LogTemp, Log, TEXT("UpdateState"));
+		std::swap(m_player_state, UpdateState);
+		delete(UpdateState);
+
+		m_player_state->Enter(m_base_data);
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Player Location(%s)"), *GetActorLocation().ToString());
@@ -74,11 +68,7 @@ void ATestCharacter::Tick(float DeltaTime)
 
 void ATestCharacter::NotifyActorBeginOverlap(AActor* other)
 {
-	
-	if (m_base_data->GetCurrentHP() > 0)
-	{
-		m_behavior.push(m_attack_command);
-	}
+	m_player_state->HandleInput(m_base_data, EInputBehavior::COLLISION);
 }
 
 //임시로 모든 방향키에 move를 push했다
@@ -87,10 +77,10 @@ void ATestCharacter::m_left_right(int Direction)
 	switch (Direction)
 	{
 	case -1:
-		m_behavior.push(m_left_command);
+		m_player_state->HandleInput(m_base_data, EInputBehavior::LEFT_MOVE);
 		break;
 	case 1:
-		m_behavior.push(m_right_command);
+		m_player_state->HandleInput(m_base_data, EInputBehavior::RIGHT_MOVE);
 		break;
 	default:
 		break;
@@ -102,10 +92,10 @@ void ATestCharacter::m_up_dawn(int Direction)
 	switch (Direction)
 	{
 	case -1:
-		m_behavior.push(m_backward_command);
+		m_player_state->HandleInput(m_base_data, EInputBehavior::BACKWARD_MOVE);
 		break;
 	case 1:
-		m_behavior.push(m_forward_command);
+		m_player_state->HandleInput(m_base_data, EInputBehavior::FORWARD_MOVE);
 		break;
 	default:
 		break;
@@ -115,7 +105,6 @@ void ATestCharacter::m_up_dawn(int Direction)
 void ATestCharacter::ReleasedAttackKey()
 {
 	m_base_data->GetWeapon()->SetLifeSpan(m_preesed_time);
-	m_behavior.push(m_shooting_command);
 	m_preesed_time = 0.0f;
 }
 

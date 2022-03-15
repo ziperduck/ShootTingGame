@@ -6,6 +6,11 @@
 
 namespace MoveCommand
 {
+	Command& LeftMove::getinstance()
+	{
+		static Command* instance = new LeftMove;
+		return *instance;
+	}
 
 	bool LeftMove::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
@@ -14,6 +19,12 @@ namespace MoveCommand
 
 		Character->MoveTo(FVector::LeftVector);
 		return true;
+	}
+
+	Command& RightMove::getinstance()
+	{
+		static Command* instance = new RightMove;
+		return *instance;
 	}
 
 	bool RightMove::execute(std::shared_ptr<FuselageCharacter> Character)
@@ -25,6 +36,12 @@ namespace MoveCommand
 		return true;
 	}
 
+	Command& ForwardMove::getinstance()
+	{
+		static Command* instance = new ForwardMove;
+		return *instance;
+	}
+
 	bool ForwardMove::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
 		checkf(Character.get() != nullptr, TEXT("ForwardMove execute function in Parameter Character is nullptr"));
@@ -34,6 +51,12 @@ namespace MoveCommand
 		return true;
 	}
 
+	Command& BackwardMove::getinstance()
+	{
+		static Command* instance = new BackwardMove;
+		return *instance;
+	}
+
 	bool BackwardMove::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
 		checkf(Character.get() != nullptr, TEXT("BackwardMove execute function in Parameter Character is nullptr"));
@@ -41,6 +64,13 @@ namespace MoveCommand
 
 		Character->MoveTo(FVector::BackwardVector);
 		return true;
+	}
+
+
+	Command& PlayerTracking::getinstance()
+	{
+		static Command* instance = new PlayerTracking;
+		return *instance;
 	}
 
 	bool PlayerTracking::execute(std::shared_ptr<FuselageCharacter> Character)
@@ -66,6 +96,12 @@ namespace MoveCommand
 
 		Character->MoveTo(MoveLocation);
 		return true;
+	}
+
+	Command& AttatchMove::getinstance()
+	{
+		static Command* instance = new AttatchMove;
+		return *instance;
 	}
 
 	bool AttatchMove::execute(std::shared_ptr<FuselageCharacter> Character)

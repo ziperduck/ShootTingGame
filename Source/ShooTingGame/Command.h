@@ -16,5 +16,6 @@ public:
 	virtual ~Command() = 0 {};
 
 	virtual bool execute(std::shared_ptr<FuselageCharacter> Character) = 0;
+
 };
 

@@ -7,7 +7,7 @@
 #include "FuselageBaseData.h"
 #include "PlayerBaseData.h"
 
-#include "Command.h"
+#include "FuselageState.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -50,20 +50,8 @@ public:
 
 private:
 
-	//공격 관련 행동
-	std::shared_ptr<Command> m_shooting_command;
+	IFuselageState* m_player_state;
 
-	//공격 관련 행동
-	std::shared_ptr<Command> m_attack_command;
-
-	//이동 관련 행동들
-	std::shared_ptr<Command> m_left_command;
-	std::shared_ptr<Command> m_right_command;
-	std::shared_ptr<Command> m_forward_command;
-	std::shared_ptr<Command> m_backward_command;
-
-	//해당 객체의 모든 행동들
-	std::queue<std::shared_ptr<Command>> m_behavior;
-
+	//공격키를 누른 시간을 체크한다.
 	float m_preesed_time;
 };
