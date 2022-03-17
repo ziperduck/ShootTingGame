@@ -7,7 +7,7 @@
 #include "FuselageBaseData.h"
 #include "PlayerBaseData.h"
 
-#include "FuselageState.h"
+#include "PlayerState.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -50,7 +50,7 @@ public:
 
 private:
 
-	IFuselageState* m_player_state;
+	IPlayerState* m_player_state;
 
 	//공격키를 누른 시간을 체크한다.
 	float m_preesed_time;

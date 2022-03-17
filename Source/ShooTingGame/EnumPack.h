@@ -46,3 +46,17 @@ enum class EVariousAction : uint8
 	DROP_ITEM UMETA(DisplayName = "DROP_ITEM"),
 	FUSELAGE_DIVIDE UMETA(DisplayName = "FUSELAGE_DIVIDE"),
 };
+
+/*상태를 입력하는 enum
+*/
+enum class EInputBehavior {
+	IDLE = 0,
+	LEFT_MOVE,
+	RIGHT_MOVE,
+	FORWARD_MOVE,
+	BACKWARD_MOVE,
+	TRACKING_MOVE,
+	COLLISION,
+	SHOOT_PRESSED,
+	SHOOT_RELEASE
+};

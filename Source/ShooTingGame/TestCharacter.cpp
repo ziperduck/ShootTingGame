@@ -10,6 +10,8 @@
 
 #include "WeaponStruct.h"
 
+#include "EnumPack.h"
+
 
 // Sets default values
 ATestCharacter::ATestCharacter()
@@ -49,7 +51,7 @@ void ATestCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	IFuselageState* UpdateState = m_player_state->Update(m_base_data);
+	IPlayerState* UpdateState = m_player_state->Update(m_base_data);
 
 	if (m_player_state != UpdateState)
 	{
