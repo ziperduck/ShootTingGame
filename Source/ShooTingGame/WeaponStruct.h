@@ -4,13 +4,16 @@
 
 #include "CoreMinimal.h"
 
+#include "WeaponState.h"
+
 /**
 * 무기의 데이터
  */
 class WeaponStruct {
 public:
 
-	WeaponStruct(UClass* WeaponClass,const int32 WeaponLevel, const float Power, const float LifeSpan, const FVector Scale);
+	WeaponStruct(UClass* WeaponClass, IWeaponState* WeaponState
+		,const int32 WeaponLevel, const float Power, const float LifeSpan, const FVector Scale);
 	virtual ~WeaponStruct() =0 {};
 	
 	//무기의 데이터를 토대로 Actor를 생성한다.
@@ -22,6 +25,12 @@ public:
 	//현재 무기의 강화된 무기를 반환합니다. 없을경우 자기 자신을 리턴합니다.
 	virtual WeaponStruct* GetUpgradeWeapon() = 0;
 
+
+	//현재상태에 input을 받고 알맞는 다음행동을 리턴하는 함수
+	void HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input);
+
+	//현재상태에 입력된 이벤트를 실행하고 상태에 맞는 특정 행동을 하는 함수
+	void Update(std::shared_ptr<FuselageCharacter> Character);
 
 	//크기를 받는다.
 	const int32 GetWeaponLevel()const;
@@ -53,6 +62,8 @@ protected:
 	float m_lifespan;
 
 	const FVector m_scale;
+
+	IWeaponState* m_weapon_state;
 };
 
 

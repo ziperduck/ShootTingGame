@@ -13,21 +13,18 @@
 /*
 * 구분짓기 위해 무기의 상태만을 만드는 무기 상태 클래스
 */
-class WeaponState
+class IWeaponState
 {
 public:
 
-	WeaponState() :m_loding_time(100){ };
-	virtual ~WeaponState() = 0 { m_update_state = nullptr; };
+	IWeaponState() :m_loding_time(100){ };
+	virtual ~IWeaponState() = 0 { m_update_state = nullptr; };
 
 	//현재상태에 input을 받고 알맞는 다음행동을 리턴하는 함수
 	virtual void HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input) = 0;
 
 	//현재상태에 입력된 이벤트를 실행하고 상태에 맞는 특정 행동을 하는 함수
-	virtual WeaponState* Update(std::shared_ptr<FuselageCharacter> Character) = 0;
-
-	//상태에 들어설때 호출하는 함수
-	virtual void Enter(std::shared_ptr<FuselageCharacter> Character) = 0;
+	virtual IWeaponState* Update(std::shared_ptr<FuselageCharacter> Character) = 0;
 
 protected:
 
@@ -35,14 +32,14 @@ protected:
 
 protected:
 
-	WeaponState* m_update_state;
+	IWeaponState* m_update_state;
 
 	std::queue<Command*> m_all_command;
 
 	const int32 m_loding_time;
 };
 
-class WeaponLodedState : public WeaponState
+class WeaponLodedState : public IWeaponState
 {
 public:
 	WeaponLodedState();
@@ -54,10 +51,7 @@ private:
 	virtual void HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input) final;
 
 	//현재상태에 입력된 이벤트를 실행하고 상태에 맞는 특정 행동을 하는 함수
-	virtual WeaponState* Update(std::shared_ptr<FuselageCharacter> Character) final;
-
-	//상태에 들어설때 호출하는 함수
-	virtual void Enter(std::shared_ptr<FuselageCharacter> Character) final;
+	virtual IWeaponState* Update(std::shared_ptr<FuselageCharacter> Character) final;
 
 private:
 
@@ -65,7 +59,7 @@ private:
 
 };
 
-class WeaponLodingState : public WeaponState
+class WeaponLodingState : public IWeaponState
 {
 public:
 	WeaponLodingState();
@@ -77,10 +71,7 @@ private:
 	virtual void HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input) final;
 
 	//현재상태에 입력된 이벤트를 실행하고 상태에 맞는 특정 행동을 하는 함수
-	virtual WeaponState* Update(std::shared_ptr<FuselageCharacter> Character) final;
-
-	//상태에 들어설때 호출하는 함수
-	virtual void Enter(std::shared_ptr<FuselageCharacter> Character) final;
+	virtual IWeaponState* Update(std::shared_ptr<FuselageCharacter> Character) final;
 
 private:
 
@@ -89,7 +80,7 @@ private:
 };
 
 
-class WeaponChargingState : public WeaponState
+class WeaponChargingState : public IWeaponState
 {
 public:
 	WeaponChargingState() ;
@@ -101,10 +92,7 @@ private:
 	virtual void HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input) final;
 
 	//현재상태에 입력된 이벤트를 실행하고 상태에 맞는 특정 행동을 하는 함수
-	virtual WeaponState* Update(std::shared_ptr<FuselageCharacter> Character) final;
-
-	//상태에 들어설때 호출하는 함수
-	virtual void Enter(std::shared_ptr<FuselageCharacter> Character) final;
+	virtual IWeaponState* Update(std::shared_ptr<FuselageCharacter> Character) final;
 
 private:
 
@@ -112,7 +100,7 @@ private:
 
 };
 
-class WeaponChargingShootState : public WeaponState
+class WeaponChargingShootState : public IWeaponState
 {
 public:
 	WeaponChargingShootState();
@@ -124,9 +112,6 @@ private:
 	virtual void HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input) final;
 
 	//현재상태에 입력된 이벤트를 실행하고 상태에 맞는 특정 행동을 하는 함수
-	virtual WeaponState* Update(std::shared_ptr<FuselageCharacter> Character) final;
-
-	//상태에 들어설때 호출하는 함수
-	virtual void Enter(std::shared_ptr<FuselageCharacter> Character) final;
+	virtual IWeaponState* Update(std::shared_ptr<FuselageCharacter> Character) final;
 
 };

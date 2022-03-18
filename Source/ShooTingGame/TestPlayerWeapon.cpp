@@ -6,12 +6,15 @@
 #include "TestBullet.h"
 #include "TestLaserBeam.h"
 
+#include "WeaponState.h"
+
 namespace PlayerWeapon {
 
 	//----------------------ÃÑ¾Ë----------------------
 	PlayerWeapon::BulletLvel_1::BulletLvel_1()
 		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestBullet::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_TestBullet.BP_TestBullet_C'")))
+			,new WeaponLodedState
 			, 1, 1.0f, 10.0f, FVector(1.0f, 1.0f, 1.0f)) {}
 
 	BulletLvel_1::~BulletLvel_1() {}
@@ -40,6 +43,7 @@ namespace PlayerWeapon {
 	BulletLvel_2::BulletLvel_2()
 		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestBullet::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_TestBullet.BP_TestBullet_C'")))
+			, new WeaponLodedState
 			, 1, 2.0f, 10.0f, FVector(1.0f, 1.0f, 1.0f)), m_bullet_number(3) {}
 
 	BulletLvel_2::~BulletLvel_2() {}
@@ -94,6 +98,7 @@ namespace PlayerWeapon {
 	LaserBeamLvel_1::LaserBeamLvel_1()
 		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestLaserBeam::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_TestLaserBeam.BP_TestLaserBeam_C'")))
+			, new WeaponChargingState
 			, 1, 0.1f, 0.0f, FVector(1.0f, 1.0f, 1.0f)) {}
 
 	LaserBeamLvel_1::~LaserBeamLvel_1() {}
@@ -122,6 +127,7 @@ namespace PlayerWeapon {
 	LaserBeamLvel_2::LaserBeamLvel_2()
 		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestLaserBeam::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_TestLaserBeam.BP_TestLaserBeam_C'")))
+			, new WeaponChargingState
 			, 1, 0.2f, 0.0f, FVector(1.0f, 1.0f, 1.0f)) {}
 
 	LaserBeamLvel_2::~LaserBeamLvel_2() {}

@@ -5,7 +5,7 @@
 
 #include "ShootingCommand.h"
 
-void WeaponState::m_knot_command(std::shared_ptr<FuselageCharacter> Character)
+void IWeaponState::m_knot_command(std::shared_ptr<FuselageCharacter> Character)
 {
 	checkf(Character.get() != nullptr, TEXT("IPlayerState::m_knot_command Character is nullptr"));
 
@@ -43,16 +43,11 @@ void WeaponLodedState::HandleInput(std::shared_ptr<FuselageCharacter> Character,
 
 }
 
-WeaponState* WeaponLodedState::Update(std::shared_ptr<FuselageCharacter> Character)
+IWeaponState* WeaponLodedState::Update(std::shared_ptr<FuselageCharacter> Character)
 {
 	m_knot_command(Character);
 
 	return m_update_state;
-}
-
-void WeaponLodedState::Enter(std::shared_ptr<FuselageCharacter> Character)
-{
-
 }
 
 
@@ -62,7 +57,7 @@ WeaponLodingState::~WeaponLodingState(){}
 
 void WeaponLodingState::HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input){}
 
-WeaponState* WeaponLodingState::Update(std::shared_ptr<FuselageCharacter> Character)
+IWeaponState* WeaponLodingState::Update(std::shared_ptr<FuselageCharacter> Character)
 {
 	m_knot_command(Character);
 
@@ -72,10 +67,6 @@ WeaponState* WeaponLodingState::Update(std::shared_ptr<FuselageCharacter> Charac
 	}
 
 	return m_update_state;
-}
-
-void WeaponLodingState::Enter(std::shared_ptr<FuselageCharacter> Character)
-{
 }
 
 
@@ -91,14 +82,11 @@ void WeaponChargingState::HandleInput(std::shared_ptr<FuselageCharacter> Charact
 {
 }
 
-WeaponState* WeaponChargingState::Update(std::shared_ptr<FuselageCharacter> Character)
+IWeaponState* WeaponChargingState::Update(std::shared_ptr<FuselageCharacter> Character)
 {
 	return nullptr;
 }
 
-void WeaponChargingState::Enter(std::shared_ptr<FuselageCharacter> Character)
-{
-}
 
 WeaponChargingShootState::WeaponChargingShootState()
 {
@@ -112,11 +100,7 @@ void WeaponChargingShootState::HandleInput(std::shared_ptr<FuselageCharacter> Ch
 {
 }
 
-WeaponState* WeaponChargingShootState::Update(std::shared_ptr<FuselageCharacter> Character)
+IWeaponState* WeaponChargingShootState::Update(std::shared_ptr<FuselageCharacter> Character)
 {
 	return nullptr;
-}
-
-void WeaponChargingShootState::Enter(std::shared_ptr<FuselageCharacter> Character)
-{
 }

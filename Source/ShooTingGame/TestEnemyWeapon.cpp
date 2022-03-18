@@ -5,11 +5,14 @@
 
 #include "TestFireBall.h"
 
+#include "WeaponState.h"
+
 namespace EnemyWeapon {
 
 	FireBallLvel_1::FireBallLvel_1()
 		: WeaponStruct(Cast<UClass>(StaticLoadClass(ATestFireBall::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_TestFireBall.BP_TestFireBall_C'")))
+			, new WeaponLodedState
 			, 1, 1.0f, 1.0f, FVector(1.0f, 1.0f, 1.0f)) {}
 	
 	FireBallLvel_1::~FireBallLvel_1()

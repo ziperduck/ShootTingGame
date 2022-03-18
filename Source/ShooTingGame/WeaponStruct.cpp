@@ -7,13 +7,34 @@
 
 #include "FuselageCharacter.h"
 
-WeaponStruct::WeaponStruct(UClass* WeaponClass,const int32 WeaponLevel, const float Power, const float LifeSpan, const FVector Scale)
-:m_weapon_class(WeaponClass), m_level(WeaponLevel),m_power(Power), m_lifespan(LifeSpan), m_scale(Scale){}
+WeaponStruct::WeaponStruct(UClass* WeaponClass, IWeaponState* WeaponState
+	,const int32 WeaponLevel, const float Power, const float LifeSpan, const FVector Scale)
+:m_weapon_class(WeaponClass), m_weapon_state(WeaponState)
+, m_level(WeaponLevel),m_power(Power), m_lifespan(LifeSpan), m_scale(Scale){}
 
 
 void WeaponStruct::SetLifeSpan(const float LifeSpan)
 {
 	m_lifespan = LifeSpan;
+}
+
+void WeaponStruct::HandleInput(std::shared_ptr<FuselageCharacter> Character, EInputBehavior Input)
+{
+	m_weapon_state->HandleInput(Character, Input);
+}
+
+void WeaponStruct::Update(std::shared_ptr<FuselageCharacter> Character)
+{
+
+	IWeaponState* UpdateState = m_weapon_state->Update(Character);
+
+	if (m_weapon_state != UpdateState)
+	{
+		UE_LOG(LogTemp, Log, TEXT("UpdateState"));
+		std::swap(m_weapon_state, UpdateState);
+		delete(UpdateState);
+
+	}
 }
 
 const int32 WeaponStruct::GetWeaponLevel() const
