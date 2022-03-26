@@ -5,9 +5,6 @@
 
 #include "FuselageMaker.h"
 
-#include "MoveCommand.h"
-#include "CollisionCommand.h"
-#include "DeathCommand.h"
 
 #include "SpecialEvents.h"
 
@@ -27,9 +24,6 @@ void ATestBullet::BeginPlay()
 
 	m_base_data = std::make_shared<FuselageCharacter>(this, FuselageMaker::GetBullet());
 
-	m_direct_command = std::make_shared<MoveCommand::ForwardMove>();
-	m_attack_command = std::make_shared<CollisionCommand::CollisionAttack>();
-	m_death_command = std::make_shared<DeathCommand::FuselageRemove>();
 }
 
 // Called every frame
@@ -40,7 +34,6 @@ void ATestBullet::Tick(float DeltaTime)
 	while (!m_behavior.empty())
 	{
 		checkf(m_base_data.get() != nullptr, TEXT("ATestLaserBeam m_base_data is nullptr"));
-		checkf(m_behavior.front().get() != nullptr, TEXT("ATestLaserBeam Behavior is nullptr"));
 		
 		m_behavior.front()->execute(m_base_data);
 		m_behavior.pop();
@@ -48,11 +41,11 @@ void ATestBullet::Tick(float DeltaTime)
 
 	UE_LOG(LogTemp, Log, TEXT("Bullet Location(%s)"), *GetActorLocation().ToString());
 	UE_LOG(LogTemp, Log, TEXT("Bullet HP %f"), m_base_data->GetCurrentHP());
-	m_behavior.push(m_direct_command);
+	m_behavior.push(&m_direct_command);
 
 	if (m_base_data->GetCurrentHP() <= 0.0f)
 	{
-		m_behavior.push(m_death_command);
+		m_behavior.push(&m_death_command);
 	}
 
 }
@@ -61,7 +54,7 @@ void ATestBullet::Tick(float DeltaTime)
 
 void ATestBullet::NotifyActorBeginOverlap(AActor* other)
 {
-	m_behavior.push(m_attack_command);
+	m_behavior.push(&m_attack_command);
 
 
 }

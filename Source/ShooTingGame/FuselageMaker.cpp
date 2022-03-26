@@ -23,7 +23,7 @@ namespace FuselageMaker
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetFireDragon"));
 		static FuselageStatus FireDragonStatus{ 1.0f,1.0f, 1.0f };
-		return std::make_shared<FuselageData>(new PlayerWeapon::LaserBeamLvel_1(), FireDragonStatus, FuselageUnion::FireDragonUnion());
+		return std::make_shared<FuselageData>(new EnemyWeapon::FireBallLvel_1(), FireDragonStatus, FuselageUnion::FireDragonUnion());
 	}
 
 	std::shared_ptr<FuselageData> GetRushDragon()

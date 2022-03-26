@@ -19,12 +19,12 @@ namespace MoveCommand {
 	class LeftMove : public Command 
 	{
 	public:
-		LeftMove() {};
 		virtual ~LeftMove() final {};
 
 		static Command& getinstance();
 
 	private:
+		LeftMove() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 	};
@@ -33,12 +33,12 @@ namespace MoveCommand {
 	class RightMove : public Command
 	{
 	public:
-		RightMove () {};
 		virtual ~RightMove() final {};
 
 		static Command& getinstance();
 
 	private:
+		RightMove() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 
@@ -48,12 +48,12 @@ namespace MoveCommand {
 	class ForwardMove : public Command
 	{
 	public:
-		ForwardMove() {};
 		virtual ~ForwardMove() final {};
 
 		static Command& getinstance();
 
 	private:
+		ForwardMove() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 	};
@@ -62,12 +62,70 @@ namespace MoveCommand {
 	class BackwardMove : public Command
 	{
 	public:
-		BackwardMove() {};
 		virtual ~BackwardMove() final {};
 
 		static Command& getinstance();
 
 	private:
+		BackwardMove() {};
+
+		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
+
+	};
+
+	//왼쪽이동 이벤트
+	class BoundsLeftMove : public Command
+	{
+	public:
+		virtual ~BoundsLeftMove() final {};
+
+		static Command& getinstance();
+
+	private:
+		BoundsLeftMove() {};
+
+		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
+	};
+
+	//오른쪽이동 이벤트
+	class BoundsRightMove : public Command
+	{
+	public:
+		virtual ~BoundsRightMove() final {};
+
+		static Command& getinstance();
+
+	private:
+		BoundsRightMove() {};
+
+		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
+
+	};
+
+	//직진이동 이벤트
+	class BoundsForwardMove : public Command
+	{
+	public:
+		virtual ~BoundsForwardMove() final {};
+
+		static Command& getinstance();
+
+	private:
+		BoundsForwardMove() {};
+
+		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
+	};
+
+	//뒤로이동 이벤트
+	class BoundsBackwardMove : public Command
+	{
+	public:
+		virtual ~BoundsBackwardMove() final {};
+
+		static Command& getinstance();
+
+	private:
+		BoundsBackwardMove() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 
@@ -77,12 +135,12 @@ namespace MoveCommand {
 	class PlayerTracking : public Command
 	{
 	public:
-		PlayerTracking() {};
 		virtual ~PlayerTracking() final {};
 
 		static Command& getinstance();
 
 	private:
+		PlayerTracking() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 
@@ -91,12 +149,12 @@ namespace MoveCommand {
 	class AttatchMove : public Command
 	{
 	public:
-		AttatchMove() {};
 		virtual ~AttatchMove() final {};
 
 		static Command& getinstance();
 
 	private:
+		AttatchMove() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 

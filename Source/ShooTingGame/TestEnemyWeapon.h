@@ -22,5 +22,8 @@ namespace EnemyWeapon {
 
 		virtual WeaponStruct* GetUpgradeWeapon() final;
 
+		virtual void PressedShoot(AActor* Gunner) final;
+
+		virtual void ReleaseShoot(AActor* Gunner) final;
 	};
 }

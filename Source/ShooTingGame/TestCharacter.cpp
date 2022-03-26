@@ -3,8 +3,6 @@
 
 #include "TestCharacter.h"
 
-#include "PlayerState.h"
-
 #include "FuselageData.h"
 #include "FuselageStatus.h"
 
@@ -28,10 +26,9 @@ void ATestCharacter::BeginPlay()
 
 	m_base_data = std::make_shared<FuselageCharacter>(this, FuselageMaker::GetUFO());
 
-	m_player_data = std::make_shared<PlayerCharacterData>(5);
+	m_player_data = std::make_shared<PlayerCharacterData>(this, 5);
 
-	m_player_state = new PlayerLiving;
-
+	m_overlap_befor_hp = m_base_data->GetCurrentHP();
 }
 
 // Called to bind functionality to input
@@ -39,9 +36,10 @@ void ATestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	InputComponent->BindAction("EventA",IE_Pressed, this, &ATestCharacter::PressedAttackKey);
-	InputComponent->BindAction("EventA", IE_Released, this, &ATestCharacter::ReleasedAttackKey);
+	InputComponent->BindAction("KeyboadA", IE_Pressed, this, &ATestCharacter::PressedAttackKey);
+	InputComponent->BindAction("KeyboadA", IE_Released, this, &ATestCharacter::ReleasedAttackKey);
 
+	InputComponent->BindAction("KeyboadX", IE_Pressed, this, &ATestCharacter::FinishiMoveKey);
 }
 
 // Called every frame
@@ -49,15 +47,57 @@ void ATestCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	IFuselageState* UpdateState = m_player_state->Update(m_base_data);
+	checkf(m_base_data.get() != nullptr, TEXT("ATestCharacter base data is nullptr"));
 
-	if (m_player_state != UpdateState)
+	//공격키를 누른 상태일경우 pleasedcommand를 추가한다.
+	if (m_pressed_attack_key)
 	{
-		UE_LOG(LogTemp, Log, TEXT("UpdateState"));
-		std::swap(m_player_state, UpdateState);
-		delete(UpdateState);
+		UE_LOG(LogTemp, Log, TEXT("m_pressed_attack_key"));
+		m_all_command.push(&m_pressedshoot_command);
+	}
 
-		m_player_state->Enter(m_base_data);
+	//플레이어 무적일경우 무적을 해체한다.
+	if (m_base_data->GetUnion() == static_cast<int8>(EUnionBinary::PLAYER_INVINCIBILITY_BINARY))
+	{
+		//플레이어의 무적지속시간을 점점 줄인다.
+		if (++m_invincibility_count > m_invincibility_time)
+		{
+			m_all_command.push(&m_invincibility_off_command);
+			m_invincibility_count = 0;
+		}
+	}
+
+	//데미지를 받았을 경우 
+	if (m_base_data->GetCurrentHP() < m_overlap_befor_hp)
+	{
+		//플레이어 무적만들기
+		m_all_command.push(&m_invincibility_on_command);
+
+		m_overlap_befor_hp = m_base_data->GetCurrentHP();
+
+		//만약 죽을경우에는 모든 행동들을 없애고 command만 적용시킨다.
+		if (m_base_data->GetCurrentHP() <= 0.0f)
+		{
+			while (!m_all_command.empty())
+			{
+				m_all_command.pop();
+			}
+
+			m_all_command.push(&m_death_command);
+		}
+	}
+
+	//모든 행동들을 실행시킨다.
+	while (!m_all_command.empty())
+	{
+		m_all_command.front()->execute(m_base_data);
+		m_all_command.pop();
+	}
+	
+	while (!m_all_player_command.empty())
+	{
+		m_all_player_command.front()->execute(m_player_data);
+		m_all_player_command.pop();
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Player Location(%s)"), *GetActorLocation().ToString());
@@ -68,7 +108,8 @@ void ATestCharacter::Tick(float DeltaTime)
 
 void ATestCharacter::NotifyActorBeginOverlap(AActor* other)
 {
-	m_player_state->HandleInput(m_base_data, EInputBehavior::COLLISION);
+	m_all_command.push(&m_collision_command);
+	m_overlap_befor_hp = m_base_data->GetCurrentHP();
 }
 
 //임시로 모든 방향키에 move를 push했다
@@ -77,10 +118,10 @@ void ATestCharacter::m_left_right(int Direction)
 	switch (Direction)
 	{
 	case -1:
-		m_player_state->HandleInput(m_base_data, EInputBehavior::LEFT_MOVE);
+		m_all_command.push(&m_leftmove_command);
 		break;
 	case 1:
-		m_player_state->HandleInput(m_base_data, EInputBehavior::RIGHT_MOVE);
+		m_all_command.push(&m_rightmove_command);
 		break;
 	default:
 		break;
@@ -92,24 +133,29 @@ void ATestCharacter::m_up_dawn(int Direction)
 	switch (Direction)
 	{
 	case -1:
-		m_player_state->HandleInput(m_base_data, EInputBehavior::BACKWARD_MOVE);
+		m_all_command.push(&m_backwardmove_command);
 		break;
 	case 1:
-		m_player_state->HandleInput(m_base_data, EInputBehavior::FORWARD_MOVE);
+		m_all_command.push(&m_forwardmove_command);
 		break;
 	default:
 		break;
 	}
 }
 
-void ATestCharacter::ReleasedAttackKey()
-{
-	m_base_data->GetWeapon()->SetLifeSpan(m_preesed_time);
-	m_preesed_time = 0.0f;
-}
-
 void ATestCharacter::PressedAttackKey()
 {
-	m_preesed_time += 10.0f;
+	m_pressed_attack_key = true;
+}
+
+void ATestCharacter::ReleasedAttackKey()
+{
+	m_pressed_attack_key = false;
+	m_all_command.push(&m_releaseshoot_command);
+}
+
+void ATestCharacter::FinishiMoveKey()
+{
+	m_all_player_command.push(&m_finishmove_command);
 }
 

@@ -6,17 +6,31 @@
 #include "FuselageBaseData.h"
 
 namespace ShootingCommand {
-	Command& ShotAttack::getinstance()
+	Command& PressedShoot::getinstance()
 	{
-		static Command* instance = new ShotAttack;
+		static Command* instance = new PressedShoot;
 		return *instance;
 	}
-
-	bool ShotAttack::execute(std::shared_ptr<FuselageCharacter> Character)
+	bool PressedShoot::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
-		checkf(Character != nullptr, TEXT("ShotAttack execte Character is nullptr"));
+		checkf(Character.get() != nullptr, TEXT("PressedShoot::execute Chacter is nullptr"));
 
-		Character->Shooting();
+		Character->PressedShoot();
+
+		return true;
+	}
+	Command& ReleaseShoot::getinstance()
+	{
+		static Command* instance = new ReleaseShoot;
+		
+		return *instance;
+	}
+	bool ReleaseShoot::execute(std::shared_ptr<FuselageCharacter> Character)
+	{
+		checkf(Character.get() != nullptr, TEXT("ReleaseShoot::execute Chacter is nullptr"));
+
+		Character->ReleaseShoot();
+
 		return true;
 	}
 }

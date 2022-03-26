@@ -11,16 +11,31 @@
  */
 namespace ShootingCommand {
 
-	// ºÎµúÈù »ó´ë¿¡°Ô µ¥¹ÌÁö¸¦ ÁÖ´Â ÀÌº¥Æ®
-	class ShotAttack : public Command
+	//ÃÑ½î´Â Å°¸¦ ´©¸¥´Ù.
+	class PressedShoot : public Command
 	{
 	public:
-		ShotAttack() {};
-		virtual ~ShotAttack() final {};
+		virtual ~PressedShoot() final {};
 
 		static Command& getinstance();
 
 	private:
+		PressedShoot() {};
+
+		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
+
+	};
+
+	//ÃÑ½î´Â Å°¸¦ ¶©´Ù.
+	class ReleaseShoot : public Command
+	{
+	public:
+		virtual ~ReleaseShoot() final {};
+
+		static Command& getinstance();
+
+	private:
+		ReleaseShoot() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 

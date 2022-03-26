@@ -4,7 +4,8 @@
 
 #include "FuselageBaseData.h"
 
-#include "Command.h"
+#include "CollisionCommand.h"
+#include "MoveCommand.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -34,13 +35,13 @@ private:
 
 private:
 
-	//공격 관련 행동
-	std::shared_ptr<Command> m_attatch_command;
+	//이동 관련 행동
+	Command& m_attatch_command = MoveCommand::AttatchMove::getinstance();
 
 	//공격 관련 행동
-	std::shared_ptr<Command> m_attack_command;
+	Command& m_attack_command = CollisionCommand::CollisionAttack::getinstance();
 
 	//해당 객체의 모든 행동들
-	std::queue<std::shared_ptr<Command>> m_behavior;
+	std::queue<Command*> m_behavior;
 
 };

@@ -15,12 +15,12 @@ namespace CollisionCommand {
 	class CollisionAttack : public Command
 	{
 	public:
-		CollisionAttack() {};
 		virtual ~CollisionAttack() final {};
 
 		static Command& getinstance();
 
 	private:
+		CollisionAttack() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 
@@ -30,12 +30,12 @@ namespace CollisionCommand {
 	class CollisionHeal : public Command
 	{
 	public:
-		CollisionHeal() {};
 		virtual~CollisionHeal() final{};
 
 		static Command& getinstance();
 
 	private:
+		CollisionHeal() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 	};
@@ -44,12 +44,12 @@ namespace CollisionCommand {
 	class CollisionChangeWeapon : public Command
 	{
 	public:
-		CollisionChangeWeapon() {};
 		virtual~CollisionChangeWeapon() final {};
 
 		static Command& getinstance();
 
 	private:
+		CollisionChangeWeapon() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 	};
@@ -57,12 +57,12 @@ namespace CollisionCommand {
 	class CollisionInvincibilityOn : public Command
 	{
 	public:
-		CollisionInvincibilityOn() {};
 		virtual ~CollisionInvincibilityOn() final {};
 
 		static Command& getinstance();
 
 	private:
+		CollisionInvincibilityOn() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 	};
@@ -70,12 +70,12 @@ namespace CollisionCommand {
 	class CollisionInvincibilityOff : public Command
 	{
 	public:
-		CollisionInvincibilityOff() {};
 		virtual ~CollisionInvincibilityOff() final {};
 
 		static Command& getinstance();
 
 	private:
+		CollisionInvincibilityOff() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 	};

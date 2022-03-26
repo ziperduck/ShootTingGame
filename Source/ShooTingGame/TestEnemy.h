@@ -6,7 +6,10 @@
 
 #include "FuselageStatus.h"
 
-#include "Command.h"
+#include "ShootingCommand.h"
+#include "MoveCommand.h"
+#include "CollisionCommand.h"
+#include "DeathCommand.h"
 
 #include "FuselageBaseData.h"
 #include "GameFramework/Actor.h"
@@ -36,16 +39,23 @@ private:
 private:
 
 	//공격 관련 행동
-	std::shared_ptr<Command> m_shooting_command;
+	Command& m_pressedshoot_command = ShootingCommand::PressedShoot::getinstance();
 
-	//공격 관련 행동
-	std::shared_ptr<Command> m_attack_command;
+	Command& m_releaseshoot_command = ShootingCommand::ReleaseShoot::getinstance();
 
-	std::shared_ptr<Command> m_tracking_command;
+	//충돌 관련 행동
+	Command& m_attack_command = CollisionCommand::CollisionAttack::getinstance();
+	
+	//이동 관련 행동
+	Command& m_tracking_command = MoveCommand::PlayerTracking::getinstance();
 
-	std::shared_ptr<Command> m_death_command;
+	//죽음 관련 행동
+	Command& m_death_command = DeathCommand::EnemyDie::getinstance();
 
-	//해당 객체의 모든 행동들
-	std::queue<std::shared_ptr<Command>> m_behavior;
+
+	//모든 동작
+	std::queue<Command*> m_all_command;
+
+
 
 };

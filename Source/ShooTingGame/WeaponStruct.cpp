@@ -7,14 +7,10 @@
 
 #include "FuselageCharacter.h"
 
-WeaponStruct::WeaponStruct(UClass* WeaponClass,const int32 WeaponLevel, const float Power, const float LifeSpan, const FVector Scale)
-:m_weapon_class(WeaponClass), m_level(WeaponLevel),m_power(Power), m_lifespan(LifeSpan), m_scale(Scale){}
-
-
-void WeaponStruct::SetLifeSpan(const float LifeSpan)
-{
-	m_lifespan = LifeSpan;
-}
+WeaponStruct::WeaponStruct(
+	UClass* WeaponClass,const int32 WeaponLevel, const float Power, const float LifeSpan, const FVector Scale, const float LoadTime)
+:m_weapon_class(WeaponClass), m_level(WeaponLevel),m_power(Power), m_lifespan_tick(LifeSpan), m_scale(Scale)
+,m_load_time(LoadTime){}
 
 const int32 WeaponStruct::GetWeaponLevel() const
 {
@@ -26,9 +22,9 @@ const float WeaponStruct::GetPower()const
 	return m_power;
 }
 
-const float WeaponStruct::GetLifeSpan() const
+const int32 WeaponStruct::GetLifeSpanSecond() const
 {
-	return m_lifespan;
+	return m_lifespan_tick;
 }
 
 const FVector WeaponStruct::GetScale() const

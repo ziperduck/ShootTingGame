@@ -10,6 +10,8 @@
 
 #include "FuselageCharacter.h"
 
+#include "ShootingGameMode.h"
+
 #include <DrawDebugHelpers.h>
 #include <HAL/Event.h>
 #include <Engine/Classes/Kismet/GameplayStatics.h>
@@ -92,6 +94,17 @@ void RandomItemDrop::EventPlay(FuselageCharacter* Character)
 	checkf(Character != nullptr, TEXT("RandomItemDrop Parameter Character is nullptr"));
 	UE_LOG(LogTemp, Log, TEXT("RandomItemDrop EventPlay"));
 
+	FVector CharacterLocation = Character->GetActor()->GetActorLocation();
+
+	FVector2D MapHalfSize = AShootingGameMode::GetHalfMapSize();
+
+	//만약 맴안에서 죽는게 아닐경우 소환을 하지 않는다.
+	if (CharacterLocation.X > MapHalfSize.X || CharacterLocation.X < -MapHalfSize.X
+		|| CharacterLocation.Y > MapHalfSize.Y || CharacterLocation.Y < -MapHalfSize.Y)
+	{
+		return;
+	}
+
 	//랜덤 난수 생성
 	std::random_device Device;
 	std::mt19937 Gen(Device());
@@ -112,12 +125,12 @@ void RandomItemDrop::EventPlay(FuselageCharacter* Character)
 	case 1:
 		SpawnWorld->SpawnActor<AActor>(StaticLoadClass(UObject::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_TestHealKit.BP_TestHealKit_C'"))
-			, Character->GetActor()->GetActorLocation(), FRotator::ZeroRotator);
+			, CharacterLocation, FRotator::ZeroRotator);
 		break;
 	case 2:
 		SpawnWorld->SpawnActor<AActor>(StaticLoadClass(UObject::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_TestHealKit.BP_TestHealKit_C'"))
-			, Character->GetActor()->GetActorLocation(), FRotator::ZeroRotator);
+			, CharacterLocation, FRotator::ZeroRotator);
 		break;
 	default:
 		break;

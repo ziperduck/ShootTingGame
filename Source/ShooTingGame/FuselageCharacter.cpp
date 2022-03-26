@@ -35,13 +35,22 @@ void FuselageCharacter::AddHP(float HP)
 	m_base_data->AddHP(HP);
 }
 
-void FuselageCharacter::Shooting()
+void FuselageCharacter::PressedShoot()
 {
 	if (m_base_data->GetWeapon() != nullptr)
 	{
-		m_base_data->GetWeapon()->CreateWeapon(m_actor);
+		m_base_data->GetWeapon()->PressedShoot(m_actor);
 	}
 }
+
+void FuselageCharacter::ReleaseShoot()
+{
+	if (m_base_data->GetWeapon() != nullptr)
+	{
+		m_base_data->GetWeapon()->ReleaseShoot(m_actor);
+	}
+}
+
 
 void FuselageCharacter::Death()
 {

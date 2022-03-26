@@ -13,12 +13,12 @@ namespace DeathCommand {
 	// 죽는 이벤트
 	class FuselageRemove : public Command {
 	public:
-		FuselageRemove() {};
 		virtual ~FuselageRemove() final {};
 
 		static Command& getinstance();
 
 	private:
+		FuselageRemove() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 
@@ -27,12 +27,12 @@ namespace DeathCommand {
 	//적이 죽는경우
 	class EnemyDie : public Command {
 	public:
-		EnemyDie() {};
 		virtual ~EnemyDie() final {};
 
 		static Command& getinstance();
 
 	private:
+		EnemyDie() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 
@@ -41,12 +41,12 @@ namespace DeathCommand {
 	//적이 죽는경우
 	class PlayerDie : public Command {
 	public:
-		PlayerDie() {};
 		virtual ~PlayerDie() final {};
 
 		static Command& getinstance();
 
 	private:
+		PlayerDie() {};
 
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 

@@ -4,8 +4,13 @@
 #include "MoveCommand.h"
 #include "ShooTingGameModeBase.h"
 
+#include "ShootingGameMode.h"
+
 namespace MoveCommand
 {
+
+	//직접적으로 이동하는 행동
+
 	Command& LeftMove::getinstance()
 	{
 		static Command* instance = new LeftMove;
@@ -67,11 +72,106 @@ namespace MoveCommand
 	}
 
 
+	Command& BoundsLeftMove::getinstance()
+	{
+		static Command* instance = new BoundsLeftMove;
+		return *instance;
+	}
+
+	bool BoundsLeftMove::execute(std::shared_ptr<FuselageCharacter> Character)
+	{
+		checkf(Character.get() != nullptr, TEXT("BoundsLeftMove::execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("BoundsLeftMove::execute"));
+
+		FVector2D MapSize = AShootingGameMode::GetHalfMapSize();
+
+		float CharacterMove_Y = Character->GetActor()->GetActorLocation().Y -Character->GetSpeed();
+
+		if (CharacterMove_Y > -MapSize.Y)
+		{
+			Character->MoveTo(FVector::LeftVector);
+		}
+
+		return true;
+	}
+
+	Command& BoundsRightMove::getinstance()
+	{
+		static Command* instance = new BoundsRightMove;
+		return *instance;
+	}
+
+	bool BoundsRightMove::execute(std::shared_ptr<FuselageCharacter> Character)
+	{
+		checkf(Character.get() != nullptr, TEXT("BoundsRightMove::execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("BoundsRightMove::execute"));
+
+		FVector2D MapSize = AShootingGameMode::GetHalfMapSize();
+
+		float CharacterMove_Y = Character->GetActor()->GetActorLocation().Y + Character->GetSpeed();
+
+		if (CharacterMove_Y < MapSize.Y)
+		{
+			Character->MoveTo(FVector::RightVector);
+		}
+
+		return true;
+	}
+
+	Command& BoundsForwardMove::getinstance()
+	{
+		static Command* instance = new BoundsForwardMove;
+		return *instance;
+	}
+
+	bool BoundsForwardMove::execute(std::shared_ptr<FuselageCharacter> Character)
+	{
+		checkf(Character.get() != nullptr, TEXT("BoundsForwardMove::execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("BoundsForwardMove::execute"));
+
+		FVector2D MapSize = AShootingGameMode::GetHalfMapSize();
+
+		float CharacterMove_X = Character->GetActor()->GetActorLocation().X + Character->GetSpeed();
+
+		if (CharacterMove_X < MapSize.X)
+		{
+			Character->MoveTo(FVector::ForwardVector);
+		}
+
+		return true;
+	}
+
+	Command& BoundsBackwardMove::getinstance()
+	{
+		static Command* instance = new BoundsBackwardMove;
+		return *instance;
+	}
+
+	bool BoundsBackwardMove::execute(std::shared_ptr<FuselageCharacter> Character)
+	{
+		checkf(Character.get() != nullptr, TEXT("BoundsBackwardMove::execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("BoundsBackwardMove::execute"));
+
+		FVector2D MapSize = AShootingGameMode::GetHalfMapSize();
+
+		float CharacterMove_X = Character->GetActor()->GetActorLocation().X - Character->GetSpeed();
+
+		if (CharacterMove_X > -MapSize.X)
+		{
+			Character->MoveTo(FVector::BackwardVector);
+		}
+
+		return true;
+	}
+
+	//플레이어에게 가는 이동방식
+
 	Command& PlayerTracking::getinstance()
 	{
 		static Command* instance = new PlayerTracking;
 		return *instance;
 	}
+
 
 	bool PlayerTracking::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
@@ -98,6 +198,8 @@ namespace MoveCommand
 		return true;
 	}
 
+	//플레이어를 붙어있는 이동방식
+
 	Command& AttatchMove::getinstance()
 	{
 		static Command* instance = new AttatchMove;
@@ -106,6 +208,10 @@ namespace MoveCommand
 
 	bool AttatchMove::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
+		checkf(Character.get() != nullptr, TEXT("AttatchMove::execute function in Parameter Character is nullptr"));
+		UE_LOG(LogTemp, Log, TEXT("AttatchMove::execute"));
+
+		Character->MoveTo(FVector::BackwardVector);
 		return true;
 	}
 

@@ -6,7 +6,9 @@
 
 #include "FuselageBaseData.h"
 
-#include "Command.h"
+#include "MoveCommand.h"
+#include "CollisionCommand.h"
+#include "DeathCommand.h"
 
 #include "GameFramework/Actor.h"
 #include "TestBullet.generated.h"
@@ -35,14 +37,14 @@ private:
 private:
 
 	//움직임 관련 행동
-	std::shared_ptr<Command> m_direct_command;
+	Command& m_direct_command = MoveCommand::ForwardMove::getinstance();
 	
 	//공격 관련 행동
-	std::shared_ptr<Command> m_attack_command;
+	Command& m_attack_command = CollisionCommand::CollisionAttack::getinstance();
 
 	//죽을때 행동
-	std::shared_ptr<Command> m_death_command;
+	Command& m_death_command = DeathCommand::FuselageRemove::getinstance();
 
 	//해당 객체의 모든 행동들
-	std::queue<std::shared_ptr<Command>> m_behavior;
+	std::queue<Command*> m_behavior;
 };

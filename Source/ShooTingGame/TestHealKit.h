@@ -6,7 +6,9 @@
 
 #include "FuselageBaseData.h"
 
-#include "Command.h"
+#include "MoveCommand.h"
+#include "CollisionCommand.h"
+#include "DeathCommand.h"
 
 #include "SpecialEvent.h"
 
@@ -33,18 +35,25 @@ public:
 	virtual void NotifyActorBeginOverlap(AActor* Actor) final;
 private:
 
-	//움직임 관련 command
-	std::vector<std::shared_ptr<Command>> m_direct_command;
+	//모든 움직임. 
+	std::vector<Command*> m_all_directs_command;
+
+	//충돌전까지 움직임. 
+	int32 m_directs_number[2] ;
 
 	//충돌 관련 command
-	std::shared_ptr<Command> m_collision_heal_command;
+	Command& m_collision_heal_command = CollisionCommand::CollisionHeal::getinstance();
 
 	//죽음 관련 command
-	std::shared_ptr<Command> m_death_command;
+	Command& m_death_command = DeathCommand::FuselageRemove::getinstance();
 
 	//모든 행동들을 실행시키는 함수
-	std::queue<std::shared_ptr<Command>> m_behavior;
+	std::queue<Command*> m_behavior;
 
 	//죽음 관련 event
 	std::shared_ptr<SpecialEvent> m_death_event;
+
+	//움직이기 전 플레이어의 위치
+	FVector m_actor_befor_location;
+
 };

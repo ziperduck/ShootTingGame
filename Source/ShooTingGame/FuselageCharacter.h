@@ -30,8 +30,11 @@ public:
 	//최대체력을 넘지 않게 인자값 만큼 체력을 회복한다.
 	void AddHP(float HP);
 
-	//총을 쏘는 함수
-	void Shooting();
+	//공격키를 키보드누른다
+	void PressedShoot();
+
+	//공격키를 키보드땐다
+	void ReleaseShoot();
 
 	//죽는 함수
 	void Death();

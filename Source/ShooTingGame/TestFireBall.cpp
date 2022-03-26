@@ -6,9 +6,6 @@
 
 #include "FuselageMaker.h"
 
-#include "MoveCommand.h"
-#include "CollisionCommand.h"
-#include "DeathCommand.h"
 
 #include "SpecialEvents.h"
 
@@ -29,9 +26,6 @@ void ATestFireBall::BeginPlay()
 
 	m_base_data = std::make_shared<FuselageCharacter>(this, FuselageMaker::GetFireBall());
 
-	m_direct_command = std::make_shared<MoveCommand::BackwardMove>();
-	m_attack_command = std::make_shared<CollisionCommand::CollisionAttack>();
-	m_death_command = std::make_shared<DeathCommand::FuselageRemove>();
 }
 
 // Called every frame
@@ -43,26 +37,25 @@ void ATestFireBall::Tick(float DeltaTime)
 
 	while (!m_behavior.empty())
 	{
-		checkf(m_behavior.front().get() != nullptr, TEXT("ATestCharacter behavior front is nullptr"));
 		m_behavior.front()->execute(m_base_data);
 		UE_LOG(LogTemp, Log, TEXT("m_behavior Enum Pop"));
 		m_behavior.pop();
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("Enemy Location(%s)"), *GetActorLocation().ToString());
-	UE_LOG(LogTemp, Log, TEXT("Enemy HP %f"), m_base_data->GetCurrentHP());
-	m_behavior.push(m_direct_command);
+	UE_LOG(LogTemp, Log, TEXT("FireBall Location(%s)"), *GetActorLocation().ToString());
+	UE_LOG(LogTemp, Log, TEXT("FireBall HP %f"), m_base_data->GetCurrentHP());
+	m_behavior.push(&m_direct_command);
 
 	if (m_base_data->GetCurrentHP() <= 0.0f)
 	{
-		m_behavior.push(m_death_command);
+		m_behavior.push(&m_death_command);
 	}
 
 }
 
 void ATestFireBall::NotifyActorBeginOverlap(AActor* other)
 {
-	m_behavior.push(m_attack_command);
+	m_behavior.push(&m_attack_command);
 
 
 }
