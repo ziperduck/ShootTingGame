@@ -40,7 +40,7 @@ namespace CollisionCommand {
 		virtual bool execute(std::shared_ptr<FuselageCharacter> Character) final;
 	};
 
-	//부딪히면 부딪힌 대상의 무기를 교체한다.
+	//부딪히면 부딪힌 대상의 무기를 교체한다. 만약 같은 무기일경우 업그레이드 시킨다.
 	class CollisionChangeWeapon : public Command
 	{
 	public:

@@ -1,21 +1,29 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
-#include "Fuselage.h"
-#include "EnumPack.h"
-#include "WeaponStruct.h"
 #include "CoreMinimal.h"
+
+#include "FuselageBaseData.h"
+
+#include "MoveCommand.h"
+#include "CollisionCommand.h"
+#include "DeathCommand.h"
+
+#include "SpecialEvent.h"
+
 #include "GameFramework/Actor.h"
 #include "WeaponKit.generated.h"
 
-//í”Œë ˆì´ì–´ì˜ ì²´ë ¥ì„ íšŒë³µì‹œí‚¤ëŠ” ííŒ©ì´ë‹¤.
+
+/*
+* ¹«±â±³Ã¼¸¦ ¾î¶»°Ô ÇÒ°ÍÀÎÁö °í¹ÎÇØºÁ¾ßÇÑ´Ù.
+*/
 UCLASS()
-class SHOOTINGGAME_API AWeaponKit : public AActor, public IFuselage
+class SHOOTINGGAME_API AWeaponKit : public AActor, public IFuselageBaseData
 {
 	GENERATED_BODY()
-
-public:
+	
+public:	
 	// Sets default values for this actor's properties
 	AWeaponKit();
 
@@ -23,71 +31,42 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
-	//ë¬´ê¸°ì¢…ë¥˜ë¥¼ ë°”ë€Œ í”Œë ˆì´ì–´ì—ê²Œ ë‹¤ë¥¸ ì´ë²¤íŠ¸ë¥¼ ì£¼ëŠ” í•¨ìˆ˜
+	virtual void NotifyActorBeginOverlap(AActor* Actor) final;
+
+	//ÇöÀç ¹«±âÅ°Æ®ÀÇ ¹«±âÁ¾·ù¸¦ ¹Ù²Û´Ù.
 	UFUNCTION(BlueprintCallable, Category = "WeaponKit")
-		void ChangeWeaponEvent();
-
-
-public:
-
-	virtual void Tick(float Delta) override;
-
-	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
-
-	//Healì€ attack powerê°€ heal powerë‹¤
-	UFUNCTION(BlueprintCallable, Category = "WeaponKit")
-		void WeaponKitInitalize(const float Spped);
-
-	//Getter
-	virtual const EFuselageKind GetKind() const override;
-
-	virtual const float GetSpeed() const override;
-
-	virtual const int32 GetAttackPower() const override;
-
-	virtual const TArray<EVariousAction> GetNextActions() override;
-
-	//Weapon Kitì˜ ë¬´ê¸°ì¢…ë¥˜
-	UFUNCTION(BlueprintCallable, Category = "WeaponKit")
-		const EVariousWeapon GetChangeWeapon() const;
-
-	//Setter
-
-	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override;
-
-	virtual void SetSpeed(const float Speed) override;
-
-	virtual void SetAttackPower(const int32 Power) override;
-
-	//Setter
-	virtual void AttackFuselage(const int32 HP) override;
-
-	virtual void MoveLocation(const FVector& MoveLocation) override;
-
-
-	//Event
-	virtual void EventUpdate() override;
+		FString ChangeWeapon();
 
 private:
 
-	const EFuselageKind m_kind = EFuselageKind::ITEM_FUSELAGE;
+	//¸ğµç ÀÌµ¿ °ü·Ã ¸í·É¾î. 
+	std::vector<Command*> m_all_directs_command;
 
-	EVariousWeapon m_change_weapon;
+	//Ãæµ¹Àü±îÁö ¿òÁ÷ÀÓ. 
+	int32 m_directs_number[2];
 
-	float m_speed;
+	//Ãæµ¹ °ü·Ã ¸í·É¾î
+	Command& m_collision_weaponchange_command = CollisionCommand::CollisionChangeWeapon::getinstance();
 
-	int32 m_change_term;
+	//Á×À½ °ü·Ã ¸í·É¾î
+	Command& m_death_command = DeathCommand::FuselageRemove::getinstance();
 
-	int32 m_count_time;
+	//¸ğµç Çàµ¿µéÀ» ½ÇÇà½ÃÅ°´Â ÇÔ¼ö
+	std::queue<Command*> m_behavior;
 
-	bool mb_initialize;
+	//¿òÁ÷ÀÌ±â Àü ÇÃ·¹ÀÌ¾îÀÇ À§Ä¡
+	FVector m_actor_befor_location;
 
-	//ì—…ê·¸ë ˆì´ë“œ í‚¤íŠ¸ì˜€ë‹¤ê°€ ë¬´ê¸° ë³€ê²½í‚¤íŠ¸ì˜€ë‹¤ê°€í•œë‹¤.
-	bool m_bound_location;
+	//°è¼Ó ¹Ù²ãÁÖ´Â ÇÃ·¹ÀÌ¾îÀÇ ¹«±âµé
+	std::vector<std::shared_ptr<WeaponStruct>>  m_player_weapon;
 
+	//¹«±âÀÇ ¾Õ±ÛÀÚ¸¸ µı´Ù.
+	std::vector<FString>  m_weapon_first_letter;
 
-	TQueue<EVariousAction> m_actions;
-
-	TArray<EVariousAction> m_next_actions;
+	//¹«±âÀÇ »çÀÌÅ¬À» °è¼Ó Ã¼Å©ÇÑ´Ù.
+	int32 m_weapon_cycle_count;
 };

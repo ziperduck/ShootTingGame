@@ -2,56 +2,32 @@
 
 
 #include "MeteoricStone.h"
-#include "Action.h"
-#include "ActionInstance.h"
-#include <Engine/Classes/Components/BoxComponent.h>
-#include <Engine/Classes/Components/AudioComponent.h>
+#include <Engine/Classes/Kismet/GameplayStatics.h>
+
+#include "FuselageMaker.h"
+
+#include "SpecialEvents.h"
 
 // Sets default values
 AMeteoricStone::AMeteoricStone()
 {
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	mb_initialize = false;
-	
-	static ConstructorHelpers::FObjectFinder<USoundBase> 
-		DeathAssetSound(TEXT("/Game/Audio/BreakRockSound.BreakRockSound"));
-	checkf(DeathAssetSound.Succeeded(), TEXT("BreakAssetSound is no found"));
-	m_death_sound_asset = DeathAssetSound.Object;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Fuselage RootComponenet"));
 
-	m_death_sound = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
-	m_death_sound->SetupAttachment(RootComponent);
 
-	SetActorTickEnabled(false);
-	SetActorEnableCollision(false);
-
-}
-
-void AMeteoricStone::FuselageInitialize(const float Speed, const int32 MaxHP)
-{
-	if (!mb_initialize)
-	{
-		Tags.Add(TEXT("Fuselage"));
-		Tags.Add(TEXT("Airframe"));
-
-		mb_initialize = true;
-
-		UE_LOG(LogTemp, Log, TEXT("Initialize"));
-
-		SetActorTickEnabled(true);
-		SetActorEnableCollision(true);
-
-		m_speed = Speed;
-		m_max_HP = MaxHP;
-		m_current_HP = MaxHP;
-	}
 }
 
 // Called when the game starts or when spawned
 void AMeteoricStone::BeginPlay()
 {
 	Super::BeginPlay();
+
+	m_base_data = std::make_shared<FuselageCharacter>(this, 20.0f, FuselageMaker::GetMeteoricStone());
+
+	m_base_data->AddDeathEvent(std::make_shared<PlayerRaiseScore>(100));
+	m_base_data->AddDeathEvent(std::make_shared<PairDivide>());
 	
 }
 
@@ -60,90 +36,28 @@ void AMeteoricStone::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	EventUpdate();
+
+	checkf(m_base_data.get() != nullptr, TEXT("AMeteoricStone base data is nullptr"));
+
+	if (m_base_data->GetCurrentHP() <= 0.0f)
+	{
+		m_all_command.push(&m_death_command);
+	}
+
+	while (!m_all_command.empty())
+	{
+		m_all_command.front()->execute(m_base_data);
+		m_all_command.pop();
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("AMeteoricStone Location(%s)"), *GetActorLocation().ToString());
+	UE_LOG(LogTemp, Log, TEXT("AMeteoricStone HP %f"), m_base_data->GetCurrentHP());
+
+	m_all_command.push(&m_down_move_command);
+
 }
 
 void AMeteoricStone::NotifyActorBeginOverlap(AActor* Actor)
 {
-	UE_LOG(LogTemp, Log, TEXT("Meteoric Overlap"));
-	m_actions.Enqueue(EVariousAction::ATTACK);
-	return;
+	m_all_command.push(&m_attack_command);
 }
-
-const EFuselageKind AMeteoricStone::GetKind() const
-{
-	return m_kind;
-}
-
-const float AMeteoricStone::GetSpeed() const
-{
-	return m_speed;
-}
-
-const int32 AMeteoricStone::GetAttackPower() const
-{
-	return 1;
-}
-
-const TArray<EVariousAction> AMeteoricStone::GetNextActions()
-{
-	return m_next_actions;
-}
-
-void AMeteoricStone::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
-{
-	m_next_actions = NextActions;
-}
-
-void AMeteoricStone::SetSpeed(const float Speed)
-{
-	m_speed = Speed;
-}
-
-void AMeteoricStone::SetAttackPower(const int32 Power)
-{
-	m_attack_power = Power;
-}
-
-void AMeteoricStone::AttackFuselage(const int32 HP)
-{
-	m_current_HP += HP;
-}
-
-void AMeteoricStone::MoveLocation(const FVector& MoveLocation)
-{
-	SetActorLocation(GetActorLocation() + MoveLocation);
-}
-
-void AMeteoricStone::EventUpdate()
-{
-	while (!m_actions.IsEmpty())
-	{
-		IAction* Action = ChangeAction(*m_actions.Peek());
-		Action->Execute(this);
-		m_actions.Pop();
-	}
-	if (m_current_HP < 1)
-	{
-		//분해되는 건 그냥 운석을 두개 생성하자
-		for (const auto& i : m_death_actions)
-		{
-			m_actions.Enqueue(i);
-		}
-
-		m_actions.Enqueue(EVariousAction::FUSELAGE_DIVIDE);
-		m_actions.Enqueue(EVariousAction::DEATH);
-
-
-		m_death_sound->SetSound(m_death_sound_asset);
-		m_death_sound->Play();
-	}
-	else
-	{
-		for (const auto& i : m_next_actions)
-		{
-			m_actions.Enqueue(i);
-		}
-	}
-}
-

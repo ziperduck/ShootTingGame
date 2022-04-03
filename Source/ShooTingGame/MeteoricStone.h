@@ -2,15 +2,22 @@
 
 #pragma once
 
-#include "Fuselage.h"
-#include "Airframe.h"
-#include "DragonSpecies.h"
 #include "CoreMinimal.h"
+
+#include "FuselageStatus.h"
+
+#include "ShootingCommand.h"
+#include "MoveCommand.h"
+#include "CollisionCommand.h"
+#include "DeathCommand.h"
+
+#include "FuselageBaseData.h"
+
 #include "GameFramework/Actor.h"
 #include "MeteoricStone.generated.h"
 
 UCLASS()
-class SHOOTINGGAME_API AMeteoricStone : public AActor, public IFuselage
+class SHOOTINGGAME_API AMeteoricStone : public AActor, public IFuselageBaseData
 {
 	GENERATED_BODY()
 	
@@ -22,59 +29,24 @@ public:
 	// Sets default values for this actor's properties
 	AMeteoricStone();
 
-	UFUNCTION(BlueprintCallable, Category = "Fuselage")
-		void FuselageInitialize(const float Speed, const int32 MaxHP);
-
 	virtual void Tick(float Delta) override;
 
 	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
 
-	//Getter
-	virtual const EFuselageKind GetKind() const override;
+public:
 
-	virtual const float GetSpeed() const override;
+	//충돌 관련 행동
+	Command& m_attack_command = CollisionCommand::CollisionAttack::getinstance();
 
-	virtual const int32 GetAttackPower() const override;
+	//이동 관련 행동
+	Command& m_down_move_command = MoveCommand::BackwardMove::getinstance();
 
-	virtual const TArray<EVariousAction> GetNextActions() override;
-
-	//Setter
-	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override;
-
-	virtual void SetSpeed(const float Speed) override;
-
-	virtual void SetAttackPower(const int32 Power) override;
-
-	virtual void AttackFuselage(const int32 HP) override;
-
-	virtual void MoveLocation(const FVector& MoveLocation) override;
+	//죽음 관련 행동
+	Command& m_death_command = DeathCommand::EnemyDie::getinstance();
 
 
-	//Event
-	virtual void EventUpdate() override;
-private:
+	//모든 동작
+	std::queue<Command*> m_all_command;
 
-	USoundBase* m_death_sound_asset;
 
-	UAudioComponent* m_death_sound;
-
-private:
-
-	const EFuselageKind m_kind = EFuselageKind::ENEMY_FUSELAGE;
-
-	int32 m_max_HP;
-
-	int32 m_current_HP;
-
-	int32 m_attack_power;
-
-	float m_speed;
-
-	bool mb_initialize;
-
-	TQueue<EVariousAction> m_actions;
-
-	TArray<EVariousAction> m_next_actions;
-
-	TArray<EVariousAction> m_death_actions;
 };

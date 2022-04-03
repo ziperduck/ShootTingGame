@@ -2,15 +2,25 @@
 
 #pragma once
 
-#include "Airframe.h"
-#include "Fuselage.h"
-#include "EnumPack.h"
+#include "FuselageMaker.h"
+
+#include "FuselageBaseData.h"
+#include "PlayerBaseData.h"
+
+#include "ShootingCommand.h"
+#include "MoveCommand.h"
+#include "CollisionCommand.h"
+#include "DeathCommand.h"
+
+#include "PlayerFinishiMoveCommand.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "PlayerCharacter.generated.h"
 
-UCLASS(Blueprintable, BlueprintType, ClassGroup = "Fuselage")
-class SHOOTINGGAME_API APlayerCharacter : public APawn, public IFuselage, public IAirframe
+
+UCLASS()
+class SHOOTINGGAME_API APlayerCharacter : public APawn, public IFuselageBaseData, public IPlayerBaseData
 {
 	GENERATED_BODY()
 
@@ -21,127 +31,74 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-public:
 
-	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
-		void FuselageInitialize(
-			const float Speed, const int32 MaxHP,const EVariousWeapon Weapon,const float ShootingDelay);
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
-	virtual void Tick(float Delta) override;
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
+	//Ãæµ¹½Ã È£ÃâµÇ´Â ÇÔ¼ö
+	virtual void NotifyActorBeginOverlap(AActor* other) final;
 
-	virtual const int32 GetWeaponLevel() const override;
+	void m_left_right(float Direction);
+	void m_up_dawn(float Direction);
 
-	virtual const float GetWeaponLifespan() const override;
+	//ÃÑÀ» ½î±â¸¦ ´©¸£´Â ÇÔ¼ö
+	void PressedAttackKey();
 
-	virtual const EVariousWeapon GetWeaponKind() const override;
+	//ÃÑÀ» ½î±â¸¦ ¶§´Â ÇÔ¼ö
+	void ReleasedAttackKey();
 
-	virtual const TArray<EVariousAction> GetNextActions() override;
-
-	void SetScore(const int32 Score);
-
-	//Getter
-
-	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override{ };
-
-	virtual const EFuselageKind GetKind() const override;
-
-	virtual const float GetSpeed() const override;
-
-	virtual const int32 GetAttackPower() const override;
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
-	const int32 GetCurrentHP() const;
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
-	const int32 GetSpecialBoomNumber() const;
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
-		const int32 GetScore() const;
-
-	//Setter
-
-	virtual void SetSpeed(const float Speed) override;
-
-	virtual void SetAttackPower(const int32 Power) override;
-
-	void WeaponChange(const EVariousWeapon ChangeWeapon);
-
-	//Event
-	virtual void EventUpdate() override;
-	
-	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
-	void EastWest(float Direction);
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
-	void NorthSouth(float Direction);
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
-		void PressAttack();
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
-		void ReleaseAttack();
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerFuselage")
-		void PressSpecialBoom();
-
-	virtual void AttackFuselage(const int32 HP) override;
-
-	virtual void MoveLocation(const FVector& MoveLocation) override;
-
+	//ÆøÅºÀ» ½î´Â ÇÔ¼ö
+	void FinishiMoveKey();
 
 private:
-	UClass* TestSpawnActor;
-	//ì™¸í˜• ë° ì–¸ë¦¬ì–¼ì—ì„œ ì œê³µí•´ì£¼ëŠ” ê¸°ëŠ¥ë“¤
 
-	//USceneComponent* m_characterScene;
+	//ÀÌµ¿ °ü·Ã Çàµ¿
+	Command& m_leftmove_command = MoveCommand::BoundsLeftMove::getinstance();
+	Command& m_rightmove_command = MoveCommand::BoundsRightMove::getinstance();
+	Command& m_forwardmove_command = MoveCommand::BoundsForwardMove::getinstance();
+	Command& m_backwardmove_command = MoveCommand::BoundsBackwardMove::getinstance();
 
-	UAudioComponent* m_weapon_shoot_audio;
-	
-	USoundBase* RifleSound;
-	
-	USoundBase* LaserGatherSound;
+	//°ø°İ °ü·Ã Çàµ¿
+	Command& m_pressedshoot_command = ShootingCommand::PressedShoot::getinstance();
 
-	FTimerHandle m_shooting_timer;
+	Command& m_releaseshoot_command = ShootingCommand::ReleaseShoot::getinstance();
 
-	FTimerHandle m_invincibility_timer;
-private:
+	//Ãæµ¹ °ü·Ã Çàµ¿
+	Command& m_collision_command = CollisionCommand::CollisionAttack::getinstance();
 
-	//ìºë¦­í„°ì— ê´€í•œ í•„ìš”í•œ ì •ë³´ë“¤
+	//Ãæµ¹ÈÄ ¹«Àû Ã³¸®
+	Command& m_invincibility_on_command = CollisionCommand::CollisionInvincibilityOn::getinstance();
 
-	const EFuselageKind m_kind = EFuselageKind::PLAYER_FUSELAGE;
+	//Ãæµ¹ÈÄ ¹«Àû ÇØÃ¼
+	Command& m_invincibility_off_command = CollisionCommand::CollisionInvincibilityOff::getinstance();
 
-	float m_speed;
+	//Á×À½ °ü·Ã Çàµ¿
+	Command& m_death_command = DeathCommand::PlayerDie::getinstance();
 
-	int32 m_max_HP;
+	//Áö±İÇÑ ¸ğµç Çàµ¿
+	std::queue<Command*> m_all_command;
 
-	int32 m_current_HP;
 
-	bool mb_initialize;
+	//ÇÊ»ì±â °ü·Ã ÇÃ·¹ÀÌ¾î Çàµ¿
+	PlayerCommand& m_finishmove_command = PlayerFinishiMoveCommand::SpecialBoom::getinstance();
 
-	int32 m_attack_power;
+	//ÇÃ·¹ÀÌ¾îÀÇ ¸ğµç Çàµ¿
+	std::queue<PlayerCommand*> m_all_player_command;
 
-	std::queue<EVariousAction> m_actions;
 
-	int32 m_score;
+	//ÃÑ½î´Â Å°¸¦ ´­·È´ÂÁö È®ÀÎÇÑ´Ù.
+	bool m_pressed_attack_key;
 
-	//í”Œë ˆì´ì–´ì˜ ë¬´ê¸°ì— ê´€í•œ ë³€ìˆ˜ë“¤
-	EVariousWeapon m_weapon_kind;
+	//Ãæµ¹ ÀÌÀü HP
+	float m_overlap_befor_hp;
 
-	float m_shooting_delay;
+	//¹«Àû½Ã°£ Á¦ÇÑ
+	const int32 m_invincibility_time = 180;
 
-	bool mb_press;
-
-	int32 m_weapon_level;
-
-	float m_weapon_lifespan;
-
-	int32 m_press_time;
-
-	bool m_available_shooting;
-
-	//í­íƒ„ ê°¯ìˆ˜
-	int32 m_special_boom_number;
-
+	//³²Àº ¹«Àû½Ã°£ 
+	int32 m_invincibility_count = 0;
 };

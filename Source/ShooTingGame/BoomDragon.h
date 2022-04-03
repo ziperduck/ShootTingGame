@@ -2,16 +2,22 @@
 
 #pragma once
 
-#include "EnumPack.h"
-#include "Fuselage.h"
-#include "DragonSpecies.h"
-#include "Airframe.h"
 #include "CoreMinimal.h"
+
+#include "FuselageStatus.h"
+
+#include "ShootingCommand.h"
+#include "MoveCommand.h"
+#include "CollisionCommand.h"
+#include "DeathCommand.h"
+
+#include "FuselageBaseData.h"
+
 #include "GameFramework/Actor.h"
 #include "BoomDragon.generated.h"
 
 UCLASS()
-class SHOOTINGGAME_API ABoomDragon : public AActor, public IFuselage, public IDragonSpecies
+class SHOOTINGGAME_API ABoomDragon : public AActor, public IFuselageBaseData
 {
 	GENERATED_BODY()
 	
@@ -24,65 +30,27 @@ public:
 	// Sets default values for this actor's properties
 	ABoomDragon();
 
-	UFUNCTION(BlueprintCallable, Category = "Fuselage")
-	void FuselageInitialize(const float Speed, const int32 MaxHP,const float BoomDelay);
-
 	virtual void Tick(float Delta) override;
 
-	virtual void NotifyActorBeginOverlap(AActor* Actor) override;
-
-	//Getter
-	virtual const EFuselageKind GetKind() const override;
-
-	virtual const float GetSpeed() const override;
-
-	virtual const int32 GetAttackPower() const override;
-
-	virtual const TArray<EVariousAction> GetNextActions() override;
-
-	//Setter
-	virtual void SetDeathActions_Implementation(const TArray<EVariousAction>& DeathActions) override;
-
-	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override;
-
-	virtual void SetSpeed(const float Speed) override;
-
-	virtual void SetAttackPower(const int32 Power) override;
-
-	virtual void AttackFuselage(const int32 HP) override;
-
-	virtual void MoveLocation(const FVector& MoveLocation) override;
-
-	//Event
-	virtual void EventUpdate() override;
+private:
+	//충돌시 호출되는 함수
+	virtual void NotifyActorBeginOverlap(AActor* other) final;
 
 private:
 
-	USoundWave* m_death_sound_asset;
+	//충돌 관련 행동
+	Command& m_attack_command = CollisionCommand::CollisionAttack::getinstance();
 
-	UAudioComponent* m_death_sound;
+	//이동 관련 행동
+	Command& m_down_move_command = MoveCommand::BackwardMove::getinstance();
 
-	FTimerHandle m_boom_timer_handle;
+	//죽음 관련 행동
+	Command& m_death_command = DeathCommand::EnemyDie::getinstance();
 
-private:
 
-	const EFuselageKind m_kind = EFuselageKind::ENEMY_FUSELAGE;
+	//모든 동작
+	std::queue<Command*> m_all_command;
 
-	int32 m_max_HP;
 
-	int32 m_current_HP;
 
-	bool mb_initialize;
-
-	float m_speed;
-
-	TQueue<EVariousAction> m_actions;
-
-	TArray<EVariousAction> m_next_actions;
-
-	TArray<EVariousAction> m_death_actions;
-
-	float m_boom_delay;
-
-	int32 m_attack_power;
 };

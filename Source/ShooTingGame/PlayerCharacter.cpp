@@ -1,405 +1,159 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
 #include "PlayerCharacter.h"
-#include "Action.h"
-#include "ActionInstance.h"
-#include "GameInformation.h"
-#include <Engine/Classes/Camera/CameraComponent.h>
-#include <Engine/Classes/Components/SphereComponent.h>
-#include <Engine/Classes/Components/AudioComponent.h>
+
+#include "FuselageData.h"
+#include "FuselageStatus.h"
+
+#include "WeaponStruct.h"
+
 
 // Sets default values
-APlayerCharacter::APlayerCharacter() {
-
-	UE_LOG(LogTemp, Log, TEXT("AplayerContorller Constructor"));
-
+APlayerCharacter::APlayerCharacter()
+{
+ 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	static ConstructorHelpers::FObjectFinder<USoundWave>
-		RifleAssetSound(TEXT("/Game/Audio/RifleShootingSound.RifleShootingSound"));
-	checkf(RifleAssetSound.Succeeded(), TEXT("RifleAssetSound is nullptr"));
-	RifleSound = RifleAssetSound.Object;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Player RootComponenet"));
 
-	static ConstructorHelpers::FObjectFinder<USoundWave>
-		LaserGatherAssetSound(TEXT("/Game/Audio/GatherLaserSound.GatherLaserSound"));
-	checkf(LaserGatherAssetSound.Succeeded(), TEXT("LaserGatherAssetSound is nullptr"));
-	LaserGatherSound = LaserGatherAssetSound.Object;
-
-	m_weapon_shoot_audio = CreateDefaultSubobject<UAudioComponent>(TEXT("Weapon Audio"));
-	m_weapon_shoot_audio->SetupAttachment(RootComponent);
-
-	mb_initialize = false;
-
-	SetActorTickEnabled(false);
-	SetActorEnableCollision(false);
-
-	mb_press = false;
-	m_available_shooting = true;
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Log, TEXT("AplayerContorller BeginPlay"));
 
+	m_base_data = std::make_shared<FuselageCharacter>(this,0.0f, FuselageMaker::GetUFO());
 
+	m_player_data = std::make_shared<PlayerCharacterData>(this, 5);
+
+	m_overlap_befor_hp = m_base_data->GetCurrentHP();
 }
 
-void APlayerCharacter::FuselageInitialize(
-	const float Speed, const int32 MaxHP, const EVariousWeapon Weapon, const float ShootingDelay)
+// Called to bind functionality to input
+void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	if (!mb_initialize)
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	InputComponent->BindAction("KeyboadA", IE_Pressed, this, &APlayerCharacter::PressedAttackKey);
+	InputComponent->BindAction("KeyboadA", IE_Released, this, &APlayerCharacter::ReleasedAttackKey);
+
+	InputComponent->BindAction("KeyboadX", IE_Pressed, this, &APlayerCharacter::FinishiMoveKey);
+
+	InputComponent->BindAxis("UpDown", this, &APlayerCharacter::m_up_dawn);
+	InputComponent->BindAxis("LeftRight", this, &APlayerCharacter::m_left_right);
+}
+
+// Called every frame
+void APlayerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	checkf(m_base_data.get() != nullptr, TEXT("APlayerCharacter base data is nullptr"));
+
+	//공격키를 누른 상태일경우 pleasedcommand를 추가한다.
+	if (m_pressed_attack_key)
 	{
-		Tags.Add(TEXT("Fuselage"));
-		Tags.Add(TEXT("Airframe"));
-
-		mb_initialize = true;
-
-		UE_LOG(LogTemp, Log, TEXT("Initialize %s"), *GetName());
-
-		SetActorTickEnabled(true);
-		SetActorEnableCollision(true);
-
-		m_speed = Speed;
-		m_max_HP = MaxHP;
-		m_current_HP = MaxHP;
-		
-		m_weapon_kind = Weapon;
-
-
-		switch (m_weapon_kind)
-		{
-		case EVariousWeapon::RIFLE_WEAPON:
-		{
-			m_weapon_lifespan = 5.0f;
-
-			checkf(RifleSound != nullptr, TEXT("Laser Weapon assets not find"));
-
-			m_weapon_shoot_audio->SetSound(RifleSound);
-			break;
-		}
-		case EVariousWeapon::LASERBEAM_WEAPON:
-		{
-			m_weapon_lifespan = 0.0f;
-			checkf(LaserGatherSound != nullptr, TEXT("Laser Weapon assets not find"));
-
-			m_weapon_shoot_audio->SetSound(LaserGatherSound);
-			break;
-		}
-		default:
-			checkf(false, TEXT("weapon is no player weapon"));
-			break;
-		}
-		m_shooting_delay = ShootingDelay;
-
-		m_weapon_level = 1;
-
-		m_press_time = 0;
-
-		m_special_boom_number = 3;
-
-		m_score = 10;
+		UE_LOG(LogTemp, Log, TEXT("m_pressed_attack_key"));
+		m_all_command.push(&m_pressedshoot_command);
 	}
-}
 
-//Getter
-const EFuselageKind APlayerCharacter::GetKind() const
-{
-	return m_kind;
-}
-
-const float APlayerCharacter::GetSpeed() const
-{
-	return m_speed;
-}
-
-const int32 APlayerCharacter::GetAttackPower() const
-{
-	return 1;
-}
-
-const int32 APlayerCharacter::GetCurrentHP() const
-{
-	return m_current_HP;
-}
-
-const int32 APlayerCharacter::GetSpecialBoomNumber() const
-{
-	return m_special_boom_number;
-}
-
-const int32 APlayerCharacter::GetScore() const
-{
-	return m_score;
-}
-
-void APlayerCharacter::SetSpeed(const float Speed)
-{
-	m_speed = Speed;
-}
-
-void APlayerCharacter::SetAttackPower(const int32 Power)
-{
-	m_attack_power = Power;
-}
-
-void APlayerCharacter::WeaponChange(const EVariousWeapon ChangeWeapon)
-{
-	if (ChangeWeapon != m_weapon_kind)
+	//플레이어 무적일경우 무적을 해체한다.
+	if (m_base_data->GetUnion() == static_cast<int8>(EUnionBinary::PLAYER_INVINCIBILITY_BINARY))
 	{
-		checkf(EVariousWeapon::FIRESHOOT_WEAPON != ChangeWeapon,TEXT("change Weapon is fireshoot"));
-		m_weapon_kind = ChangeWeapon;
-		m_weapon_level = 1;
-		switch (m_weapon_kind)
+		//플레이어의 무적지속시간을 점점 줄인다.
+		if (++m_invincibility_count > m_invincibility_time)
 		{
-		case EVariousWeapon::RIFLE_WEAPON:
-		{
-			m_weapon_lifespan = 5.0f;
-
-			checkf(RifleSound != nullptr, TEXT("Laser Weapon assets not find"));
-
-			m_weapon_shoot_audio->SetSound(RifleSound);
-			break;
-		}
-		case EVariousWeapon::LASERBEAM_WEAPON:
-		{
-			m_weapon_lifespan = 0.0f;
-			checkf(LaserGatherSound != nullptr, TEXT("Laser Weapon assets not find"));
-
-			m_weapon_shoot_audio->SetSound(LaserGatherSound);
-			break;
-		}
-		default:
-			checkf(false, TEXT("weapon is no player weapon"));
-			break;
+			m_all_command.push(&m_invincibility_off_command);
+			m_invincibility_count = 0;
 		}
 	}
-	else
+
+	//데미지를 받았을 경우 
+	if (m_base_data->GetCurrentHP() < m_overlap_befor_hp)
 	{
-		++m_weapon_level;
-		if (m_weapon_level > 3)
-			m_weapon_level = 3;
+		//플레이어 무적만들기
+		m_all_command.push(&m_invincibility_on_command);
+
+		m_overlap_befor_hp = m_base_data->GetCurrentHP();
+
+		//만약 죽을경우에는 모든 행동들을 없애고 command만 적용시킨다.
+		if (m_base_data->GetCurrentHP() <= 0.0f)
+		{
+			m_all_command.push(&m_death_command);
+		}
 	}
-}
 
-void APlayerCharacter::PressSpecialBoom()
-{
-	if (m_special_boom_number > 0)
+	//모든 행동들을 실행시킨다.
+	while (!m_all_command.empty())
 	{
-		m_actions.push(EVariousAction::SPECIAL_BOOM);
-		--m_special_boom_number;
+		m_all_command.front()->execute(m_base_data);
+		m_all_command.pop();
 	}
-}
-
-//Setter
-void APlayerCharacter::AttackFuselage(const int32 HP)
-{
-	if (HP >= 0)
-	{
-		UE_LOG(LogTemp, Log, TEXT("HP HEAL"));
-		m_current_HP += HP;
-	}
-	else if (!GetWorldTimerManager().IsTimerActive(m_invincibility_timer))
-	{
-		UE_LOG(LogTemp, Log, TEXT("HP HI"));
-		m_current_HP += HP;
-		GetWorldTimerManager().SetTimer(m_invincibility_timer, []() {
-			UE_LOG(LogTemp, Log, TEXT("You not Invincible HP"));}, 3.0f, false);
-	} 
-
-	UE_LOG(LogTemp, Log, TEXT("Player Attack %d Now HP %0.10f.10 "), HP, m_current_HP);
-
-	if (m_current_HP < 1)
-	{
-		UE_LOG(LogTemp, Log, TEXT("current Hp is 0"));
-
-		SetActorTickEnabled(false);
-		SetActorEnableCollision(false);
-
-		UnregisterAllComponents();
-
-	}
-}
-
-void APlayerCharacter::MoveLocation(const FVector& MoveLocation) {
 	
-	SetActorLocation(GetActorLocation() + MoveLocation);
-}
-
-const int32 APlayerCharacter::GetWeaponLevel() const
-{
-	return m_weapon_level;
-}
-
-const float APlayerCharacter::GetWeaponLifespan() const
-{
-	return m_weapon_lifespan;
-}
-
-//Event
-void APlayerCharacter::EventUpdate()
-{
-	if (m_current_HP < 1)
+	while (!m_all_player_command.empty())
 	{
-		UE_LOG(LogTemp, Log, TEXT("You Death"));
-		PrimaryActorTick.bCanEverTick = false;
-	}
-	while (m_actions.size() > 0)
-	{
-		IAction* Action = ChangeAction(m_actions.front());
-		Action->Execute(this);
-		m_actions.pop();
+		m_all_player_command.front()->execute(m_player_data);
+		m_all_player_command.pop();
 	}
 
-	if (mb_press)
-	{
-		switch (m_weapon_kind)
-		{
-		case EVariousWeapon::RIFLE_WEAPON:
-			if (m_available_shooting)
-			{
-				m_weapon_shoot_audio->Play();
-				m_available_shooting = false;
-				m_actions.push(EVariousAction::SHOOTING);
-				GetWorldTimerManager().SetTimer(
-					m_shooting_timer, [&] {m_available_shooting = true; }, m_shooting_delay, false);
-			}
-			break;
-		case EVariousWeapon::LASERBEAM_WEAPON:
-			if (m_available_shooting)
-			{
-				++m_press_time;
-				UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Count %d"), m_press_time);
-
-				if (!m_weapon_shoot_audio->IsPlaying())
-				{
-					m_weapon_shoot_audio->Play();
-				}
-			}
-			break;
-		default:
-			break;
-		}
-	}
-	UE_LOG(LogTemp, Log, TEXT("Player Position (%f,%f)"),GetActorLocation().X, GetActorLocation().Y);
-}
-
-void APlayerCharacter::Tick(float Delta)
-{
-	Super::Tick(Delta);
-
-	EventUpdate();
+	UE_LOG(LogTemp, Log, TEXT("Player Location(%s)"), *GetActorLocation().ToString());
+	UE_LOG(LogTemp, Log, TEXT("Player HP %f"), m_base_data->GetCurrentHP());
+	UE_LOG(LogTemp, Log, TEXT("Player Score %d"), m_player_data->GetScore());
 
 }
 
-void APlayerCharacter::EastWest(float Direction)
+void APlayerCharacter::NotifyActorBeginOverlap(AActor* other)
 {
-	const int EastOrWeast = Direction;
-	constexpr int East = 1;
-	constexpr int West = -1;
-	
-	GameInformation* Interface = GameInformation::GetInstance();
+	m_all_command.push(&m_collision_command);
+	m_overlap_befor_hp = m_base_data->GetCurrentHP();
+}
 
-	switch (EastOrWeast)
+//임시로 모든 방향키에 move를 push했다
+void APlayerCharacter::m_left_right(float Direction)
+{
+	switch ((int32)Direction)
 	{
-	case East:
-		if (Interface->GetMapWidthMaxLocation() > GetActorLocation().Y + m_speed)
-		{
-			m_actions.push(EVariousAction::EAST_MOVE);
-		}
+	case -1:
+		m_all_command.push(&m_leftmove_command);
 		break;
-	case West:
-		if (Interface->GetMapWidthMinLocation() < GetActorLocation().Y - m_speed)
-		{
-			m_actions.push(EVariousAction::WEST_MOVE);
-		}
+	case 1:
+		m_all_command.push(&m_rightmove_command);
 		break;
 	default:
 		break;
 	}
 }
 
-void APlayerCharacter::NorthSouth(float Direction)
+void APlayerCharacter::m_up_dawn(float Direction)
 {
-	const int NorthOrSouth = Direction;
-	constexpr int North = 1;
-	constexpr int South = -1;
-
-	GameInformation* Interface = GameInformation::GetInstance();
-	switch (NorthOrSouth)
+	switch ((int32)Direction)
 	{
-	case North:
-		if (Interface->GetMapHeightMaxLocation() > GetActorLocation().X + m_speed)
-		{
-		m_actions.push(EVariousAction::NORTH_MOVE);
-		}
+	case -1:
+		m_all_command.push(&m_backwardmove_command);
 		break;
-	case South:
-		if (Interface->GetMapHeightMinLocation() < GetActorLocation().X - m_speed)
-		{
-		m_actions.push(EVariousAction::SOUTH_MOVE);
-		}
+	case 1:
+		m_all_command.push(&m_forwardmove_command);
 		break;
 	default:
 		break;
 	}
 }
-/*
-* 
-*/
-void APlayerCharacter::PressAttack()
+
+void APlayerCharacter::PressedAttackKey()
 {
-	UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Press"));
-	mb_press = true;
+	m_pressed_attack_key = true;
 }
 
-
-void APlayerCharacter::ReleaseAttack()
+void APlayerCharacter::ReleasedAttackKey()
 {
-
-	UE_LOG(LogTemp, Log, TEXT("APlayerCharacter Release"));
-	if (m_weapon_kind == EVariousWeapon::LASERBEAM_WEAPON && m_available_shooting)
-	{
-		m_weapon_shoot_audio->Stop();
-
-		m_available_shooting = false;
-		m_press_time /= 120;
-		m_press_time += 1;
-		if (m_press_time > 5)
-		{
-			m_press_time = 5;
-		}
-		m_weapon_lifespan = m_press_time;
-		UE_LOG(LogTemp, Log, TEXT("Release time%d"), m_press_time);
-		m_actions.push(EVariousAction::SHOOTING);
-		GetWorldTimerManager().SetTimer(
-			m_shooting_timer, [&] {m_available_shooting = true; }, m_shooting_delay + m_weapon_lifespan, false);
-
-	}
-	mb_press = false;
-	m_press_time = 0;
+	m_pressed_attack_key = false;
+	m_all_command.push(&m_releaseshoot_command);
 }
 
-
-const EVariousWeapon APlayerCharacter::GetWeaponKind() const
+void APlayerCharacter::FinishiMoveKey()
 {
-	return m_weapon_kind;
+	m_all_player_command.push(&m_finishmove_command);
 }
 
-const TArray<EVariousAction> APlayerCharacter::GetNextActions()
-{
-	return TArray<EVariousAction>();
-}
-
-void APlayerCharacter::SetScore(const int32 Score)
-{
-	m_score += Score;
-}
-
-void APlayerCharacter::NotifyActorBeginOverlap(AActor* Actor)
-{
-	UE_LOG(LogTemp, Log, TEXT("Overlap Player Character"));
-	m_actions.push(EVariousAction::ATTACK);
-}

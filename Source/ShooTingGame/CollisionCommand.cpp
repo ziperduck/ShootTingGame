@@ -89,7 +89,6 @@ namespace CollisionCommand {
 
 	bool CollisionChangeWeapon::execute(std::shared_ptr<FuselageCharacter> Character)
 	{
-		checkf(Character->GetWeapon() != nullptr, TEXT("character Actor no have weapon"));
 
 		TSet<AActor*> OverlapActors = ReturnOverlapCharacter(Character);
 

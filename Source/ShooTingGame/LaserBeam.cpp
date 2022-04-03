@@ -2,106 +2,44 @@
 
 
 #include "LaserBeam.h"
-#include "Action.h"
-#include "ActionInstance.h"
-#include <Engine/Classes/Components/BoxComponent.h>
+
+#include "FuselageMaker.h"
+
+
 // Sets default values
-ALaserBeam::ALaserBeam() {
+ALaserBeam::ALaserBeam()
+{
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	mb_initialize = false;
-
-	SetActorTickEnabled(false);
-	SetActorEnableCollision(false);
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Player RootComponenet"));
 }
 
+// Called when the game starts or when spawned
 void ALaserBeam::BeginPlay()
 {
 	Super::BeginPlay();
+	m_base_data = std::make_shared<FuselageCharacter>(this,0.0f, FuselageMaker::GetLaserBeam());
+
 }
 
-void ALaserBeam::WeaponInitalize(const int32 Power)
+// Called every frame
+void ALaserBeam::Tick(float DeltaTime)
 {
-	if (!mb_initialize)
+	Super::Tick(DeltaTime);
+
+	while (!m_behavior.empty())
 	{
-		Tags.Add(TEXT("Fuselage"));
-		Tags.Add(TEXT("Weapon"));
-
-		m_attack_power = Power;
-
-		SetActorTickEnabled(true);
-		SetActorEnableCollision(true);
-
-		m_actions.Enqueue(EVariousAction::ATTACHPLAYER_MOVE);
+		checkf(m_base_data.get() != nullptr, TEXT("ALaserBeam m_base_data is nullptr"));
+		
+		m_behavior.front()->execute(m_base_data);
+		m_behavior.pop();
 	}
+
+	m_behavior.push(&m_attack_command);
 }
 
-//Getter
-const EFuselageKind ALaserBeam::GetKind() const
+void ALaserBeam::NotifyActorBeginOverlap(AActor* Actor)
 {
-	return m_kind;
-}
-
-const float ALaserBeam::GetSpeed() const
-{
-	return 0;
-}
-
-const int32 ALaserBeam::GetAttackPower() const
-{
-	return m_attack_power;
-}
-
-const TArray<EVariousAction> ALaserBeam::GetNextActions()
-{
-	return TArray<EVariousAction>();
-}
-
-void ALaserBeam::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
-{
-}
-
-void ALaserBeam::SetSpeed(const float Speed)
-{
-}
-
-void ALaserBeam::SetAttackPower(const int32 Power)
-{
-	m_attack_power = Power;
-}
-
-
-//Setter
-
-void ALaserBeam::AttackFuselage(const int32 HP)
-{
-}
-
-void ALaserBeam::MoveLocation(const FVector& MoveLocation) 
-{
-	SetActorLocation(GetActorLocation() + MoveLocation);
-}
-
-//Event
-void ALaserBeam::EventUpdate()
-{
-
-	m_actions.Enqueue(EVariousAction::ATTACK);
-
-	while (!m_actions.IsEmpty())
-	{
-		IAction* Action = ChangeAction(*m_actions.Peek());
-		UE_LOG(LogTemp, Log, TEXT("ALaserBeam EventUpdate"));
-		checkf(Action != nullptr, TEXT("ALaserBeam EventUpdate in Action is nullptr"));
-		Action->Execute(this);
-		m_actions.Pop();
-	}
-}
-
-void ALaserBeam::Tick(float Delta)
-{
-	Super::Tick(Delta);
-	EventUpdate();
-
+	UE_LOG(LogTemp, Log, TEXT("Laser Beam Overlap"));
 }

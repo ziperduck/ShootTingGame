@@ -26,6 +26,15 @@ public:
 	//화염용의 소속
 	static const FuselageUnion* FireDragonUnion();
 
+	//돌진용의 소속
+	static const FuselageUnion* RushDragonUnion();
+
+	//폭팔용의 소속
+	static const FuselageUnion* BoomDragonUnion();
+
+	//폭팔용의 소속
+	static const FuselageUnion* MeteoricStoneUnion();
+
 
 	//적군의 파이어볼의 소속
 	static const FuselageUnion* FireBallUnion();
@@ -39,6 +48,9 @@ public:
 
 	//플레이어의 힐팩의 소속
 	static const FuselageUnion* HealPackUnion();
+
+	//플레이어의 무기교체의 소속
+	static const FuselageUnion* WeaponKitUnion();
 
 private:
 

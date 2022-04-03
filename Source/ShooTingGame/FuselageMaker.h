@@ -24,6 +24,13 @@ namespace FuselageMaker
 	//돌진하는 드레곤 fuselage값을 리턴한다
 	std::shared_ptr<FuselageData> GetRushDragon();
 
+	//돌진하는 드레곤 fuselage값을 리턴한다
+	std::shared_ptr<FuselageData> GetBoomDragon();
+
+	//운석 fuselage값을 리턴한다
+	std::shared_ptr<FuselageData> GetMeteoricStone();
+
+
 	//총알 fuselage값을 리턴한다.
 	std::shared_ptr<FuselageData> GetBullet();
 
@@ -36,5 +43,7 @@ namespace FuselageMaker
 	//힐팩 fuselage값을 리턴한다.
 	std::shared_ptr<FuselageData> GetHealPack();
 
+	//무기교체키트 fuselage값을 리턴한다.
+	std::shared_ptr<FuselageData> GetWeaponKit();
 
 }

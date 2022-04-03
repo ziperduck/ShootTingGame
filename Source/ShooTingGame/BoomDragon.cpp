@@ -2,51 +2,20 @@
 
 
 #include "BoomDragon.h"
-#include "ActionInstance.h"
-#include <Engine/Classes/Components/AudioComponent.h>
+#include <Engine/Classes/Kismet/GameplayStatics.h>
+
+#include "FuselageMaker.h"
+
+#include "SpecialEvents.h"
 
 // Sets default values
 ABoomDragon::ABoomDragon()
 {
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	static ConstructorHelpers::FObjectFinder<USoundWave>
-		DeathAssetSound(TEXT("/Game/Audio/DragonDeathSound.DragonDeathSound"));
-	checkf(DeathAssetSound.Succeeded(), TEXT("BreakAssetSound is no found"));
-	m_death_sound_asset = DeathAssetSound.Object;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Fuselage RootComponenet"));
 
-	m_death_sound = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
-	m_death_sound->SetupAttachment(RootComponent);
-
-	mb_initialize = false;
-
-	SetActorTickEnabled(false);
-	SetActorEnableCollision(false);
-
-}
-
-void ABoomDragon::FuselageInitialize(const float Speed, const int32 MaxHP, const float BoomDelay)
-{
-	if (!mb_initialize)
-	{
-		mb_initialize = true;
-
-		UE_LOG(LogTemp, Log, TEXT("Initialize"));
-
-		Tags.Add(TEXT("Fuselage"));
-		Tags.Add(TEXT("Airframe"));
-
-		SetActorTickEnabled(true);
-		SetActorEnableCollision(true);
-
-		m_speed = Speed;
-
-		m_max_HP = MaxHP;
-		m_current_HP = MaxHP;
-
-		m_boom_delay = BoomDelay;
-	}
 }
 
 // Called when the game starts or when spawned
@@ -54,6 +23,11 @@ void ABoomDragon::BeginPlay()
 {
 	Super::BeginPlay();
 
+	m_base_data = std::make_shared<FuselageCharacter>(this, 20.0f, FuselageMaker::GetFireDragon());
+
+	m_base_data->AddDeathEvent(std::make_shared<PlayerRaiseScore>(100));
+	m_base_data->AddDeathEvent(std::make_shared<RandomItemDrop>());
+	m_base_data->AddDeathEvent(std::make_shared<RangeBoom>(100.0f,2.0f,3.0f));
 }
 
 // Called every frame
@@ -61,105 +35,28 @@ void ABoomDragon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	EventUpdate();
+	checkf(m_base_data.get() != nullptr, TEXT("ABoomDragon base data is nullptr"));
+
+	if (m_base_data->GetCurrentHP() <= 0.0f)
+	{
+		m_all_command.push(&m_death_command);
+	}
+
+	while (!m_all_command.empty())
+	{
+		m_all_command.front()->execute(m_base_data);
+		m_all_command.pop();
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("ABoomDragon Location(%s)"), *GetActorLocation().ToString());
+	UE_LOG(LogTemp, Log, TEXT("ABoomDragon HP %f"), m_base_data->GetCurrentHP());
+
+	m_all_command.push(&m_down_move_command);
+
+
 }
 
 void ABoomDragon::NotifyActorBeginOverlap(AActor* Actor)
 {
-	UE_LOG(LogTemp, Log, TEXT("ABoomDragon Overlap"));
-
-	IFuselage* Fuselage = Cast<IFuselage>(Actor);
-	checkf(Fuselage != nullptr, TEXT("ABoomDragon overlap actor is not Fuselage"));
-
-	if (!GetWorldTimerManager().IsTimerActive(m_boom_timer_handle)&& Fuselage->GetKind() == EFuselageKind::PLAYER_FUSELAGE)
-	{
-		GetWorldTimerManager().SetTimer(m_boom_timer_handle
-			, [&] {	m_actions.Enqueue(EVariousAction::BOOM_ATTACK);
-			m_actions.Enqueue(EVariousAction::DEATH); }, m_boom_delay, false);
-	}
-	m_actions.Enqueue(EVariousAction::ATTACK);
-
-	return;
-}
-
-const EFuselageKind ABoomDragon::GetKind() const
-{
-	return m_kind;
-}
-
-const float ABoomDragon::GetSpeed() const
-{
-	return m_speed;
-}
-
-const int32 ABoomDragon::GetAttackPower() const
-{
-	return 1;
-}
-
-const TArray<EVariousAction> ABoomDragon::GetNextActions()
-{
-	return m_next_actions;
-}
-
-void ABoomDragon::SetDeathActions_Implementation(const TArray<EVariousAction>& DeathActions)
-{
-	m_death_actions = DeathActions;
-}
-
-void ABoomDragon::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
-{
-	m_next_actions = NextActions;
-}
-
-void ABoomDragon::SetSpeed(const float Speed)
-{
-	m_speed = Speed;
-}
-
-void ABoomDragon::SetAttackPower(const int32 Power)
-{
-	m_attack_power = Power;
-}
-
-void ABoomDragon::AttackFuselage(const int32 HP)
-{
-	m_current_HP += HP;
-}
-
-void ABoomDragon::MoveLocation(const FVector& MoveLocation)
-{
-	SetActorLocation(GetActorLocation() + MoveLocation);
-}
-
-void ABoomDragon::EventUpdate()
-{
-	while (!m_actions.IsEmpty())
-	{
-		IAction* Action = ChangeAction(*m_actions.Peek());
-		Action->Execute(this);
-		m_actions.Pop();
-	}
-	if (m_current_HP < 1)
-	{
-		for (const auto& i : m_death_actions)
-		{
-			m_actions.Enqueue(i);
-		}
-
-		UE_LOG(LogTemp, Log, TEXT("ABoomDragon Death"));
-		m_actions.Enqueue(EVariousAction::DEATH);
-
-
-		m_death_sound->SetSound(m_death_sound_asset);
-		m_death_sound->Play();
-		
-	}
-	else if(!GetWorldTimerManager().IsTimerActive(m_boom_timer_handle))
-	{
-		for (const auto& i : m_next_actions)
-		{
-			m_actions.Enqueue(i);
-		}
-	}
+	m_all_command.push(&m_attack_command);
 }

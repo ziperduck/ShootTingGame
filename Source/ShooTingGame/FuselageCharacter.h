@@ -20,7 +20,7 @@ class WeaponStruct;
 class FuselageCharacter
 {
 public:
-	FuselageCharacter(AActor* Actor, std::shared_ptr<FuselageData> BaseData);
+	FuselageCharacter(AActor* Actor,float ActorLifeSpan, std::shared_ptr<FuselageData> BaseData);
 	FuselageCharacter(const FuselageCharacter& Reference);
 	~FuselageCharacter(){};
 

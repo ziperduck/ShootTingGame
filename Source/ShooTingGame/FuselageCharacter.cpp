@@ -5,6 +5,11 @@
 
 #include "WeaponStruct.h"
 
+FuselageCharacter::FuselageCharacter(AActor* Actor, float ActorLifeSpan, std::shared_ptr<FuselageData> BaseData)
+	:m_actor(Actor), m_base_data(BaseData) 
+{
+	m_actor->SetLifeSpan(ActorLifeSpan);
+}
 FuselageCharacter::FuselageCharacter(const FuselageCharacter& Reference)
 	:m_actor(Reference.m_actor),m_base_data(Reference.m_base_data){}
 
@@ -132,6 +137,3 @@ WeaponStruct* FuselageCharacter::GetWeapon() const
 	return m_base_data->GetWeapon();
 }
 
-FuselageCharacter::FuselageCharacter(AActor* Actor, std::shared_ptr<FuselageData> BaseData)
-:m_actor(Actor),m_base_data(BaseData){
-}

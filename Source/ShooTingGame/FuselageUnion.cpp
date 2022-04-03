@@ -49,6 +49,33 @@ const FuselageUnion* FuselageUnion::FireDragonUnion()
 	return Union;
 }
 
+const FuselageUnion* FuselageUnion::RushDragonUnion()
+{
+	static const FuselageUnion* Union = new FuselageUnion{
+		static_cast<int8>(EUnionBinary::ENEMY_BINARY)
+		, static_cast<int8>(EUnionBinary::PLAYER_BINARY)
+		| static_cast<int8>(EUnionBinary::PLAYER_WEAPON_BINARY) };
+	return Union;
+}
+
+const FuselageUnion* FuselageUnion::BoomDragonUnion()
+{
+	static const FuselageUnion* Union = new FuselageUnion{
+		static_cast<int8>(EUnionBinary::ENEMY_BINARY)
+		, static_cast<int8>(EUnionBinary::PLAYER_BINARY)
+		| static_cast<int8>(EUnionBinary::PLAYER_WEAPON_BINARY) };
+	return Union;
+}
+
+const FuselageUnion* FuselageUnion::MeteoricStoneUnion()
+{
+	static const FuselageUnion* Union = new FuselageUnion{
+		static_cast<int8>(EUnionBinary::ENEMY_BINARY)
+		, static_cast<int8>(EUnionBinary::PLAYER_BINARY)
+		| static_cast<int8>(EUnionBinary::PLAYER_WEAPON_BINARY) };
+	return Union;
+}
+
 
 const FuselageUnion* FuselageUnion::FireBallUnion()
 {
@@ -80,6 +107,15 @@ const FuselageUnion* FuselageUnion::HealPackUnion()
 	static const FuselageUnion* Union = new FuselageUnion{ 
 		static_cast<int8>(EUnionBinary::KIT_BINARY)
 		, static_cast<int8>(EUnionBinary::PLAYER_BINARY) 
+		| static_cast<int8>(EUnionBinary::PLAYER_INVINCIBILITY_BINARY) };
+	return Union;
+}
+
+const FuselageUnion* FuselageUnion::WeaponKitUnion()
+{
+	static const FuselageUnion* Union = new FuselageUnion{
+		static_cast<int8>(EUnionBinary::KIT_BINARY)
+		, static_cast<int8>(EUnionBinary::PLAYER_BINARY)
 		| static_cast<int8>(EUnionBinary::PLAYER_INVINCIBILITY_BINARY) };
 	return Union;
 }

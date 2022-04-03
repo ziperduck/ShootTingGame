@@ -3,5 +3,5 @@
 
 #include "WeaponMaker.h"
 
-#include "TestBullet.h"
-#include "TestLaserBeam.h"
+#include "Bullet.h"
+#include "LaserBeam.h"

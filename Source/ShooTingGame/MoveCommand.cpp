@@ -2,7 +2,6 @@
 
 
 #include "MoveCommand.h"
-#include "ShooTingGameModeBase.h"
 
 #include "ShootingGameMode.h"
 
@@ -179,8 +178,13 @@ namespace MoveCommand
 		UE_LOG(LogTemp, Log, TEXT("PlayerTracking execute"));
 
 		//플레이어및 움직일 대상의 위치를 찾는다.
-		FVector PlayerLocation 
-			= Character->GetActor()->GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+		APawn* PlayerPawn = Character->GetActor()->GetWorld()->GetFirstPlayerController()->GetPawn();
+		if (PlayerPawn == nullptr)
+		{
+			return false;
+		}
+		FVector PlayerLocation = PlayerPawn->GetActorLocation();
+
 		FVector MoveActorLocation = Character->GetActor()->GetActorLocation();
 
 		float Speed = Character->GetSpeed();

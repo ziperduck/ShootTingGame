@@ -2,61 +2,42 @@
 
 
 #include "WeaponKit.h"
-#include "Action.h"
-#include "ActionInstance.h"
-#include "GameInformation.h"
-#include <Engine/Classes/Components/SphereComponent.h>
+
+#include "FuselageMaker.h"
+
+#include "PlayerWeapon.h"
 
 // Sets default values
 AWeaponKit::AWeaponKit()
 {
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	SetActorTickEnabled(false);
-	SetActorEnableCollision(false);
-
-	mb_initialize = false;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("AWeaponKit RootComponenet"));
 }
 
-void AWeaponKit::WeaponKitInitalize(const float Spped)
-{
-	if (!mb_initialize)
-	{
-		mb_initialize = true;
-
-		Tags.Add(TEXT("Fuselage"));
-		Tags.Add(TEXT("Item"));
-
-		SetActorTickEnabled(true);
-		SetActorEnableCollision(true);
-
-		m_change_weapon = EVariousWeapon::RIFLE_WEAPON;
-
-		m_speed = Spped;
-	}
-}
 // Called when the game starts or when spawned
 void AWeaponKit::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Log, TEXT("AWeaponKit::BeginPlay"));
-}
 
-void AWeaponKit::ChangeWeaponEvent()
-{
-	switch (m_change_weapon)
-	{
-	case EVariousWeapon::RIFLE_WEAPON:
-		m_change_weapon = EVariousWeapon::LASERBEAM_WEAPON;
-		break;
-	case EVariousWeapon::LASERBEAM_WEAPON:
-		m_change_weapon = EVariousWeapon::RIFLE_WEAPON;
-		break;
-	default:
-		checkNoEntry();
-		break;
-	}
+	m_base_data = std::make_shared<FuselageCharacter>(this,10.0f, FuselageMaker::GetWeaponKit());
+
+	m_all_directs_command.push_back(&MoveCommand::BoundsBackwardMove::getinstance());
+	m_all_directs_command.push_back(&MoveCommand::BoundsLeftMove::getinstance());
+	m_all_directs_command.push_back(&MoveCommand::BoundsForwardMove::getinstance());
+	m_all_directs_command.push_back(&MoveCommand::BoundsRightMove::getinstance());
+
+	m_player_weapon.push_back(std::make_shared<PlayerWeapon::BulletLvel_1>());
+	m_player_weapon.push_back(std::make_shared<PlayerWeapon::LaserBeamLvel_1>());
+
+	m_weapon_first_letter.push_back("B");
+	m_weapon_first_letter.push_back("L");
+
+	m_directs_number[0] = 0;
+	m_directs_number[1] = 1;
+
+	m_weapon_cycle_count = 0;
 }
 
 // Called every frame
@@ -64,85 +45,50 @@ void AWeaponKit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Log, TEXT("AWeaponKit::Tick"));
-	EventUpdate();
+	//움직이기전에 location을 받는다.
+	m_actor_befor_location = GetActorLocation();
+
+	for (int i = 0; i < 2; i++)
+	{
+		UE_LOG(LogTemp, Log, TEXT("m_directs_number[%d] = %d"), i, m_directs_number[i]);
+		m_behavior.push(m_all_directs_command.at(m_directs_number[i]));
+	}
+
+	if (m_base_data->GetCurrentHP() <= 0.0f)
+	{
+		m_behavior.push(&m_death_command);
+	}
+
+	while (!m_behavior.empty())
+	{
+		m_behavior.front()->execute(m_base_data);
+		m_behavior.pop();
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("HealKit Location(%s)"), *GetActorLocation().ToString());
+	UE_LOG(LogTemp, Log, TEXT("HealKit HP %f"), m_base_data->GetCurrentHP());
+
+
+	//움직인후에 벽에 닿았을경우를 찾는다.
+	if (m_actor_befor_location.X == GetActorLocation().X)
+	{
+		m_directs_number[0] = (m_directs_number[0] + 2) % 4;
+	}
+	else if (m_actor_befor_location.Y == GetActorLocation().Y)
+	{
+		m_directs_number[1] = (m_directs_number[1] + 2) % 4;
+	}
 }
 
 void AWeaponKit::NotifyActorBeginOverlap(AActor* Actor)
 {
-	UE_LOG(LogTemp, Log, TEXT("AWeaponKit Overlap"));
-
-	IFuselage* Fuselage = Cast<IFuselage>(Actor);
-	checkf(Fuselage != nullptr, TEXT("AWeaponKit overlap actor is not Fuselage"));
-
-	if (Fuselage->GetKind() == EFuselageKind::PLAYER_FUSELAGE)
-	{
-		m_actions.Enqueue(EVariousAction::PLAYER_WEAPON_CHANGE);
-		m_actions.Enqueue(EVariousAction::DEATH);
-	}
+	m_behavior.push(&m_collision_weaponchange_command);
 }
 
-const EFuselageKind AWeaponKit::GetKind() const
+FString AWeaponKit::ChangeWeapon()
 {
-	return m_kind;
+	m_weapon_cycle_count = (m_weapon_cycle_count + 1) % m_weapon_first_letter.size();
+	m_base_data->ChangeWeapon(m_player_weapon.at(m_weapon_cycle_count).get());
+
+	return m_weapon_first_letter.at(m_weapon_cycle_count);
 }
-
-const float AWeaponKit::GetSpeed() const
-{
-	return m_speed;
-}
-
-const int32 AWeaponKit::GetAttackPower() const
-{
-	return 0;
-}
-
-const TArray<EVariousAction> AWeaponKit::GetNextActions()
-{
-	return m_next_actions;
-}
-
-const EVariousWeapon AWeaponKit::GetChangeWeapon() const
-{
-	return m_change_weapon;
-}
-
-void AWeaponKit::SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)
-{
-	m_next_actions = NextActions;
-}
-
-void AWeaponKit::SetSpeed(const float Speed)
-{
-	m_speed = Speed;
-}
-
-void AWeaponKit::SetAttackPower(const int32 Power)
-{
-}
-
-void AWeaponKit::AttackFuselage(const int32 HP)
-{
-
-}
-
-void AWeaponKit::MoveLocation(const FVector& MoveLocation)
-{
-	SetActorLocation(GetActorLocation() + MoveLocation);
-}
-
-void AWeaponKit::EventUpdate()
-{
-	while (!m_actions.IsEmpty())
-	{
-		IAction* Action = ChangeAction(*m_actions.Peek());
-		Action->Execute(this);
-		m_actions.Pop();
-	}
-	for (const auto& i : m_next_actions)
-	{
-		m_actions.Enqueue(i);
-	}
-
-}
-

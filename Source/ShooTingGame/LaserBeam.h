@@ -2,62 +2,46 @@
 
 #pragma once
 
-#include "WeaponStruct.h"
+#include "FuselageBaseData.h"
+
+#include "CollisionCommand.h"
+#include "MoveCommand.h"
+
 #include "CoreMinimal.h"
-#include "Fuselage.h"
-#include "EnumPack.h"
 #include "GameFramework/Actor.h"
 #include "LaserBeam.generated.h"
 
+//·¹ÀÌÀú ºöÀº Á×Áö ¾Ê´Â´Ù.
 UCLASS()
-class SHOOTINGGAME_API ALaserBeam : public AActor, public IFuselage
+class SHOOTINGGAME_API ALaserBeam : public AActor, public IFuselageBaseData
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ALaserBeam();
 
-	UFUNCTION(BlueprintCallable)
-		void WeaponInitalize(const int32 Power);
-
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float Delta) override;
-
-	//Getter
-	virtual const EFuselageKind GetKind() const override;
-
-	virtual const float GetSpeed() const override;
-
-	virtual const int32 GetAttackPower() const override;
-
-	virtual const TArray<EVariousAction> GetNextActions() override;
-
-	//Setter
-
-	virtual void SetNextActions_Implementation(const TArray<EVariousAction>& NextActions)  override;
-
-	virtual void SetSpeed(const float Speed) override;
-
-	virtual void SetAttackPower(const int32 Power) override;
-	
-	//Event
-
-	//laserëŠ” í”¼ê²©ì„ ë°›ì•„ë„ ì•„ë¬´ëŸ° ë°ë¯¸ì§€ë¥¼ ë°›ì§€ ì•ŠëŠ”ë‹¤
-	virtual void AttackFuselage(const int32 HP) override;
-
-	virtual void MoveLocation(const FVector& MoveLocation) override;
-
-	virtual void EventUpdate() override;
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 private:
-	const EFuselageKind m_kind = EFuselageKind::PLAYER_WEAPON;
 
-	bool mb_initialize;
+	virtual void NotifyActorBeginOverlap(AActor* Actor) final;
 
-	TQueue<EVariousAction> m_actions;
+private:
 
-	int32 m_attack_power;
+	//ÀÌµ¿ °ü·Ã Çàµ¿
+	Command& m_attatch_command = MoveCommand::AttatchMove::getinstance();
+
+	//°ø°İ °ü·Ã Çàµ¿
+	Command& m_attack_command = CollisionCommand::CollisionAttack::getinstance();
+
+	//ÇØ´ç °´Ã¼ÀÇ ¸ğµç Çàµ¿µé
+	std::queue<Command*> m_behavior;
+
 };
