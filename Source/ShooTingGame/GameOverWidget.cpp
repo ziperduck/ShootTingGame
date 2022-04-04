@@ -49,7 +49,7 @@ const int32 UGameOverWidget::GetCurrentScore() const
 
 TMap<FString, int32> UGameOverWidget::GetSavePlayerNameScore() const
 {
-	return m_save_namescore;
+	return m_save_game->GetScoreName();
 }
 
 void UGameOverWidget::NativeConstruct()
@@ -59,10 +59,12 @@ void UGameOverWidget::NativeConstruct()
 
 	if (UGameplayStatics::DoesSaveGameExist(m_solt_name, m_solt_index))
 	{
+		UE_LOG(LogTemp, Log, TEXT("UGameplayStatics::LoadGameFromSlot "));
 		m_save_game = Cast<USavePlayerScore>(UGameplayStatics::LoadGameFromSlot(m_solt_name, m_solt_index));
 	}
 	else
 	{
+		UE_LOG(LogTemp, Log, TEXT("UGameplayStatics::CreateSaveGameObject "));
 		m_save_game = Cast<USavePlayerScore>(UGameplayStatics::CreateSaveGameObject(USavePlayerScore::StaticClass()));
 	}
 

@@ -50,7 +50,7 @@ protected:
 	const int32 GetCurrentScore() const;
 
 	//저장된 데이터를 저장한다.
-	UFUNCTION(BlueprintCallable, Category = "GameOverWidget")
+	UFUNCTION(BlueprintGetter, Category = "GameOverWidget")
 	TMap<FString, int32> GetSavePlayerNameScore() const;
 
 
@@ -76,5 +76,6 @@ private:
 	USavePlayerScore* m_save_game;
 
 	//저장된 데이터
+	UPROPERTY(BlueprintGetter = GetSavePlayerNameScore, Category = "GameOverWidget")
 	TMap<FString, int32> m_save_namescore;
 };
