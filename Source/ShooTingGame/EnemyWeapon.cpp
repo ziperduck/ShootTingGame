@@ -10,7 +10,7 @@ namespace EnemyWeapon {
 	FireBallLvel_1::FireBallLvel_1()
 		: WeaponStruct(Cast<UClass>(StaticLoadClass(AFireBall::StaticClass(), NULL,
 			TEXT("Class'/Game/Blueprint/BP_FireBall.BP_FireBall_C'")))
-			, 1, 1.0f, 1.0f, FVector(1.0f, 1.0f, 1.0f),1.5f) {}
+			, 1, 1.0f, 10.0f, FVector(1.0f, 1.0f, 1.0f),1.5f) {}
 	
 	FireBallLvel_1::~FireBallLvel_1()
 	{
