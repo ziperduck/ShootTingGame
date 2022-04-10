@@ -32,9 +32,9 @@ namespace EnemyWeapon {
 		//레벨마다 다른 공격력을 AActor에 조절한다.
 		WeaponBaseData->GetBaseData()->SetAttackPower(m_power);
 	}
-	WeaponStruct* FireBallLvel_1::GetUpgradeWeapon()
+	std::shared_ptr<WeaponStruct> FireBallLvel_1::GetUpgradeWeapon()
 	{
-		return this;
+		return shared_from_this();
 	}
 	void FireBallLvel_1::PressedShoot(AActor* Gunner)
 	{

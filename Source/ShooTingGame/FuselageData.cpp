@@ -5,7 +5,7 @@
 
 #include "WeaponStruct.h"
 
-FuselageData::FuselageData(WeaponStruct* Weapon, FuselageStatus& Status, const FuselageUnion* Union)
+FuselageData::FuselageData(std::shared_ptr<WeaponStruct> Weapon, FuselageStatus& Status, const FuselageUnion* Union)
 	:m_weapon(Weapon),m_fix_status(Status), m_union(Union) {
 	m_current_hp = Status.GetMaxHP();
 }
@@ -22,7 +22,7 @@ void FuselageData::AddHP(float Num)
 	}
 }
 
-void FuselageData::ChangeWeapon(WeaponStruct* Weapon)
+void FuselageData::ChangeWeapon(std::shared_ptr<WeaponStruct> Weapon)
 {
 	m_weapon = Weapon;
 }
@@ -42,7 +42,7 @@ const float FuselageData::GetCurrentHP() const
 	return m_current_hp;
 }
 
-WeaponStruct* FuselageData::GetWeapon() const
+std::shared_ptr<WeaponStruct> FuselageData::GetWeapon() const
 {
 	return m_weapon;
 }

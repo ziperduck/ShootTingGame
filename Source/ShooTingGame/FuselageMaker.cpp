@@ -15,71 +15,64 @@ namespace FuselageMaker
 	std::shared_ptr<FuselageData> GetUFO()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetUFO"));
-		static FuselageStatus UFOStatus { 3.0f,2.0f, 2.0f };
-		return std::make_shared<FuselageData>(new PlayerWeapon::LaserBeamLvel_1(),UFOStatus, FuselageUnion::PlayerUnion());
+
+		return std::make_shared<FuselageData>(
+			std::make_shared<PlayerWeapon::LaserBeamLvel_1>(), FuselageStatus::PlayerStatus(), FuselageUnion::PlayerUnion());
 	}
 
 	std::shared_ptr<FuselageData> GetFireDragon()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetFireDragon"));
-		static FuselageStatus FireDragonStatus{ 1.0f,2.0f, 1.0f };
-		return std::make_shared<FuselageData>(new EnemyWeapon::FireBallLvel_1(), FireDragonStatus, FuselageUnion::FireDragonUnion());
+		return std::make_shared<FuselageData>(
+			std::make_shared<EnemyWeapon::FireBallLvel_1>(), FuselageStatus::FireDragonStatus(), FuselageUnion::FireDragonUnion());
 	}
 
 	std::shared_ptr<FuselageData> GetRushDragon()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetRushDragon"));
-		static FuselageStatus RushDragonStatus{ 1.0f,3.0f, 1.0f };
-		return std::make_shared<FuselageData>(nullptr, RushDragonStatus, FuselageUnion::RushDragonUnion());
+		return std::make_shared<FuselageData>(nullptr, FuselageStatus::RushDragonStatus(), FuselageUnion::RushDragonUnion());
 	}
 
 	std::shared_ptr<FuselageData> GetBoomDragon()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetRushDragon"));
-		static FuselageStatus BoomDragonStatus{ 1.0f,1.0f, 2.0f };
-		return std::make_shared<FuselageData>(nullptr, BoomDragonStatus, FuselageUnion::BoomDragonUnion());
+		return std::make_shared<FuselageData>(nullptr, FuselageStatus::BoomDragonStatus(), FuselageUnion::BoomDragonUnion());
 	}
 
 	std::shared_ptr<FuselageData> GetMeteoricStone()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetRushDragon"));
-		static FuselageStatus MeteoricStoneStatus{ 1.0f,2.0f, 1.0f };
-		return std::make_shared<FuselageData>(nullptr, MeteoricStoneStatus, FuselageUnion::MeteoricStoneUnion());
+		return std::make_shared<FuselageData>(nullptr, FuselageStatus::MeteoricStoneStatus(), FuselageUnion::MeteoricStoneUnion());
 	}
 
 
 	std::shared_ptr<FuselageData> GetBullet()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetRushDragon"));
-		static FuselageStatus BulletStatus{ 1.0f,3.0f, 0.0f };
-		return std::make_shared<FuselageData>(nullptr, BulletStatus, FuselageUnion::BulletUnion());
+		return std::make_shared<FuselageData>(nullptr, FuselageStatus::BulletStatus(), FuselageUnion::BulletUnion());
 	}
 
 	std::shared_ptr<FuselageData> GetLaserBeam()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetLaserBeam"));
-		static FuselageStatus LaserBeamStatus{ 1.0f,1.0f,0.0f };
-		return std::make_shared<FuselageData>(nullptr, LaserBeamStatus, FuselageUnion::LaserBeamUnion());
+		return std::make_shared<FuselageData>(nullptr, FuselageStatus::LaserBeamStatus(), FuselageUnion::LaserBeamUnion());
 	}
 
 	std::shared_ptr<FuselageData> GetFireBall()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetFireBall"));
-		static FuselageStatus BulletStatus{ 1.0f,3.0f, 0.0f };
-		return std::make_shared<FuselageData>(nullptr, BulletStatus, FuselageUnion::FireBallUnion());
+		return std::make_shared<FuselageData>(nullptr, FuselageStatus::FireBallStatus(), FuselageUnion::FireBallUnion());
 	}
 
 	std::shared_ptr<FuselageData> GetHealPack()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetHealPack"));
-		static FuselageStatus HealPackStatus{ 1.0f,1.0f, 1.0f };
-		return std::make_shared<FuselageData>(nullptr, HealPackStatus, FuselageUnion::HealPackUnion());
+		return std::make_shared<FuselageData>(nullptr, FuselageStatus::HealPackStatus(), FuselageUnion::HealPackUnion());
 	}
 
 	std::shared_ptr<FuselageData> GetWeaponKit()
 	{
 		UE_LOG(LogTemp, Log, TEXT("GetWeaponKit"));
-		static FuselageStatus WeaponKitStatus{ 1.0f,1.0f, 1.0f };
-		return std::make_shared<FuselageData>(nullptr, WeaponKitStatus, FuselageUnion::WeaponKitUnion());
+		return std::make_shared<FuselageData>(nullptr, FuselageStatus::WeaponKitStatus(), FuselageUnion::WeaponKitUnion());
 	}
 }

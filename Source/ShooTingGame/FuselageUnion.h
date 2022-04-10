@@ -32,7 +32,7 @@ public:
 	//气迫侩狼 家加
 	static const FuselageUnion* BoomDragonUnion();
 
-	//气迫侩狼 家加
+	//款籍狼 家加
 	static const FuselageUnion* MeteoricStoneUnion();
 
 

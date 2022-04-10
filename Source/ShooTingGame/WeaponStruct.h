@@ -20,7 +20,7 @@ public:
 	virtual void ReleaseShoot(AActor* Gunner) = 0;
 
 	//현재 무기의 강화된 무기를 반환합니다. 없을경우 자기 자신을 리턴합니다.
-	virtual WeaponStruct* GetUpgradeWeapon() = 0;
+	virtual std::shared_ptr<WeaponStruct> GetUpgradeWeapon() = 0;
 
 
 	//크기를 받는다.

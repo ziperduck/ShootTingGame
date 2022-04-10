@@ -76,7 +76,7 @@ void FuselageCharacter::Death()
 	
 }
 
-void FuselageCharacter::ChangeWeapon(WeaponStruct* ChangeWeapon)
+void FuselageCharacter::ChangeWeapon(std::shared_ptr<WeaponStruct> ChangeWeapon)
 {
 	m_base_data->ChangeWeapon(ChangeWeapon);
 }
@@ -132,7 +132,7 @@ const int8 FuselageCharacter::GetCollision() const
 	return m_base_data->GetUnion()->GetCollision();
 }
 
-WeaponStruct* FuselageCharacter::GetWeapon() const
+std::shared_ptr<WeaponStruct> FuselageCharacter::GetWeapon() const
 {
 	return m_base_data->GetWeapon();
 }

@@ -106,8 +106,8 @@ namespace CollisionCommand {
 			//충돌한 Fuselage의 무기를 바꾼다.
 			if (Character->GetUnion() & OverlapFuselage->GetCollision())
 			{
-				WeaponStruct* ChangerWeapon = Character->GetWeapon();
-				WeaponStruct* TargetWeapon = OverlapFuselage->GetWeapon();
+				std::shared_ptr<WeaponStruct> ChangerWeapon = Character->GetWeapon();
+				std::shared_ptr<WeaponStruct> TargetWeapon = OverlapFuselage->GetWeapon();
 
 				if (TargetWeapon == nullptr)
 				{

@@ -40,7 +40,7 @@ public:
 	void Death();
 
 	//무기를 교체한다.
-	void ChangeWeapon(WeaponStruct* ChangeWeapon);
+	void ChangeWeapon(std::shared_ptr<WeaponStruct> ChangeWeapon);
 
 	//소속과 충돌체를 교체한다.
 	void ChangeUnion(const FuselageUnion* Union);
@@ -74,7 +74,7 @@ public:
 	const int8 GetCollision() const;
 
 	//동체의 무기를 반환한다.
-	WeaponStruct* GetWeapon() const;
+	std::shared_ptr<WeaponStruct> GetWeapon() const;
 
 private:
 

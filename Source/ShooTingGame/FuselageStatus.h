@@ -15,7 +15,6 @@
 class FuselageStatus
 {
 public:
-	FuselageStatus(const float MaxHP, const float Speed, const float AttackPower);
 	~FuselageStatus();
 
 	//공격력을 바꾼다.
@@ -30,6 +29,42 @@ public:
 
 	//공격력을 받는다.
 	const float GetAttackPower() const { return m_attack_power; };
+	
+	//플레이어의 능력치
+	static FuselageStatus& PlayerStatus();
+
+	//화염용의 능력치
+	static FuselageStatus& FireDragonStatus();
+
+	//돌진용의 능력치
+	static FuselageStatus& RushDragonStatus();
+
+	//폭팔용의 능력치
+	static FuselageStatus& BoomDragonStatus();
+
+	//운석의 능력치
+	static FuselageStatus& MeteoricStoneStatus();
+
+
+	//적군의 파이어볼의 능력치
+	static FuselageStatus& BulletStatus();
+
+	//플레이어의 총알의 능력치
+	static FuselageStatus& LaserBeamStatus();
+
+	//플레이어의 레이저 빔의 능력치
+	static FuselageStatus& FireBallStatus();
+
+
+	//플레이어의 힐팩의 능력치
+	static FuselageStatus& HealPackStatus();
+
+	//플레이어의 무기교체의 능력치
+	static FuselageStatus& WeaponKitStatus();
+
+private:
+
+	FuselageStatus(const float MaxHP, const float Speed, const float AttackPower);
 
 private:
 

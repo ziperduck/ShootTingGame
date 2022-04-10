@@ -6,6 +6,7 @@
 
 #include "WeaponStruct.h"
 
+#include <memory>
 /**
  * 플레이어가 상용하는 무기들의 집합
  */
@@ -15,13 +16,13 @@ constexpr float ONE_TICK();
 namespace PlayerWeapon {
 
 	//총알 무기
-	class BulletLvel_1 : public WeaponStruct
+	class BulletLvel_1 : public WeaponStruct, public std::enable_shared_from_this<BulletLvel_1>
 	{
 	public:
 		BulletLvel_1();
 		virtual ~BulletLvel_1() final;
 
-		virtual WeaponStruct* GetUpgradeWeapon() final;
+		virtual std::shared_ptr<WeaponStruct> GetUpgradeWeapon() final;
 
 		virtual void PressedShoot(AActor* Gunner) final;
 
@@ -34,13 +35,13 @@ namespace PlayerWeapon {
 
 	};
 
-	class BulletLvel_2 : public WeaponStruct
+	class BulletLvel_2 : public WeaponStruct, public std::enable_shared_from_this<BulletLvel_2>
 	{
 	public:
 		BulletLvel_2();
 		virtual ~BulletLvel_2() final;
 
-		virtual WeaponStruct* GetUpgradeWeapon() final;
+		virtual std::shared_ptr<WeaponStruct> GetUpgradeWeapon() final;
 
 		virtual void PressedShoot(AActor* Gunner) final;
 
@@ -56,13 +57,13 @@ namespace PlayerWeapon {
 	};
 
 
-	class LaserBeamLvel_1 : public WeaponStruct
+	class LaserBeamLvel_1 : public WeaponStruct, public std::enable_shared_from_this<LaserBeamLvel_1>
 	{
 	public:
 		LaserBeamLvel_1();
 		virtual ~LaserBeamLvel_1() final;
 
-		virtual WeaponStruct* GetUpgradeWeapon() final;
+		virtual std::shared_ptr<WeaponStruct> GetUpgradeWeapon() final;
 
 		virtual void PressedShoot(AActor* Gunner) final;
 
@@ -80,13 +81,13 @@ namespace PlayerWeapon {
 	};
 
 	//레이저 무기
-	class LaserBeamLvel_2 : public WeaponStruct
+	class LaserBeamLvel_2 : public WeaponStruct, public std::enable_shared_from_this<LaserBeamLvel_2>
 	{
 	public:
 		LaserBeamLvel_2();
 		virtual ~LaserBeamLvel_2() final;
 
-		virtual WeaponStruct* GetUpgradeWeapon() final;
+		virtual std::shared_ptr<WeaponStruct> GetUpgradeWeapon() final;
 
 		virtual void PressedShoot(AActor* Gunner) final;
 

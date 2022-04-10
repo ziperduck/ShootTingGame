@@ -54,14 +54,14 @@ class FuselageData
 {
 public:
 
-	FuselageData(WeaponStruct* Weapon,FuselageStatus& Status, const FuselageUnion* Union);
+	FuselageData(std::shared_ptr<WeaponStruct> Weapon,FuselageStatus& Status, const FuselageUnion* Union);
 	~FuselageData() {};
 		
 	//최대체력을 넘지 않을만큼만 체력을 회복한다.
 	void AddHP(float Num);
 
 	//무기를 교체한다
-	void ChangeWeapon(WeaponStruct* Weapon);
+	void ChangeWeapon(std::shared_ptr<WeaponStruct> Weapon);
 
 	//소속과 충돌체를 교체한다.
 	void ChangeUnion(const FuselageUnion* Union);
@@ -74,7 +74,7 @@ public:
 	const float GetCurrentHP() const;
 
 	//현재 무기를 받는다.
-	WeaponStruct* GetWeapon() const;
+	std::shared_ptr<WeaponStruct> GetWeapon() const;
 
 	//현재 능력치를 받는다.
 	const FuselageStatus& GetStatus() const;
@@ -91,7 +91,7 @@ private:
 
 	float m_current_hp;
 
-	WeaponStruct* m_weapon;
+	std::shared_ptr<WeaponStruct> m_weapon;
 
 	FuselageStatus& m_fix_status;
 

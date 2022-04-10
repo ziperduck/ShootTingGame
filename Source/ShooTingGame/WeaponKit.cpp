@@ -88,7 +88,7 @@ void AWeaponKit::NotifyActorBeginOverlap(AActor* Actor)
 FString AWeaponKit::ChangeWeapon()
 {
 	m_weapon_cycle_count = (m_weapon_cycle_count + 1) % m_weapon_first_letter.size();
-	m_base_data->ChangeWeapon(m_player_weapon.at(m_weapon_cycle_count).get());
+	m_base_data->ChangeWeapon(m_player_weapon.at(m_weapon_cycle_count));
 
 	return m_weapon_first_letter.at(m_weapon_cycle_count);
 }

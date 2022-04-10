@@ -21,9 +21,9 @@ namespace PlayerWeapon {
 
 	BulletLvel_1::~BulletLvel_1() {}
 	
-	WeaponStruct* BulletLvel_1::GetUpgradeWeapon()
+	std::shared_ptr<WeaponStruct> BulletLvel_1::GetUpgradeWeapon()
 	{
-		return new BulletLvel_2;
+		return std::make_shared<BulletLvel_2>();
 	}
 
 	void BulletLvel_1::PressedShoot(AActor* Gunner)
@@ -80,9 +80,9 @@ namespace PlayerWeapon {
 	{
 	}
 
-	WeaponStruct* BulletLvel_2::GetUpgradeWeapon()
+	std::shared_ptr<WeaponStruct> BulletLvel_2::GetUpgradeWeapon()
 	{
-		return this;
+		return shared_from_this();
 	}
 	
 	void BulletLvel_2::CreateWeapon(AActor* Gunner)
@@ -135,9 +135,9 @@ namespace PlayerWeapon {
 
 	LaserBeamLvel_1::~LaserBeamLvel_1() {}
 
-	WeaponStruct* LaserBeamLvel_1::GetUpgradeWeapon()
+	std::shared_ptr<WeaponStruct> LaserBeamLvel_1::GetUpgradeWeapon()
 	{
-		return new LaserBeamLvel_2;
+		return std::make_shared<LaserBeamLvel_2>();
 	}
 
 	void LaserBeamLvel_1::PressedShoot(AActor* Gunner)
@@ -193,9 +193,9 @@ namespace PlayerWeapon {
 
 	LaserBeamLvel_2::~LaserBeamLvel_2() {}
 
-	WeaponStruct* LaserBeamLvel_2::GetUpgradeWeapon()
+	std::shared_ptr<WeaponStruct> LaserBeamLvel_2::GetUpgradeWeapon()
 	{
-		return this;
+		return shared_from_this();
 	}
 
 	void LaserBeamLvel_2::PressedShoot(AActor* Gunner)
